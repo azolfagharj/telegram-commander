@@ -1,8 +1,6 @@
 # Install
 
-## Quick path
-
-See [README Quick start](../README.md#quick-start) and [systemd](../README.md#systemd-as-root).
+## Download release pack
 
 ```bash
 wget -O telegram-commander.tar.gz https://github.com/azolfagharj/telegram-commander/releases/latest/download/telegram-commander.tar.gz
@@ -17,6 +15,18 @@ Archive root contains:
 - `config.full.yaml`
 - `telegram-commander.service`
 
+## Manual run
+
+```bash
+# amd64
+cp telegram-commander-linux-amd64 telegram-commander && chmod +x telegram-commander
+# arm64: cp telegram-commander-linux-arm64 telegram-commander && chmod +x telegram-commander
+
+# edit config.minimal.yaml (token + user id)
+./telegram-commander validate --config config.minimal.yaml
+./telegram-commander run --config config.minimal.yaml
+```
+
 ## systemd (root)
 
 No Linux user is created. The service runs as root.
@@ -28,7 +38,7 @@ sudo cp telegram-commander-linux-amd64 /etc/telegram-commander/telegram-commande
 # arm64: sudo cp telegram-commander-linux-arm64 /etc/telegram-commander/telegram-commander
 sudo chmod +x /etc/telegram-commander/telegram-commander
 sudo cp config.minimal.yaml /etc/telegram-commander/config.yaml
-# edit token + user id
+# edit /etc/telegram-commander/config.yaml (token + user id)
 sudo cp telegram-commander.service /etc/systemd/system/
 sudo systemctl daemon-reload && sudo systemctl enable --now telegram-commander
 ```

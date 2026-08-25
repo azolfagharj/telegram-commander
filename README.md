@@ -74,6 +74,8 @@ Pick the binary line that matches your machine architecture.
 
 ## Documentation
 
+Site (GitHub Pages): https://azolfagharj.github.io/telegram-commander/
+
 - [Config reference](docs/config-reference.md)
 - [Functions reference](docs/functions-reference.md)
 - [CLI reference](docs/cli-reference.md)

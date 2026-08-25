@@ -21,3 +21,7 @@ config.local.yaml
 # Coverage
 coverage.out
 coverage.html
+
+# MkDocs output
+statics/
+.venv-docs/

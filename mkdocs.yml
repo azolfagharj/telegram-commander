@@ -1,0 +1,32 @@
+site_name: telegram-commander
+site_description: Telegram bot that runs host commands from a YAML menu
+site_author: azolfagharj
+site_url: https://azolfagharj.github.io/telegram-commander/
+
+repo_url: https://github.com/azolfagharj/telegram-commander
+repo_name: azolfagharj/telegram-commander
+edit_uri: edit/main/docs/
+
+docs_dir: docs
+site_dir: statics
+
+theme:
+  name: bootstrap
+
+nav:
+  - Home: index.md
+  - Install: install.md
+  - Config reference: config-reference.md
+  - Functions reference: functions-reference.md
+  - CLI reference: cli-reference.md
+
+markdown_extensions:
+  - toc:
+      permalink: true
+  - tables
+  - fenced_code
+  - admonition
+
+# site_url enables sitemap.xml for search engines
+plugins:
+  - search
