@@ -11,17 +11,7 @@ import (
 	"github.com/azolfagharj/telegram-commander/internal/config"
 )
 
-const (
-	cbPrefixNav     = "n:" // navigate to node id
-	cbPrefixPage    = "p:" // page: nodeID:page
-	cbPrefixRun     = "r:" // run button id
-	cbPrefixConfirm = "c:" // confirm: button id
-	cbPrefixCancel  = "x:" // cancel confirm
-	cbHome          = "home"
-	cbBackPrefix    = "b:" // back to parent id
-)
-
-// Node is an indexed menu node with stable IDs for callback data.
+// Node is an indexed menu node with a stable ID.
 type Node struct {
 	ID       string
 	ParentID string

@@ -77,6 +77,19 @@ func startCommandUpdate(userID int64, username, text string) *models.Update {
 	}
 }
 
+func textUpdate(userID int64, username, text string) *models.Update {
+	return &models.Update{
+		ID: 2,
+		Message: &models.Message{
+			ID:   2,
+			Date: int(time.Now().Unix()),
+			Chat: models.Chat{ID: 10, Type: models.ChatTypePrivate},
+			From: &models.User{ID: userID, FirstName: "U", Username: username},
+			Text: text,
+		},
+	}
+}
+
 func TestUnauthorizedUserGetsDenyMessage(t *testing.T) {
 	srv := &apiServer{}
 	ts := httptest.NewServer(srv)
@@ -147,4 +160,50 @@ func TestAllowedStartSendsMenu(t *testing.T) {
 	require.NotEmpty(t, srv.messages)
 	text, _ := srv.messages[0]["text"].(string)
 	require.Equal(t, "Menu", text)
+}
+
+func TestReplyKeyboardNavigation(t *testing.T) {
+	srv := &apiServer{}
+	ts := httptest.NewServer(srv)
+	defer ts.Close()
+
+	cfg := &config.Config{
+		Telegram: config.TelegramConfig{
+			API:          ts.URL,
+			BotToken:     "123:ABC",
+			AllowedUsers: []string{"42"},
+		},
+		Buttons: []config.ButtonNode{
+			{
+				Name: "Cat",
+				Type: "category",
+				Icon: "📁",
+				Items: []config.ButtonNode{
+					{Name: "Echo", Type: "button", Function: "command", Command: "echo hi"},
+				},
+			},
+		},
+	}
+	cfg.ApplyDefaults()
+
+	app := bot.NewApp(cfg, function.NewRegistry(), &executor.FakeExecutor{}, nil)
+	b, err := app.NewBotWithOptions(
+		tgbot.WithHTTPClient(5*time.Second, ts.Client()),
+		tgbot.WithServerURL(ts.URL),
+		tgbot.WithSkipGetMe(),
+		tgbot.WithNotAsyncHandlers(),
+	)
+	require.NoError(t, err)
+
+	ctx := context.Background()
+	b.ProcessUpdate(ctx, startCommandUpdate(42, "admin", "/start"))
+	b.ProcessUpdate(ctx, textUpdate(42, "admin", "📁 Cat"))
+	b.ProcessUpdate(ctx, textUpdate(42, "admin", "🏠 Home"))
+
+	srv.mu.Lock()
+	defer srv.mu.Unlock()
+	require.GreaterOrEqual(t, len(srv.messages), 3)
+	require.Equal(t, "Menu", srv.messages[0]["text"])
+	require.Contains(t, srv.messages[1]["text"], "Cat")
+	require.Equal(t, "Menu", srv.messages[2]["text"])
 }

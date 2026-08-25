@@ -30,25 +30,35 @@ func TestBuildIndexAndKeyboard(t *testing.T) {
 	kb, title, err := idx.KeyboardFor("", 0)
 	require.NoError(t, err)
 	require.Equal(t, "Menu", title)
-	require.NotEmpty(t, kb.InlineKeyboard)
+	require.NotEmpty(t, kb.Keyboard)
+
+	var texts []string
+	for _, row := range kb.Keyboard {
+		for _, b := range row {
+			texts = append(texts, b.Text)
+		}
+	}
+	require.Contains(t, texts, "🏠 Home")
+	require.NotContains(t, texts, "⬅️ Back")
+	require.Contains(t, texts, "📁 Cat")
+	require.Contains(t, texts, "Top")
 
 	rootCat := idx.ByID[idx.Roots[0]]
 	require.Equal(t, "category", rootCat.Type)
 	kb2, title2, err := idx.KeyboardFor(rootCat.ID, 0)
 	require.NoError(t, err)
 	require.Contains(t, title2, "Cat")
-	require.NotEmpty(t, kb2.InlineKeyboard)
-}
+	require.NotEmpty(t, kb2.Keyboard)
 
-func TestParseCallback(t *testing.T) {
-	kind, payload := bot.ParseCallback("home")
-	require.Equal(t, "home", kind)
-	kind, payload = bot.ParseCallback("n:abc")
-	require.Equal(t, "nav", kind)
-	require.Equal(t, "abc", payload)
-	kind, payload = bot.ParseCallback("r:xyz")
-	require.Equal(t, "run", kind)
-	require.Equal(t, "xyz", payload)
+	var texts2 []string
+	for _, row := range kb2.Keyboard {
+		for _, b := range row {
+			texts2 = append(texts2, b.Text)
+		}
+	}
+	require.Contains(t, texts2, "🏠 Home")
+	require.Contains(t, texts2, "⬅️ Back")
+	require.Contains(t, texts2, "Echo")
 }
 
 func TestFindByName(t *testing.T) {
@@ -56,6 +66,17 @@ func TestFindByName(t *testing.T) {
 	n := idx.FindByName("echo")
 	require.NotNil(t, n)
 	require.Equal(t, "Echo", n.Name)
+}
+
+func TestChildByLabel(t *testing.T) {
+	idx := bot.BuildIndex(sampleButtons(), 2, 8)
+	n := idx.ChildByLabel("", "📁 Cat")
+	require.NotNil(t, n)
+	require.Equal(t, "category", n.Type)
+	echo := idx.ChildByLabel(n.ID, "Echo")
+	require.NotNil(t, echo)
+	require.Equal(t, "Echo", echo.Name)
+	require.Nil(t, idx.ChildByLabel("", "Echo"))
 }
 
 func TestPagination(t *testing.T) {
@@ -79,18 +100,25 @@ func TestPagination(t *testing.T) {
 	require.NoError(t, err)
 	require.Contains(t, title, "1/3")
 	foundNext := false
-	for _, row := range kb.InlineKeyboard {
+	foundBack := false
+	for _, row := range kb.Keyboard {
 		for _, b := range row {
 			if b.Text == "Next ▶️" {
 				foundNext = true
 			}
+			if b.Text == "⬅️ Back" {
+				foundBack = true
+			}
 		}
 	}
 	require.True(t, foundNext)
+	require.True(t, foundBack)
 }
 
 func TestConfirmKeyboard(t *testing.T) {
-	kb := bot.ConfirmKeyboard("abc")
-	require.Len(t, kb.InlineKeyboard, 1)
-	require.Len(t, kb.InlineKeyboard[0], 2)
+	kb := bot.ConfirmKeyboard()
+	require.Len(t, kb.Keyboard, 1)
+	require.Len(t, kb.Keyboard[0], 2)
+	require.Equal(t, "✅ Yes", kb.Keyboard[0][0].Text)
+	require.Equal(t, "❌ Cancel", kb.Keyboard[0][1].Text)
 }

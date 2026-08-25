@@ -2,46 +2,86 @@ package bot
 
 import (
 	"fmt"
-	"strconv"
-	"strings"
 
 	"github.com/go-telegram/bot/models"
 )
 
-// KeyboardFor builds an inline keyboard for a category (or root when nodeID is empty).
-func (idx *Index) KeyboardFor(nodeID string, page int) (*models.InlineKeyboardMarkup, string, error) {
-	var children []string
-	var title string
-	var columns int
-	var parentID string
+const (
+	btnHome   = "🏠 Home"
+	btnBack   = "⬅️ Back"
+	btnPrev   = "◀️ Prev"
+	btnNext   = "Next ▶️"
+	btnYes    = "✅ Yes"
+	btnCancel = "❌ Cancel"
+)
 
+// KeyboardFor builds a reply keyboard for a category (or root when nodeID is empty).
+func (idx *Index) KeyboardFor(nodeID string, page int) (*models.ReplyKeyboardMarkup, string, error) {
+	children, title, columns, err := idx.menuChildren(nodeID)
+	if err != nil {
+		return nil, "", err
+	}
+
+	page, totalPages, slice := paginateIDs(children, idx.pageSize(), page)
+
+	rows := make([][]models.KeyboardButton, 0, 4)
+	nav := []models.KeyboardButton{{Text: btnHome}}
+	if nodeID != "" {
+		nav = append(nav, models.KeyboardButton{Text: btnBack})
+	}
+	rows = append(rows, nav)
+	rows = append(rows, chunkReplyButtons(idx, slice, columns)...)
+
+	var pager []models.KeyboardButton
+	if page > 0 {
+		pager = append(pager, models.KeyboardButton{Text: btnPrev})
+	}
+	if page < totalPages-1 {
+		pager = append(pager, models.KeyboardButton{Text: btnNext})
+	}
+	if len(pager) > 0 {
+		rows = append(rows, pager)
+	}
+
+	if totalPages > 1 {
+		title = fmt.Sprintf("%s (%d/%d)", title, page+1, totalPages)
+	}
+
+	return &models.ReplyKeyboardMarkup{
+		Keyboard:       rows,
+		ResizeKeyboard: true,
+		IsPersistent:   true,
+	}, title, nil
+}
+
+func (idx *Index) menuChildren(nodeID string) (children []string, title string, columns int, err error) {
 	if nodeID == "" {
-		children = idx.Roots
-		title = "Menu"
+		return idx.Roots, "Menu", idx.DefaultColumns, nil
+	}
+	n, ok := idx.ByID[nodeID]
+	if !ok {
+		return nil, "", 0, fmt.Errorf("unknown node %q", nodeID)
+	}
+	if n.Type != "category" {
+		return nil, "", 0, fmt.Errorf("node %q is not a category", n.ID)
+	}
+	columns = n.Columns
+	if columns < 1 {
 		columns = idx.DefaultColumns
-	} else {
-		n, ok := idx.ByID[nodeID]
-		if !ok {
-			return nil, "", fmt.Errorf("unknown node %q", nodeID)
-		}
-		if n.Type != "category" {
-			return nil, "", fmt.Errorf("node %q is not a category", nodeID)
-		}
-		children = n.Children
-		title = n.Label()
-		columns = n.Columns
-		parentID = n.ParentID
-		if columns < 1 {
-			columns = idx.DefaultColumns
-		}
 	}
+	return n.Children, n.Label(), columns, nil
+}
 
-	pageSize := idx.PageSize
-	if pageSize < 1 {
-		pageSize = 8
+func (idx *Index) pageSize() int {
+	if idx.PageSize < 1 {
+		return 8
 	}
-	total := len(children)
-	totalPages := 1
+	return idx.PageSize
+}
+
+func paginateIDs(ids []string, pageSize, page int) (clampedPage, totalPages int, slice []string) {
+	total := len(ids)
+	totalPages = 1
 	if total > pageSize {
 		totalPages = (total + pageSize - 1) / pageSize
 	}
@@ -51,78 +91,35 @@ func (idx *Index) KeyboardFor(nodeID string, page int) (*models.InlineKeyboardMa
 	if page >= totalPages {
 		page = totalPages - 1
 	}
-
 	start := page * pageSize
 	end := start + pageSize
 	if end > total {
 		end = total
 	}
-	slice := children[start:end]
-
-	rows := chunkButtons(idx, slice, columns)
-
-	navRow := make([]models.InlineKeyboardButton, 0, 4)
-	if page > 0 {
-		navRow = append(navRow, models.InlineKeyboardButton{
-			Text:         "◀️ Prev",
-			CallbackData: cbPrefixPage + nodeID + ":" + strconv.Itoa(page-1),
-		})
-	}
-	if page < totalPages-1 {
-		navRow = append(navRow, models.InlineKeyboardButton{
-			Text:         "Next ▶️",
-			CallbackData: cbPrefixPage + nodeID + ":" + strconv.Itoa(page+1),
-		})
-	}
-	if len(navRow) > 0 {
-		rows = append(rows, navRow)
-	}
-
-	trail := make([]models.InlineKeyboardButton, 0, 2)
-	if nodeID != "" {
-		if parentID != "" {
-			trail = append(trail, models.InlineKeyboardButton{
-				Text:         "⬅️ Back",
-				CallbackData: cbPrefixNav + parentID,
-			})
-		}
-		trail = append(trail, models.InlineKeyboardButton{
-			Text:         "🏠 Home",
-			CallbackData: cbHome,
-		})
-	}
-	if len(trail) > 0 {
-		rows = append(rows, trail)
-	}
-
-	if totalPages > 1 {
-		title = fmt.Sprintf("%s (%d/%d)", title, page+1, totalPages)
-	}
-
-	return &models.InlineKeyboardMarkup{InlineKeyboard: rows}, title, nil
+	return page, totalPages, ids[start:end]
 }
 
-func chunkButtons(idx *Index, ids []string, columns int) [][]models.InlineKeyboardButton {
+func (idx *Index) clampPage(nodeID string, page int) int {
+	children, _, _, err := idx.menuChildren(nodeID)
+	if err != nil {
+		return 0
+	}
+	page, _, _ = paginateIDs(children, idx.pageSize(), page)
+	return page
+}
+
+func chunkReplyButtons(idx *Index, ids []string, columns int) [][]models.KeyboardButton {
 	if columns < 1 {
 		columns = 2
 	}
-	var rows [][]models.InlineKeyboardButton
-	var row []models.InlineKeyboardButton
+	var rows [][]models.KeyboardButton
+	var row []models.KeyboardButton
 	for _, id := range ids {
 		n := idx.ByID[id]
 		if n == nil {
 			continue
 		}
-		var data string
-		if n.Type == "category" {
-			data = cbPrefixNav + n.ID
-		} else {
-			data = cbPrefixRun + n.ID
-		}
-		row = append(row, models.InlineKeyboardButton{
-			Text:         n.Label(),
-			CallbackData: data,
-		})
+		row = append(row, models.KeyboardButton{Text: n.Label()})
 		if len(row) >= columns {
 			rows = append(rows, row)
 			row = nil
@@ -134,34 +131,37 @@ func chunkButtons(idx *Index, ids []string, columns int) [][]models.InlineKeyboa
 	return rows
 }
 
-// ConfirmKeyboard builds yes/cancel buttons for a confirmable action.
-func ConfirmKeyboard(buttonID string) *models.InlineKeyboardMarkup {
-	return &models.InlineKeyboardMarkup{
-		InlineKeyboard: [][]models.InlineKeyboardButton{
+// ConfirmKeyboard builds yes/cancel reply buttons for a confirmable action.
+func ConfirmKeyboard() *models.ReplyKeyboardMarkup {
+	return &models.ReplyKeyboardMarkup{
+		Keyboard: [][]models.KeyboardButton{
 			{
-				{Text: "✅ Yes", CallbackData: cbPrefixConfirm + buttonID},
-				{Text: "❌ Cancel", CallbackData: cbPrefixCancel + buttonID},
+				{Text: btnYes},
+				{Text: btnCancel},
 			},
 		},
+		ResizeKeyboard: true,
+		IsPersistent:   true,
 	}
 }
 
-// ParseCallback splits a callback data string into kind and payload.
-func ParseCallback(data string) (kind, payload string) {
-	switch {
-	case data == cbHome:
-		return "home", ""
-	case strings.HasPrefix(data, cbPrefixNav):
-		return "nav", strings.TrimPrefix(data, cbPrefixNav)
-	case strings.HasPrefix(data, cbPrefixPage):
-		return "page", strings.TrimPrefix(data, cbPrefixPage)
-	case strings.HasPrefix(data, cbPrefixRun):
-		return "run", strings.TrimPrefix(data, cbPrefixRun)
-	case strings.HasPrefix(data, cbPrefixConfirm):
-		return "confirm", strings.TrimPrefix(data, cbPrefixConfirm)
-	case strings.HasPrefix(data, cbPrefixCancel):
-		return "cancel", strings.TrimPrefix(data, cbPrefixCancel)
-	default:
-		return "unknown", data
+// ChildByLabel finds a direct child of nodeID (empty = root) by display label.
+func (idx *Index) ChildByLabel(nodeID, label string) *Node {
+	var ids []string
+	if nodeID == "" {
+		ids = idx.Roots
+	} else {
+		n := idx.ByID[nodeID]
+		if n == nil {
+			return nil
+		}
+		ids = n.Children
 	}
+	for _, id := range ids {
+		c := idx.ByID[id]
+		if c != nil && c.Label() == label {
+			return c
+		}
+	}
+	return nil
 }
