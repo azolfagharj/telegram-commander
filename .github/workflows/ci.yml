@@ -14,10 +14,10 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: "1.25.x"
           cache-dependency-path: go.sum
@@ -40,10 +40,10 @@ jobs:
           - goos: linux
             goarch: arm64
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: "1.25.x"
           cache-dependency-path: go.sum
@@ -65,7 +65,7 @@ jobs:
           ./release-binaries/telegram-commander-linux-amd64 version
 
       - name: Upload binaries artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: release-binaries-${{ matrix.goos }}-${{ matrix.goarch }}
           path: release-binaries/*
@@ -76,7 +76,7 @@ jobs:
     needs: [test, build]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Read version and release date from main.go
         id: meta
@@ -93,7 +93,7 @@ jobs:
           echo "Release date: $RELEASE_DATE"
 
       - name: Download binaries
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           pattern: release-binaries-*
           path: release-binaries
@@ -119,7 +119,7 @@ jobs:
           EOF
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           name: ${{ steps.meta.outputs.version }}
           tag_name: ${{ steps.meta.outputs.version }}
