@@ -1,9 +1,40 @@
-# Config reference
+# Configuration
 
-All keys use `lower_snake_case`. Unknown keys are rejected.
+The config file describes your whole bot: the Telegram connection, who may use
+it, the [button menu](buttons.md), and logging. You pass it to every command
+with `--config` (see [CLI](cli-reference.md)).
 
-**Required** means validation fails if the field is missing or empty after defaults are applied.  
+All keys use `lower_snake_case`. **Unknown keys are rejected**, so a typo is an
+error you will see immediately when you [validate](cli-reference.md#validate).
+
+**Required** means validation fails if the field is missing or empty after
+defaults are applied.  
 **Optional** fields may be omitted; the Default column shows what is used then.
+
+New to the project? Start with [Getting started](getting-started.md), which
+walks through building a first config, and [Concepts](concepts.md) for the
+vocabulary used below.
+
+## A minimal config
+
+Only `telegram` (with a token and one allowed user) and `buttons` are required.
+Everything else has a default:
+
+```yaml
+telegram:
+  bot_token: "YOUR_BOT_TOKEN"
+  allowed_users:
+    - "123456789"
+
+buttons:
+  - name: Uptime
+    type: button
+    function: command
+    command: "uptime"
+```
+
+The `config-examples/` folder in the release includes both a minimal and a full
+example.
 
 ## Root fields
 
@@ -47,11 +78,26 @@ You can omit it. The bot uses `/bin/bash`. Same for `timeout`, `page_size`, and 
 | `insecure` | bool | no | `false` | Skip TLS verify (not recommended) |
 | `enable_run_command` | bool | no | `false` | Enable `/run <button name>` |
 
-Unauthorized users receive a message with their `user_id` and `username` so they can ask an admin for access.
+Unauthorized users receive a message with their `user_id` and `username` so they can ask an admin for access. This is also how you find your own id the first time — see [Getting started](getting-started.md#step-5-find-your-user-id-if-needed).
+
+Example:
+
+```yaml
+telegram:
+  bot_token: "123456789:AAExampleTokenValue"
+  allowed_users:
+    - "123456789"        # numeric user id
+    - "@alice"           # or a username
+  proxy:
+    enabled: true
+    url: "socks5://127.0.0.1:10808"
+  enable_run_command: true
+```
 
 ## Buttons
 
-Each node:
+This section is the field reference. For a guided explanation with examples, see
+[Buttons and menus](buttons.md). Each node:
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
@@ -69,6 +115,11 @@ Each node:
 | `env` | map | no | Extra env for this button |
 | `columns` | int | no | Override columns for this category |
 | `args` | string | no | Optional args for `script` |
+| `params` | map | no | Parameter values for the button's function |
+
+`command`, `path`, and `args` are shortcuts for the matching built-in function
+parameters. For any other function, pass values under `params`. See
+[Functions → Passing parameters from a button](functions-reference.md#passing-parameters-from-a-button).
 
 ## `logging`
 
@@ -93,3 +144,13 @@ logging:
 ```
 
 Supported outputs: `stdout`, `stderr`, `file`, `discard`.
+
+The `audit` logger shown above records every command run (who, which button,
+exit code, duration). See [Concepts → Audit log](concepts.md#audit-log).
+
+## Related pages
+
+- [Getting started](getting-started.md) — build and run a first config
+- [Buttons and menus](buttons.md) — the menu tree in depth
+- [Functions](functions-reference.md) — what `function`, `command`, and `params` mean
+- [CLI](cli-reference.md) — validate and run with your config

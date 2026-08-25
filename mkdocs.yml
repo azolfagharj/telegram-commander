@@ -1,5 +1,5 @@
-site_name: telegram-commander
-site_description: Telegram bot that runs host commands from a YAML menu
+site_name: Telegram Commander
+site_description: Telegram bot that shows a button menu and runs host commands from a YAML config
 site_author: azolfagharj
 site_url: https://azolfagharj.github.io/telegram-commander/
 
@@ -11,14 +11,21 @@ docs_dir: docs
 site_dir: statics
 
 theme:
-  name: readthedocs
+  name: mkdocs
+  nav_style: dark
+
+extra_css:
+  - stylesheets/extra.css
 
 nav:
   - Home: index.md
-  - Install: install.md
-  - Config reference: config-reference.md
-  - Functions reference: functions-reference.md
-  - CLI reference: cli-reference.md
+  - Getting started: getting-started.md
+  - Concepts: concepts.md
+  - Configuration: config-reference.md
+  - Buttons and menus: buttons.md
+  - Functions: functions-reference.md
+  - CLI: cli-reference.md
+  - Install and service: install.md
 
 markdown_extensions:
   - toc:
@@ -26,6 +33,7 @@ markdown_extensions:
   - tables
   - fenced_code
   - admonition
+  - def_list
 
 # site_url enables sitemap.xml for search engines
 plugins:

@@ -1,21 +1,52 @@
-# telegram-commander
+# Telegram Commander
 
-A Telegram bot written in Go that reads a YAML config, shows an inline button menu,
-and runs host commands on the server where it runs.
+Telegram Commander is a small Go program that turns a YAML file into a
+Telegram bot. The bot shows a menu of buttons. When you tap a button, the
+program runs a command on the server where the bot is running and sends the
+output back to you in Telegram.
 
-## What it does
+You do not write any code to use it. You describe your menu and your commands
+in a configuration file, then start the bot.
 
-- Reads config from YAML
-- Shows nested categories and buttons in Telegram
-- Runs built-in or custom functions on the host
-- Ships with a Caddy-like CLI: `run`, `validate`, `fmt`, `version`, and more
+## A tiny example
 
-## Start here
+This config makes a bot with one button called "Uptime". Tapping it runs the
+`uptime` command on the server.
 
-1. [Install](install.md) — download the release pack or build from source
-2. [Config reference](config-reference.md) — required and optional settings
-3. [Functions reference](functions-reference.md) — built-in and custom functions
-4. [CLI reference](cli-reference.md) — command line usage
+```yaml
+telegram:
+  bot_token: "YOUR_BOT_TOKEN"
+  allowed_users:
+    - "YOUR_USER_ID"
+
+buttons:
+  - name: Uptime
+    type: button
+    function: command
+    command: "uptime"
+```
+
+That is a complete, working configuration. Everything else is optional.
+
+## What you can do with it
+
+- Build a menu of server actions (restart a service, show disk usage, tail logs)
+- Group actions into nested categories
+- Ask for confirmation before dangerous actions
+- Restrict who can use the bot
+- Run through a proxy if Telegram is blocked on your network
+
+## Where to go next
+
+New here? Follow the pages in order:
+
+1. [Getting started](getting-started.md) — install, set your token, run the bot
+2. [Concepts](concepts.md) — the words used in this documentation (buttons, functions, and more)
+3. [Configuration](config-reference.md) — every setting, with defaults and examples
+4. [Buttons and menus](buttons.md) — how to build your menu tree
+5. [Functions](functions-reference.md) — what runs when a button is tapped
+6. [CLI](cli-reference.md) — the command line commands
+7. [Install and service](install.md) — run it as a systemd service
 
 ## Links
 

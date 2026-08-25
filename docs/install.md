@@ -1,4 +1,8 @@
-# Install
+# Install and service
+
+This page covers downloading the release, running as a systemd service, and
+building from source. For a slower, explained walkthrough of your first run, see
+[Getting started](getting-started.md).
 
 ## Quick start
 
@@ -28,7 +32,13 @@ cp config-examples/config.minimal.yaml ./config.yaml
 ./telegram-commander run --config config.yaml
 ```
 
-The minimal config does not set `function_directory`. To try sample functions, use `config-examples/config.full.yaml` (it points to `./functions`) or set `function_directory` yourself.
+Edit `config.yaml` following [Configuration](config-reference.md), and see
+[CLI](cli-reference.md) for what `validate` and `run` do.
+
+The minimal config does not set `function_directory`. To try sample functions,
+use `config-examples/config.full.yaml` (it points to `./functions`) or set
+`function_directory` yourself. Each sample function is described in
+[Functions → Custom functions in the release pack](functions-reference.md#custom-functions-in-the-release-pack).
 
 ## systemd (root)
 
@@ -66,3 +76,9 @@ git clone https://github.com/azolfagharj/telegram-commander.git
 cd telegram-commander
 go build -o telegram-commander ./cmd/telegram-commander
 ```
+
+## Related pages
+
+- [Getting started](getting-started.md) — explained first run
+- [Configuration](config-reference.md) — the config file
+- [CLI](cli-reference.md) — `run`, `validate`, and more

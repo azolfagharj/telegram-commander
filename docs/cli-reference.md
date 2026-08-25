@@ -4,7 +4,12 @@
 telegram-commander <command> [flags]
 ```
 
-`--config` / `-c` is **required** for commands that load configuration. The path may be relative to the current working directory or absolute.
+`--config` / `-c` is **required** for commands that load configuration. The path
+may be relative to the current working directory or absolute. What goes in that
+file is documented in [Configuration](config-reference.md).
+
+If you are just getting started, [Getting started](getting-started.md) shows
+these commands in the order you will use them.
 
 ## Commands
 
@@ -48,7 +53,8 @@ Print process environment variables (useful for debugging service units).
 
 ### `list-functions`
 
-List built-in and loaded custom functions.
+List built-in and loaded custom functions. Use it to confirm your custom
+function files were found. See [Functions](functions-reference.md).
 
 ```bash
 telegram-commander list-functions --config /path/to/configfile.yaml
@@ -68,3 +74,9 @@ telegram-commander completion powershell
 ### `manpage`
 
 Write a man page to stdout.
+
+## Related pages
+
+- [Configuration](config-reference.md) — the file passed to `--config`
+- [Functions](functions-reference.md) — what `list-functions` shows
+- [Install and service](install.md) — run `run` under systemd
