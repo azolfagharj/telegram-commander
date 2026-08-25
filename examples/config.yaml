@@ -1,0 +1,77 @@
+telegram:
+  api: "https://api.telegram.org"
+  bot_token: "0000000000:EXAMPLE_TOKEN_REPLACE_ME"
+  allowed_users:
+    - "123456789"
+    - "admin_username"
+  proxy:
+    enabled: false
+    url: "socks5://127.0.0.1:10808"
+  insecure: false
+  enable_run_command: false
+
+function_directory: "examples/functions"
+
+shell: "/bin/bash"
+timeout: "60s"
+max_output_bytes: 524288
+buttons_columns: 2
+page_size: 8
+confirm_ttl: "5m"
+
+logging:
+  logs:
+    default:
+      level: info
+      format: console
+      output:
+        - output: stderr
+    audit:
+      level: info
+      format: json
+      output:
+        - output: stderr
+
+buttons:
+  - name: "MY_SCRIPT"
+    type: category
+    icon: "🛠️"
+    items:
+      - name: "Nginx"
+        type: category
+        icon: "🌐"
+        items:
+          - name: "Restart nginx"
+            type: button
+            icon: "🔄"
+            function: command
+            command: "systemctl restart nginx"
+            confirm: true
+          - name: "Stop nginx"
+            type: button
+            icon: "⛔"
+            function: command
+            command: "systemctl stop nginx"
+            confirm: true
+      - name: "Docker"
+        type: category
+        icon: "🐳"
+        items:
+          - name: "Restart Docker"
+            type: button
+            icon: "🔄"
+            function: command
+            command: "systemctl restart docker"
+            confirm: true
+  - name: "Echo demo"
+    type: button
+    icon: "📢"
+    function: command
+    command: "echo hello from telegram-commander"
+    confirm: false
+  - name: "Restart SSH"
+    type: button
+    icon: "🔐"
+    function: command
+    command: "systemctl restart ssh"
+    confirm: true

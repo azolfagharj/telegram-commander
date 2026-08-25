@@ -1,0 +1,130 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.25.x"
+          cache-dependency-path: go.sum
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Test
+        run: go test -race -cover ./...
+
+  build:
+    name: Build
+    needs: [test]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - goos: linux
+            goarch: amd64
+          - goos: linux
+            goarch: arm64
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.25.x"
+          cache-dependency-path: go.sum
+
+      - name: Build binary
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+          CGO_ENABLED: 0
+        run: |
+          mkdir -p release-binaries
+          BINARY="telegram-commander-${{ matrix.goos }}-${{ matrix.goarch }}"
+          go build -ldflags="-s -w" -o "release-binaries/${BINARY}" ./cmd/telegram-commander
+          ls -lh release-binaries/
+
+      - name: Verify binary (linux/amd64 only)
+        if: matrix.goos == 'linux' && matrix.goarch == 'amd64'
+        run: |
+          ./release-binaries/telegram-commander-linux-amd64 version
+
+      - name: Upload binaries artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-binaries-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: release-binaries/*
+          retention-days: 1
+
+  create-release:
+    name: Create Release
+    needs: [test, build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read version and release date from main.go
+        id: meta
+        run: |
+          VERSION=$(sed -n 's/^const version = "\(.*\)"/\1/p' cmd/telegram-commander/main.go)
+          RELEASE_DATE=$(sed -n 's/^const releaseDate = "\(.*\)"/\1/p' cmd/telegram-commander/main.go)
+          if [ -z "$VERSION" ] || [ -z "$RELEASE_DATE" ]; then
+            echo "Failed to read version/releaseDate from main.go"
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "release_date=$RELEASE_DATE" >> "$GITHUB_OUTPUT"
+          echo "Version: $VERSION"
+          echo "Release date: $RELEASE_DATE"
+
+      - name: Download binaries
+        uses: actions/download-artifact@v4
+        with:
+          pattern: release-binaries-*
+          path: release-binaries
+          merge-multiple: true
+
+      - name: List release files
+        run: ls -lh release-binaries/
+
+      - name: Write release notes
+        run: |
+          cat > release-notes.md <<EOF
+          ## telegram-commander ${{ steps.meta.outputs.version }}
+
+          - Version: \`${{ steps.meta.outputs.version }}\`
+          - Release date: \`${{ steps.meta.outputs.release_date }}\`
+
+          ### Binaries
+
+          | File | Platform |
+          |------|----------|
+          | \`telegram-commander-linux-amd64\` | Linux x86_64 |
+          | \`telegram-commander-linux-arm64\` | Linux ARM64 |
+          EOF
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ steps.meta.outputs.version }}
+          tag_name: ${{ steps.meta.outputs.version }}
+          body_path: release-notes.md
+          files: release-binaries/*
+          fail_on_unmatched_files: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

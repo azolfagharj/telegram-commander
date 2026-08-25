@@ -1,0 +1,95 @@
+# Config reference
+
+All keys use `lower_snake_case`. Unknown keys are rejected.
+
+**Required** means validation fails if the field is missing or empty after defaults are applied.  
+**Optional** fields may be omitted; the Default column shows what is used then.
+
+## Root fields
+
+| Field | Type | Required | Default | Description |
+|-------|------|----------|---------|-------------|
+| `telegram` | object | yes | — | Telegram settings (see below) |
+| `buttons` | list | yes | — | Menu tree; at least one node |
+| `function_directory` | string | no | unset | Custom function YAML directory (see rules below) |
+| `shell` | string | no | `/bin/bash` | Shell used as `shell -c "<command>"` |
+| `timeout` | duration | no | `60s` | Default command timeout |
+| `max_output_bytes` | int | no | `524288` | Max captured stdout/stderr bytes |
+| `workdir` | string | no | process cwd | Default working directory for commands |
+| `env` | map | no | empty | Extra environment variables for commands |
+| `buttons_columns` | int | no | `2` | Default inline keyboard columns |
+| `page_size` | int | no | `8` | Items per page before pagination |
+| `confirm_ttl` | duration | no | `5m` | How long a confirm prompt stays valid |
+| `logging` | object | no | built-in default logger | Named loggers (see below) |
+
+### What if I omit `shell`?
+
+You can omit it. The bot uses `/bin/bash`. Same for `timeout`, `page_size`, and other optional root fields: omit them and defaults apply. You only need to set them when you want a non-default value (for example `shell: /bin/sh`).
+
+### `function_directory` rules
+
+| Situation | Result |
+|-----------|--------|
+| Key missing | Info log; built-in functions only |
+| Key present but empty (`""`) | Info log; built-in functions only |
+| Key set to a path that does not exist or is not accessible | Hard error; process stops |
+| Path exists but directory is empty | OK |
+
+## `telegram`
+
+| Field | Type | Required | Default | Description |
+|-------|------|----------|---------|-------------|
+| `bot_token` | string | yes | — | Bot token from BotFather |
+| `allowed_users` | list of string | yes | — | At least one user ID and/or username |
+| `api` | string | no | `https://api.telegram.org` | Bot API base URL |
+| `proxy.enabled` | bool | no | `false` | Use proxy for Telegram API |
+| `proxy.url` | string | conditional | — | Required when `proxy.enabled` is `true` |
+| `insecure` | bool | no | `false` | Skip TLS verify (not recommended) |
+| `enable_run_command` | bool | no | `false` | Enable `/run <button name>` |
+
+Unauthorized users receive a message with their `user_id` and `username` so they can ask an admin for access.
+
+## Buttons
+
+Each node:
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `name` | string | yes | Display name (unique among siblings, case-insensitive) |
+| `type` | `category` \| `button` | yes | Node kind |
+| `items` | list | yes if `category` | Children; category must have at least one |
+| `function` | string | yes if `button` | Function name |
+| `command` | string | yes if `function: command` | Shell command for built-in `command` |
+| `path` | string | yes if `function: script` | Script path for built-in `script` |
+| `icon` | string | no | Optional emoji prefix |
+| `id` | string | no | Stable callback id; auto-hashed if omitted |
+| `confirm` | bool | no | Ask for confirmation before run (default `false`) |
+| `timeout` | duration | no | Override global timeout |
+| `workdir` | string | no | Override working directory |
+| `env` | map | no | Extra env for this button |
+| `columns` | int | no | Override columns for this category |
+| `args` | string | no | Optional args for `script` |
+
+## `logging`
+
+Optional. If omitted, a default console logger on `stderr` at `info` is used.
+
+Caddy-style named loggers:
+
+```yaml
+logging:
+  logs:
+    default:
+      level: info
+      format: console   # or json
+      output:
+        - output: stderr
+    audit:
+      level: info
+      format: json
+      output:
+        - output: file
+          file: /var/log/telegram-commander/audit.log
+```
+
+Supported outputs: `stdout`, `stderr`, `file`, `discard`.

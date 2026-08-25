@@ -1,0 +1,21 @@
+[Unit]
+Description=telegram-commander Telegram bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=telegram-commander
+Group=telegram-commander
+ExecStart=/usr/local/bin/telegram-commander run --config /etc/telegram-commander/config.yaml
+Restart=on-failure
+RestartSec=5
+# Cap privileges; adjust if your commands need more.
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/log/telegram-commander
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

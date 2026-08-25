@@ -1,0 +1,50 @@
+version: 2
+
+project_name: telegram-commander
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: telegram-commander
+    main: ./cmd/telegram-commander
+    binary: telegram-commander
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+
+archives:
+  - formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    files:
+      - LICENSE*
+      - README.md
+      - CHANGELOG.md
+      - examples/**/*
+      - deployments/**/*
+
+checksum:
+  name_template: checksums.txt
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^ci:"
+
+release:
+  draft: false
+  prerelease: auto
