@@ -1,20 +1,57 @@
-# telegram-commander
+# Telegram Commander
 
-A Telegram bot written in Go that reads a YAML config, shows an inline button menu,
-and runs host commands (or custom functions) on the server where it runs.
+[![CI](https://github.com/azolfagharj/telegram-commander/actions/workflows/ci.yml/badge.svg)](https://github.com/azolfagharj/telegram-commander/actions) [![Documentation](https://img.shields.io/badge/Documentation-Site-blue?logo=github)](https://azolfagharj.github.io/telegram-commander/) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE) [![Donate](https://img.shields.io/badge/Donate-to%20Keep%20This%20Project%20Alive-orange)](https://azolfagharj.github.io/donate/)
 
-CLI style is inspired by [Caddy](https://caddyserver.com/): `run`, `validate`, `fmt`, `version`, and more.
+**Control your Linux server from Telegram, one tap at a time.**
+
+Telegram Commander turns a simple YAML file into a Telegram bot with a menu of
+buttons. Each button can run *any* command on the server — restart a service,
+check disk space, tail logs, deploy, run a backup script, ping a host — and the
+output comes straight back to your chat.
+
+If you can type it in a terminal, you can put it behind a button. No app to
+build, no web panel to secure, no inbound port to open: the bot talks to
+Telegram over an outbound connection and only the users you list can use it.
+
+> **Full documentation:** <https://azolfagharj.github.io/telegram-commander/>
+>
+> New here? Start with the [Getting started guide](https://azolfagharj.github.io/telegram-commander/getting-started/).
+
+## What can I do with it?
+
+Anything you can run in a shell. A few common examples:
+
+- **Manage services** — `systemctl restart nginx`, start/stop/status of anything
+- **Check the server** — disk usage, memory, uptime, running processes
+- **Read logs** — tail files or pull recent `journalctl` output for a unit
+- **Run your own scripts** — deploys, backups, cleanups, health checks
+- **Reach out** — curl a health endpoint, ping a host
+
+You define these as **buttons**, group them into **categories**, and optionally
+require a confirmation tap before the risky ones run. Values you reuse can live
+in small **custom functions** so buttons stay short and consistent.
+
+## Why use it?
+
+- **Zero coding.** Describe the menu and commands in YAML; no plugins to write.
+- **Works from anywhere.** Manage the box from your phone, wherever you are.
+- **Safe by default.** Only listed users get in; unknown users are told to
+  contact the admin. Add `confirm: true` to guard destructive actions.
+- **No open ports.** Uses Telegram long polling; nothing to expose to the internet.
+- **Auditable.** A separate audit log records who ran what, the exit code, and duration.
 
 ## Features
 
-- YAML config with strict unknown-field rejection
-- Nested category / button menu as Telegram inline keyboards
-- Built-in functions: `command`, `script`
-- Custom functions as one YAML file each under `function_directory`
-- Confirmation prompts, pagination, per-user command queue
-- Optional SOCKS5/HTTP proxy for Telegram API
-- Structured logging + separate audit logger
-- Offline `validate` (optional `--online` token check)
+- YAML config with strict unknown-field rejection (typos become errors)
+- Nested category / button menu rendered as Telegram inline keyboards
+- Run any shell command via the built-in `command` and `script` functions
+- Reusable custom functions, one YAML file each under `function_directory`
+- Confirmation prompts, pagination, and a per-user command queue (serial per user)
+- Access control by numeric user id or `@username`
+- Optional SOCKS5/HTTP proxy for the Telegram API
+- Structured logging plus a separate audit logger
+- Offline `validate` (with optional `--online` token check)
+- Caddy-inspired CLI: `run`, `validate`, `fmt`, `list-functions`, `version`, and more
 
 ## Quick start
 
@@ -88,12 +125,21 @@ sudo systemctl enable --now telegram-commander
 
 ## Documentation
 
-Site (GitHub Pages): https://azolfagharj.github.io/telegram-commander/
+The complete, beginner-friendly documentation lives on GitHub Pages:
 
-- [Config reference](docs/config-reference.md)
-- [Functions reference](docs/functions-reference.md)
-- [CLI reference](docs/cli-reference.md)
-- [Install](docs/install.md)
+**<https://azolfagharj.github.io/telegram-commander/>**
+
+Handy entry points:
+
+- [Getting started](https://azolfagharj.github.io/telegram-commander/getting-started/) — from download to first run
+- [Concepts](https://azolfagharj.github.io/telegram-commander/concepts/) — the vocabulary
+- [Configuration](https://azolfagharj.github.io/telegram-commander/config-reference/) — every setting
+- [Buttons and menus](https://azolfagharj.github.io/telegram-commander/buttons/) — build your menu
+- [Functions](https://azolfagharj.github.io/telegram-commander/functions-reference/) — built-in and custom functions
+- [CLI](https://azolfagharj.github.io/telegram-commander/cli-reference/) — command line reference
+- [Install and service](https://azolfagharj.github.io/telegram-commander/install/) — systemd setup
+
+The same pages live as Markdown in [`docs/`](docs/).
 
 ## Example configs
 
@@ -103,4 +149,12 @@ Site (GitHub Pages): https://azolfagharj.github.io/telegram-commander/
 
 ## License
 
-See repository license file if present.
+Released under the [MIT License](LICENSE).
+
+---
+
+## Support this Project
+
+🤝 **Enjoying this free project?** <a href="https://azolfagharj.github.io/donate/">Consider supporting</a> its development
+
+<a href="https://azolfagharj.github.io/donate/"><img src="https://img.shields.io/badge/Donate-Support%20Development-orange?style=for-the-badge" alt="Donate"></a>

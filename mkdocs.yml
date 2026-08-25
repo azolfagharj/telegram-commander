@@ -4,8 +4,11 @@ site_author: azolfagharj
 site_url: https://azolfagharj.github.io/telegram-commander/
 
 repo_url: https://github.com/azolfagharj/telegram-commander
-repo_name: azolfagharj/telegram-commander
-edit_uri: edit/main/docs/
+repo_name: GitHub
+# No edit_uri: we only want the GitHub logo link, not per-page "Edit" links.
+edit_uri: ""
+
+copyright: 'Built by <a href="https://github.com/azolfagharj">azolfagharj</a> · <a href="https://github.com/azolfagharj/telegram-commander">Source on GitHub</a> · <a href="https://azolfagharj.github.io/donate/">Donate</a>'
 
 docs_dir: docs
 site_dir: statics
