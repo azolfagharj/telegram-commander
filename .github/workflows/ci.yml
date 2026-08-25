@@ -121,11 +121,13 @@ jobs:
           - Version: \`${{ steps.meta.outputs.version }}\`
           - Release date: \`${{ steps.meta.outputs.release_date }}\`
 
-          ### Asset
+          ### Assets
 
           | File | Contents |
           |------|----------|
           | \`telegram-commander.tar.gz\` | Folder \`telegram-commander/\` with linux-amd64 + linux-arm64 binaries, \`config-examples/\`, and \`functions/\` |
+          | \`telegram-commander-linux-amd64\` | Linux amd64 binary |
+          | \`telegram-commander-linux-arm64\` | Linux arm64 binary |
           EOF
 
       - name: Create GitHub Release
@@ -134,7 +136,10 @@ jobs:
           name: ${{ steps.meta.outputs.version }}
           tag_name: ${{ steps.meta.outputs.version }}
           body_path: release-notes.md
-          files: telegram-commander.tar.gz
+          files: |
+            telegram-commander.tar.gz
+            release-binaries/telegram-commander-linux-amd64
+            release-binaries/telegram-commander-linux-arm64
           fail_on_unmatched_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
