@@ -14,22 +14,25 @@ import (
 func TestValidateExampleConfig(t *testing.T) {
 	root, err := filepath.Abs("../..")
 	require.NoError(t, err)
-	cfgPath := filepath.Join(root, "examples", "config.yaml")
-	require.FileExists(t, cfgPath)
 
 	wd, err := os.Getwd()
 	require.NoError(t, err)
 	require.NoError(t, os.Chdir(root))
 	t.Cleanup(func() { _ = os.Chdir(wd) })
 
-	cmd := cli.NewRoot("1.0.0", "2026-08-25")
-	buf := &bytes.Buffer{}
-	cmd.SetOut(buf)
-	cmd.SetErr(buf)
-	cmd.SetArgs([]string{"validate", "--config", "examples/config.yaml"})
-	err = cmd.Execute()
-	require.NoError(t, err, buf.String())
-	require.Contains(t, buf.String(), "Valid configuration")
+	for _, path := range []string{"examples/config.full.yaml", "examples/config.minimal.yaml"} {
+		t.Run(path, func(t *testing.T) {
+			require.FileExists(t, path)
+			cmd := cli.NewRoot("1.0.0", "2026-08-25")
+			buf := &bytes.Buffer{}
+			cmd.SetOut(buf)
+			cmd.SetErr(buf)
+			cmd.SetArgs([]string{"validate", "--config", path})
+			err := cmd.Execute()
+			require.NoError(t, err, buf.String())
+			require.Contains(t, buf.String(), "Valid configuration")
+		})
+	}
 }
 
 func TestVersion(t *testing.T) {

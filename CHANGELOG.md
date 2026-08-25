@@ -11,4 +11,4 @@
 - Telegram inline keyboard menu with categories, confirm, pagination
 - CLI: `run`, `validate`, `version`, `fmt`, `environ`, `list-functions`, `completion`, `manpage`
 - Logging block with named loggers and audit logger
-- Examples, docs, systemd unit, Dockerfile, CI workflow
+- Examples, docs, root systemd unit, CI release pack (`telegram-commander.tar.gz`)

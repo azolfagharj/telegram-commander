@@ -99,8 +99,17 @@ jobs:
           path: release-binaries
           merge-multiple: true
 
-      - name: List release files
-        run: ls -lh release-binaries/
+      - name: Pack telegram-commander.tar.gz
+        run: |
+          mkdir -p release-pack
+          cp release-binaries/telegram-commander-linux-amd64 release-pack/
+          cp release-binaries/telegram-commander-linux-arm64 release-pack/
+          cp examples/config.minimal.yaml release-pack/
+          cp examples/config.full.yaml release-pack/
+          cp deployments/systemd/telegram-commander.service release-pack/
+          tar -C release-pack -czf telegram-commander.tar.gz .
+          tar -tzf telegram-commander.tar.gz
+          ls -lh telegram-commander.tar.gz
 
       - name: Write release notes
         run: |
@@ -110,12 +119,11 @@ jobs:
           - Version: \`${{ steps.meta.outputs.version }}\`
           - Release date: \`${{ steps.meta.outputs.release_date }}\`
 
-          ### Binaries
+          ### Asset
 
-          | File | Platform |
+          | File | Contents |
           |------|----------|
-          | \`telegram-commander-linux-amd64\` | Linux x86_64 |
-          | \`telegram-commander-linux-arm64\` | Linux ARM64 |
+          | \`telegram-commander.tar.gz\` | linux-amd64 + linux-arm64 binaries, \`config.minimal.yaml\`, \`config.full.yaml\`, \`telegram-commander.service\` |
           EOF
 
       - name: Create GitHub Release
@@ -124,7 +132,7 @@ jobs:
           name: ${{ steps.meta.outputs.version }}
           tag_name: ${{ steps.meta.outputs.version }}
           body_path: release-notes.md
-          files: release-binaries/*
+          files: telegram-commander.tar.gz
           fail_on_unmatched_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
