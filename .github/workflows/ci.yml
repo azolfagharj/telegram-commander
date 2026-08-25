@@ -101,13 +101,15 @@ jobs:
 
       - name: Pack telegram-commander.tar.gz
         run: |
-          mkdir -p release-pack
-          cp release-binaries/telegram-commander-linux-amd64 release-pack/
-          cp release-binaries/telegram-commander-linux-arm64 release-pack/
-          cp examples/config.minimal.yaml release-pack/
-          cp examples/config.full.yaml release-pack/
-          cp deployments/systemd/telegram-commander.service release-pack/
-          tar -C release-pack -czf telegram-commander.tar.gz .
+          ROOT=release-pack/telegram-commander
+          mkdir -p "$ROOT/config-examples" "$ROOT/functions"
+          cp release-binaries/telegram-commander-linux-amd64 "$ROOT/"
+          cp release-binaries/telegram-commander-linux-arm64 "$ROOT/"
+          cp examples/config-examples/config.minimal.yaml "$ROOT/config-examples/"
+          sed 's|function_directory: "examples/functions"|function_directory: "./functions"|' \
+            examples/config-examples/config.full.yaml > "$ROOT/config-examples/config.full.yaml"
+          cp examples/functions/*.yaml "$ROOT/functions/"
+          tar -C release-pack -czf telegram-commander.tar.gz telegram-commander
           tar -tzf telegram-commander.tar.gz
           ls -lh telegram-commander.tar.gz
 
@@ -123,7 +125,7 @@ jobs:
 
           | File | Contents |
           |------|----------|
-          | \`telegram-commander.tar.gz\` | linux-amd64 + linux-arm64 binaries, \`config.minimal.yaml\`, \`config.full.yaml\`, \`telegram-commander.service\` |
+          | \`telegram-commander.tar.gz\` | Folder \`telegram-commander/\` with linux-amd64 + linux-arm64 binaries, \`config-examples/\`, and \`functions/\` |
           EOF
 
       - name: Create GitHub Release

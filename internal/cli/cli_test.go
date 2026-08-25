@@ -20,7 +20,10 @@ func TestValidateExampleConfig(t *testing.T) {
 	require.NoError(t, os.Chdir(root))
 	t.Cleanup(func() { _ = os.Chdir(wd) })
 
-	for _, path := range []string{"examples/config.full.yaml", "examples/config.minimal.yaml"} {
+	for _, path := range []string{
+		"examples/config-examples/config.minimal.yaml",
+		"examples/config-examples/config.full.yaml",
+	} {
 		t.Run(path, func(t *testing.T) {
 			require.FileExists(t, path)
 			cmd := cli.NewRoot("1.0.0", "2026-08-25")

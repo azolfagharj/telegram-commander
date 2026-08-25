@@ -1,0 +1,13 @@
+# Ping a host a few times.
+name: ping-host
+run: "ping -c {{.count}} {{.host}}"
+params:
+  - name: host
+    type: string
+    required: true
+    description: Hostname or IP
+  - name: count
+    type: string
+    required: false
+    default: "4"
+    description: Number of ping packets

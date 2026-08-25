@@ -11,7 +11,7 @@ docs_dir: docs
 site_dir: statics
 
 theme:
-  name: bootstrap
+  name: readthedocs
 
 nav:
   - Home: index.md

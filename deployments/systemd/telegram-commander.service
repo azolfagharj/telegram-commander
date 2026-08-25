@@ -5,7 +5,7 @@ Wants=network-online.target
 
 [Service]
 Type=simple
-ExecStart=/etc/telegram-commander/telegram-commander run --config /etc/telegram-commander/config.yaml
+ExecStart=/path/to/telegram-commander run --config /path/to/configfile.yaml
 Restart=on-failure
 RestartSec=5
 

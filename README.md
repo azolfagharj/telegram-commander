@@ -23,54 +23,68 @@ CLI style is inspired by [Caddy](https://caddyserver.com/): `run`, `validate`, `
 ```bash
 wget -O telegram-commander.tar.gz https://github.com/azolfagharj/telegram-commander/releases/latest/download/telegram-commander.tar.gz
 tar -xzf telegram-commander.tar.gz
+cd telegram-commander
 ```
 
-### 2. Pick your binary
+### 2. Rename the binary for your architecture
 
 **Linux amd64:**
 
 ```bash
-cp telegram-commander-linux-amd64 telegram-commander && chmod +x telegram-commander
+mv telegram-commander-linux-amd64 telegram-commander
+chmod +x telegram-commander
 ```
 
 **Linux arm64:**
 
 ```bash
-cp telegram-commander-linux-arm64 telegram-commander && chmod +x telegram-commander
+mv telegram-commander-linux-arm64 telegram-commander
+chmod +x telegram-commander
 ```
 
-### 3. Set bot token and user id
+### 3. Copy minimal config and set token / user id
 
-Edit `config.minimal.yaml` and replace `YOUR_BOT_TOKEN` and `YOUR_USER_ID`.
+```bash
+cp config-examples/config.minimal.yaml ./config.yaml
+```
+
+Edit `config.yaml` and replace `YOUR_BOT_TOKEN` and `YOUR_USER_ID`.
 
 If you do not know your user id, run once with only the token set; unauthorized users get a message that includes their `user_id`.
 
-### 4. Run
+### 4. Validate and run
 
 ```bash
-./telegram-commander validate --config config.minimal.yaml
-./telegram-commander run --config config.minimal.yaml
+./telegram-commander validate --config config.yaml
+./telegram-commander run --config config.yaml
 ```
 
 ## systemd (as root)
 
-No extra Linux user is created. The unit runs as root.
+After manual testing works, create a unit file yourself (for example `/etc/systemd/system/telegram-commander.service`):
 
-```bash
-wget -O telegram-commander.tar.gz https://github.com/azolfagharj/telegram-commander/releases/latest/download/telegram-commander.tar.gz
-tar -xzf telegram-commander.tar.gz
-sudo mkdir -p /etc/telegram-commander
-# amd64:
-sudo cp telegram-commander-linux-amd64 /etc/telegram-commander/telegram-commander
-# arm64: sudo cp telegram-commander-linux-arm64 /etc/telegram-commander/telegram-commander
-sudo chmod +x /etc/telegram-commander/telegram-commander
-sudo cp config.minimal.yaml /etc/telegram-commander/config.yaml
-# edit /etc/telegram-commander/config.yaml (token + user id)
-sudo cp telegram-commander.service /etc/systemd/system/
-sudo systemctl daemon-reload && sudo systemctl enable --now telegram-commander
+```ini
+[Unit]
+Description=telegram-commander Telegram bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/path/to/telegram-commander run --config /path/to/configfile.yaml
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
 ```
 
-Pick the binary line that matches your machine architecture.
+Replace `/path/to/telegram-commander` and `/path/to/configfile.yaml` with your real paths, then:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable --now telegram-commander
+```
 
 ## Documentation
 
@@ -83,8 +97,9 @@ Site (GitHub Pages): https://azolfagharj.github.io/telegram-commander/
 
 ## Example configs
 
-- Minimal: [`examples/config.minimal.yaml`](examples/config.minimal.yaml)
-- Full: [`examples/config.full.yaml`](examples/config.full.yaml)
+- Minimal: [`examples/config-examples/config.minimal.yaml`](examples/config-examples/config.minimal.yaml)
+- Full: [`examples/config-examples/config.full.yaml`](examples/config-examples/config.full.yaml)
+- Sample functions: [`examples/functions/`](examples/functions/)
 
 ## License
 

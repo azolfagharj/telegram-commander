@@ -1,0 +1,9 @@
+# Show disk usage for a path.
+name: disk-path
+run: "df -h {{.path}}"
+params:
+  - name: path
+    type: string
+    required: false
+    default: "/"
+    description: Filesystem path to check

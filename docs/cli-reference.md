@@ -13,7 +13,7 @@ telegram-commander <command> [flags]
 Run the bot in the foreground (long polling).
 
 ```bash
-telegram-commander run --config /etc/telegram-commander/config.yaml
+telegram-commander run --config /path/to/configfile.yaml
 ```
 
 There is no hot reload. To apply config changes, restart the process (for example `systemctl restart telegram-commander`).
@@ -23,8 +23,8 @@ There is no hot reload. To apply config changes, restart the process (for exampl
 Validate config, functions, and button references offline.
 
 ```bash
-telegram-commander validate --config ./config.yaml
-telegram-commander validate --config ./config.yaml --online
+telegram-commander validate --config /path/to/configfile.yaml
+telegram-commander validate --config /path/to/configfile.yaml --online
 ```
 
 `--online` also calls Telegram `getMe` with the configured token.
@@ -38,8 +38,8 @@ Print version and Go runtime info.
 Pretty-print a YAML config file.
 
 ```bash
-telegram-commander fmt --config ./config.yaml
-telegram-commander fmt --config ./config.yaml -w
+telegram-commander fmt --config /path/to/configfile.yaml
+telegram-commander fmt --config /path/to/configfile.yaml -w
 ```
 
 ### `environ`
@@ -51,7 +51,7 @@ Print process environment variables (useful for debugging service units).
 List built-in and loaded custom functions.
 
 ```bash
-telegram-commander list-functions --config ./config.yaml
+telegram-commander list-functions --config /path/to/configfile.yaml
 ```
 
 ### `completion`

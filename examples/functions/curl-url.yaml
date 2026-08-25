@@ -1,0 +1,8 @@
+# Fetch a URL with curl (useful for health checks).
+name: curl-url
+run: "curl -fsSL --max-time 30 {{.url}}"
+params:
+  - name: url
+    type: string
+    required: true
+    description: URL to request

@@ -1,5 +1,4 @@
-# Example custom function: run a script with optional args.
-# File name does not matter; the function name inside does.
+# Example: run a bash script with optional args.
 name: echo-script
 run: "bash {{.path}}{{if .args}} {{.args}}{{end}}"
 params:

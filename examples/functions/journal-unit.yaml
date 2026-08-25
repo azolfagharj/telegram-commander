@@ -1,0 +1,13 @@
+# Show recent journalctl logs for a systemd unit.
+name: journal-unit
+run: "journalctl -u {{.unit}} -n {{.lines}} --no-pager"
+params:
+  - name: unit
+    type: string
+    required: true
+    description: Systemd unit name (for example nginx.service)
+  - name: lines
+    type: string
+    required: false
+    default: "50"
+    description: Number of log lines

@@ -74,6 +74,20 @@ Then reference it from a button:
   args: "--verbose"
 ```
 
+## Sample functions in the release pack
+
+The release archive includes a `functions/` folder with examples:
+
+| Name | Purpose |
+|------|---------|
+| `echo-script` | Run a bash script with optional args |
+| `curl-url` | HTTP GET a URL with curl |
+| `journal-unit` | Show recent `journalctl` lines for a unit |
+| `disk-path` | Show `df -h` for a path |
+| `ping-host` | Ping a host |
+
+The minimal config does not enable `function_directory`. The full example config points at `./functions` after extract (or `examples/functions` in this repository).
+
 ## Validation
 
 `telegram-commander validate --config ...` checks:
