@@ -5,18 +5,18 @@ custom), the ready-made custom functions that ship in the release, and how to
 write your own. It is meant to be read top to bottom the first time.
 
 If you have not yet seen how buttons reference functions, read
-[Buttons and menus](buttons.md) first, and check [Concepts](concepts.md) for the
+[Buttons and menus](buttons.md) first, and check [Concepts](concepts/function.md) for the
 vocabulary.
 
 ## What is a function?
 
-A **function** is a recipe that turns some named values (its **parameters**)
-into a shell command. When you tap a button, the bot:
+A **[function](concepts/function.md)** is a recipe that turns some named values (its **[parameters](concepts/parameter.md)**)
+into a shell command. When you tap a [button](concepts/button.md), the bot:
 
 1. Looks up the function named in the button's `function` field.
 2. Collects the button's parameter values.
 3. Fills those values into the function's command template.
-4. Runs the final command in the [shell](concepts.md#shell) and sends the output back.
+4. Runs the final command in the [shell](concepts/shell.md) and sends the output back.
 
 Think of a function as a fill-in-the-blanks command. For example, a "ping a
 host" function has one blank — the host — and you fill it in on each button.
@@ -76,7 +76,7 @@ Template: `{{.command}}`
   command: "uname -a"
 ```
 
-Because commands run through [`/bin/bash -c`](concepts.md#shell), you can use
+Because commands run through [`/bin/bash -c`](concepts/shell.md), you can use
 pipes, redirects, and `&&`:
 
 ```yaml
@@ -114,7 +114,7 @@ below, which calls `bash`).
 
 The release archive contains a `functions/` folder with ready-to-use custom
 functions. To use them, point `function_directory` at that folder (see
-[Configuration](config-reference.md#function_directory-rules)) and reference each
+[Configuration](configuration.md#function_directory-rules)) and reference each
 by name from a button.
 
 Below is exactly what each one does.
@@ -239,7 +239,7 @@ always use `params`.
 ## Writing custom functions
 
 A custom function is a single YAML file placed in your
-[`function_directory`](config-reference.md#function_directory-rules). The file
+[`function_directory`](configuration.md#function_directory-rules). The file
 name does not matter (use `.yaml` or `.yml`); the function's name comes from
 inside the file.
 
@@ -274,7 +274,7 @@ The loader validates every file. Keep these rules in mind:
 - **Unknown YAML keys are rejected**, so a typo like `requird:` is an error, not
   a silent no-op.
 - A **required parameter with no value** makes the button fail validation, so
-  problems are caught by [`validate`](cli-reference.md#validate) before the bot
+  problems are caught by [`validate`](cli.md#validate) before the bot
   runs.
 
 ### Understanding the `run` template
@@ -349,23 +349,25 @@ A button using it:
    ```
 
    You should see `greet` in the list. See
-   [CLI → list-functions](cli-reference.md#list-functions).
+   [CLI → list-functions](cli.md#list-functions).
 
 5. Run the bot and tap **Say hello**. It runs `echo Hello world`.
 
 ## Safety notes
 
 - Commands run with the privileges of the account running the bot. If that is
-  root (the default [service](install.md) setup), buttons can do anything on the
-  host. Only add [allowed users](config-reference.md#telegram) you trust.
+  root (the default [service](installation/run-as-a-service.md) setup), buttons can do anything on the
+  host. Only add [allowed users](configuration.md#telegram) you trust.
 - Parameter values are inserted into the command as text. Treat them like shell
   input: prefer fixed values on buttons, and add
-  [`confirm: true`](buttons.md#confirmation) to anything destructive.
+  [`confirm: true`](concepts/confirmation.md) to anything destructive.
 - Output is truncated at `max_output_bytes` and commands stop at their
-  `timeout`. See [Configuration](config-reference.md#root-fields).
+  `timeout`. See [Configuration → Root fields](configuration.md#root-fields).
 
 ## Related pages
 
 - [Buttons and menus](buttons.md) — how buttons reference functions
-- [Configuration](config-reference.md) — `function_directory` and button fields
-- [CLI](cli-reference.md) — `validate` and `list-functions`
+- [Function](concepts/function.md) — what a function is
+- [Parameter](concepts/parameter.md) — values a function needs
+- [Configuration](configuration.md) — `function_directory` and button fields
+- [CLI](cli.md) — `validate` and `list-functions`

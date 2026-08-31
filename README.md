@@ -15,7 +15,7 @@ Telegram over an outbound connection and only the users you list can use it.
 
 > **Full documentation:** <https://azolfagharj.github.io/telegram-commander/>
 >
-> New here? Start with the [Getting started guide](https://azolfagharj.github.io/telegram-commander/getting-started/).
+> New here? Start with [Run in CLI](https://azolfagharj.github.io/telegram-commander/user-guide/installation/download-and-run/).
 
 ## What can I do with it?
 
@@ -131,13 +131,13 @@ The complete, beginner-friendly documentation lives on GitHub Pages:
 
 Handy entry points:
 
-- [Getting started](https://azolfagharj.github.io/telegram-commander/getting-started/) — from download to first run
-- [Concepts](https://azolfagharj.github.io/telegram-commander/concepts/) — the vocabulary
-- [Configuration](https://azolfagharj.github.io/telegram-commander/config-reference/) — every setting
-- [Buttons and menus](https://azolfagharj.github.io/telegram-commander/buttons/) — build your menu
-- [Functions](https://azolfagharj.github.io/telegram-commander/functions-reference/) — built-in and custom functions
-- [CLI](https://azolfagharj.github.io/telegram-commander/cli-reference/) — command line reference
-- [Install and service](https://azolfagharj.github.io/telegram-commander/install/) — systemd setup
+- [Run in CLI](https://azolfagharj.github.io/telegram-commander/user-guide/installation/download-and-run/) — from download to first run
+- [Concepts](https://azolfagharj.github.io/telegram-commander/user-guide/concepts/config-file/) — the vocabulary
+- [Configuration](https://azolfagharj.github.io/telegram-commander/user-guide/configuration/) — every setting
+- [Buttons and menus](https://azolfagharj.github.io/telegram-commander/user-guide/buttons/) — build your menu
+- [Functions](https://azolfagharj.github.io/telegram-commander/user-guide/functions/) — built-in and custom functions
+- [CLI](https://azolfagharj.github.io/telegram-commander/user-guide/cli/) — command line reference
+- [Run as a service](https://azolfagharj.github.io/telegram-commander/user-guide/installation/run-as-a-service/) — systemd setup
 
 The same pages live as Markdown in [`docs/`](docs/).
 

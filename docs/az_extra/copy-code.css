@@ -1,0 +1,41 @@
+/* Wrapper follows the page direction (rtl or ltr). */
+.az-copy-wrap {
+  position: relative;
+}
+
+/* Source code stays left-to-right on both rtl and ltr pages. */
+.az-copy-wrap pre,
+.az-copy-wrap code {
+  direction: ltr;
+  text-align: start;
+  unicode-bidi: isolate;
+}
+
+.az-copy-btn {
+  position: absolute;
+  inset-block-start: 0.45rem;
+  inset-inline-end: 0.45rem;
+  z-index: 2;
+  padding: 0.28em 0.6em;
+  font-size: 0.75rem;
+  line-height: 1.2;
+  cursor: pointer;
+  border-radius: 4px;
+  border: 1px solid color-mix(in srgb, currentColor 28%, transparent);
+  background: color-mix(in srgb, Canvas 88%, CanvasText 12%);
+  color: inherit;
+  opacity: 0.9;
+}
+
+.az-copy-btn:hover,
+.az-copy-btn:focus-visible {
+  opacity: 1;
+}
+
+.az-copy-btn.is-copied {
+  opacity: 1;
+}
+
+.az-copy-wrap pre {
+  padding-inline-end: 4.5rem;
+}

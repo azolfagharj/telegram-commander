@@ -3,11 +3,11 @@
 Your menu is a tree of nodes under the top-level `buttons` key. There are two
 kinds of node:
 
-- A **category** opens a submenu. It has `items`.
-- A **button** runs something. It has a `function`.
+- A **[category](concepts/category.md)** opens a submenu. It has `items`.
+- A **[button](concepts/button.md)** runs something. It has a [function](concepts/function.md).
 
-If these words are new, read [Concepts](concepts.md) first. For the exact list
-of every field, see [Configuration → Buttons](config-reference.md#buttons).
+If these words are new, read [Concepts](concepts/button.md) first. For the exact list
+of every field, see [Configuration → Buttons](configuration.md#buttons).
 
 ## A flat menu
 
@@ -108,7 +108,8 @@ buttons:
 ## Confirmation
 
 Add `confirm: true` to any button to require a second tap ("Are you sure?")
-before it runs. Use it for anything destructive.
+before it runs. Use it for anything destructive. See
+[Confirmation](concepts/confirmation.md) for the concept.
 
 ```yaml
 - name: Stop nginx
@@ -119,7 +120,7 @@ before it runs. Use it for anything destructive.
 ```
 
 The confirm prompt expires after a while (default 5 minutes). Change it with
-`confirm_ttl`; see [Configuration](config-reference.md#root-fields).
+`confirm_ttl`; see [Configuration → Root fields](configuration.md#root-fields).
 
 ## Per-button overrides
 
@@ -137,14 +138,14 @@ Some global settings can be overridden on a single button:
 ```
 
 See the full field list in
-[Configuration → Buttons](config-reference.md#buttons).
+[Configuration → Buttons](configuration.md#buttons).
 
 ## Controlling layout
 
 `buttons_columns` sets how many buttons appear per row (default 2). A category
 can override it with `columns`. When a menu has many items, it is split into
 pages of `page_size` items (default 8) with next/previous buttons. Both are
-documented in [Configuration](config-reference.md#root-fields).
+documented in [Configuration → Root fields](configuration.md#root-fields).
 
 ## Running a button by name
 
@@ -156,11 +157,17 @@ without opening the menu:
 ```
 
 This is off by default. See
-[Configuration → telegram](config-reference.md#telegram).
+[Configuration → telegram](configuration.md#telegram).
 
 ## What runs when a button is tapped
 
 Every button points to a **function** through its `function` field. The button
 in the examples above uses the built-in `command` function. To understand
 functions, built-in versus custom, and how to add your own, read
-[Functions](functions-reference.md).
+[Functions](functions.md).
+
+## Related pages
+
+- [Button](concepts/button.md) — what a button is
+- [Category](concepts/category.md) — submenu nodes
+- [Configuration → Buttons](configuration.md#buttons) — every field

@@ -6,16 +6,16 @@ telegram-commander <command> [flags]
 
 `--config` / `-c` is **required** for commands that load configuration. The path
 may be relative to the current working directory or absolute. What goes in that
-file is documented in [Configuration](config-reference.md).
+file is documented in [Configuration](configuration.md).
 
-If you are just getting started, [Getting started](getting-started.md) shows
-these commands in the order you will use them.
+If you are just getting started, [Run in CLI](installation/download-and-run.md)
+shows these commands in the order you will use them.
 
 ## Commands
 
 ### `run`
 
-Run the bot in the foreground (long polling).
+Run the bot in the foreground ([long polling](concepts/long-polling.md)).
 
 ```bash
 telegram-commander run --config /path/to/configfile.yaml
@@ -54,7 +54,7 @@ Print process environment variables (useful for debugging service units).
 ### `list-functions`
 
 List built-in and loaded custom functions. Use it to confirm your custom
-function files were found. See [Functions](functions-reference.md).
+function files were found. See [Functions](functions.md).
 
 ```bash
 telegram-commander list-functions --config /path/to/configfile.yaml
@@ -77,6 +77,6 @@ Write a man page to stdout.
 
 ## Related pages
 
-- [Configuration](config-reference.md) — the file passed to `--config`
-- [Functions](functions-reference.md) — what `list-functions` shows
-- [Install and service](install.md) — run `run` under systemd
+- [Configuration](configuration.md) — the file passed to `--config`
+- [Functions](functions.md) — what `list-functions` shows
+- [Run as a service](installation/run-as-a-service.md) — run `run` under systemd

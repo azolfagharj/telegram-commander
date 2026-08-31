@@ -115,20 +115,26 @@ jobs:
 
       - name: Write release notes
         run: |
-          cat > release-notes.md <<EOF
-          ## telegram-commander ${{ steps.meta.outputs.version }}
-
-          - Version: \`${{ steps.meta.outputs.version }}\`
-          - Release date: \`${{ steps.meta.outputs.release_date }}\`
-
+          {
+            echo "## telegram-commander ${{ steps.meta.outputs.version }}"
+            echo
+            echo "- Version: \`${{ steps.meta.outputs.version }}\`"
+            echo "- Release date: \`${{ steps.meta.outputs.release_date }}\`"
+            echo
+            if [ -s CHANGELOG.md ]; then
+              cat CHANGELOG.md
+              echo
+            fi
+            cat <<'EOF'
           ### Assets
 
           | File | Contents |
           |------|----------|
-          | \`telegram-commander.tar.gz\` | Folder \`telegram-commander/\` with linux-amd64 + linux-arm64 binaries, \`config-examples/\`, and \`functions/\` |
-          | \`telegram-commander-linux-amd64\` | Linux amd64 binary |
-          | \`telegram-commander-linux-arm64\` | Linux arm64 binary |
+          | `telegram-commander.tar.gz` | Folder `telegram-commander/` with linux-amd64 + linux-arm64 binaries, `config-examples/`, and `functions/` |
+          | `telegram-commander-linux-amd64` | Linux amd64 binary |
+          | `telegram-commander-linux-arm64` | Linux arm64 binary |
           EOF
+          } > release-notes.md
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v3
@@ -143,3 +149,17 @@ jobs:
           fail_on_unmatched_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Clear changelog after release
+        run: |
+          : > CHANGELOG.md
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add CHANGELOG.md
+          if git diff --cached --quiet; then
+            echo "CHANGELOG.md already empty"
+            exit 0
+          fi
+          git commit -m "chore: clear changelog after release [skip ci]"
+          git push
+

@@ -1,0 +1,113 @@
+site_name: Telegram Commander
+site_description: Telegram bot that shows a button menu and runs host commands from a YAML config
+site_author: azolfagharj
+site_url: https://azolfagharj.github.io/telegram-commander/
+
+repo_url: https://github.com/azolfagharj/telegram-commander
+repo_name: GitHub
+# No edit_uri: we only want the GitHub logo link, not per-page "Edit" links.
+edit_uri: ""
+
+copyright: 'Built by <a href="https://github.com/azolfagharj">azolfagharj</a> · <a href="https://github.com/azolfagharj/telegram-commander">Source on GitHub</a> · <a href="https://azolfagharj.github.io/donate/">Donate</a>'
+
+docs_dir: .
+site_dir: ../statics
+use_directory_urls: true
+
+# Do not copy build files into the published site.
+exclude_docs: |
+  mkdocs.yml
+  requirements.txt
+
+theme:
+  name: material
+  language: en
+  icon:
+    logo: simple/linux
+    repo: fontawesome/brands/github
+  palette:
+    - scheme: default
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.sections
+    - content.code.copy
+    - search.suggest
+    - search.highlight
+    - toc.follow
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/azolfagharj/telegram-commander
+      name: Source on GitHub
+    - icon: fontawesome/solid/heart
+      link: https://azolfagharj.github.io/donate/
+      name: Donate
+
+nav:
+  - Home: index.md
+  - User Guide:
+    - Installation:
+      - Run in CLI: user-guide/installation/download-and-run.md
+      - Run as a service: user-guide/installation/run-as-a-service.md
+    - Concepts:
+      - Config file: user-guide/concepts/config-file.md
+      - Button: user-guide/concepts/button.md
+      - Category: user-guide/concepts/category.md
+      - Function: user-guide/concepts/function.md
+      - Parameter: user-guide/concepts/parameter.md
+      - Shell: user-guide/concepts/shell.md
+      - Allowed users: user-guide/concepts/allowed-users.md
+      - Confirmation: user-guide/concepts/confirmation.md
+      - Long polling: user-guide/concepts/long-polling.md
+      - Audit log: user-guide/concepts/audit-log.md
+    - Guides:
+      - Buttons and menus: user-guide/buttons.md
+      - Functions: user-guide/functions.md
+    - Reference:
+      - Configuration: user-guide/configuration.md
+      - CLI: user-guide/cli.md
+
+markdown_extensions:
+  - attr_list
+  - tables
+  - meta
+  - admonition
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+# site_url enables sitemap.xml and canonical URLs
+plugins:
+  - search
+  - redirects:
+      redirect_maps:
+        getting-started.md: user-guide/installation/download-and-run.md
+        concepts.md: user-guide/concepts/config-file.md
+        config-reference.md: user-guide/configuration.md
+        buttons.md: user-guide/buttons.md
+        functions-reference.md: user-guide/functions.md
+        cli-reference.md: user-guide/cli.md
+        install.md: user-guide/installation/run-as-a-service.md

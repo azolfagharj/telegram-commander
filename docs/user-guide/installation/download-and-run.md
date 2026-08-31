@@ -1,7 +1,8 @@
-# Getting started
+# Run in CLI
 
 This page takes you from nothing to a running bot. No prior experience with the
-project is needed. If a word is unclear, check the [Concepts](concepts.md) page.
+project is needed. If a word is unclear, check the [Concepts](../concepts/config-file.md)
+pages.
 
 ## Before you begin
 
@@ -27,23 +28,40 @@ cd telegram-commander
 Inside the folder you will find:
 
 - `telegram-commander-linux-amd64` and `telegram-commander-linux-arm64` — the program, one per CPU type
-- `config-examples/` — ready-made config files (see [Configuration](config-reference.md))
-- `functions/` — example custom functions (see [Functions](functions-reference.md))
+- `config-examples/` — ready-made [config files](../concepts/config-file.md) (see [Configuration](../configuration.md))
+- `functions/` — example custom [functions](../concepts/function.md) (see [Functions](../functions.md))
 
 ## Step 2: pick your binary
+!!! info
+      Most servers and PCs are `amd64` (also called `x86_64`). Small ARM boards and some cloud VMs are `arm64`.
 
-Most servers and PCs are `amd64` (also called `x86_64`). Small ARM boards and
-some cloud VMs are `arm64`. If unsure, run `uname -m`: `x86_64` means amd64,
-`aarch64` means arm64.
+      If unsure, run `uname -m`:
 
-```bash
-# amd64
-mv telegram-commander-linux-amd64 telegram-commander
-# arm64: mv telegram-commander-linux-arm64 telegram-commander
-chmod +x telegram-commander
-```
+      `x86_64` means amd64,`aarch64` means arm64.
+
+=== ":fontawesome-brands-linux: AMD64"
+
+    ``` bash
+    # amd64
+
+    mv telegram-commander-linux-amd64 telegram-commander
+    chmod +x telegram-commander
+    rm telegram-commander-linux-arm64
+    ```
+
+=== ":fontawesome-brands-linux: ARM64"
+
+    ``` bash
+    # ARM64
+
+    mv telegram-commander-linux-arm64 telegram-commander
+    chmod +x telegram-commander
+    rm telegram-commander-linux-amd64
+    ```
 
 Now you have a single program named `telegram-commander`.
+
+
 
 ## Step 3: create your config
 
@@ -58,7 +76,7 @@ Open `config.yaml` and replace two placeholders:
 - `YOUR_BOT_TOKEN` — the token from BotFather
 - `YOUR_USER_ID` — your numeric id (or leave it for now and see step 5)
 
-To learn what every setting means, read [Configuration](config-reference.md).
+To learn what every setting means, read [Configuration](../configuration.md).
 
 ## Step 4: validate
 
@@ -70,7 +88,7 @@ starting the bot.
 ```
 
 If it prints `Valid configuration`, you are good. If not, it lists exactly what
-is wrong and where. See the [CLI page](cli-reference.md#validate) for details.
+is wrong and where. See the [CLI page](../cli.md#validate) for details.
 
 ## Step 5: find your user id (if needed)
 
@@ -82,11 +100,12 @@ number in `allowed_users` for now, then run the bot:
 ```
 
 Open Telegram, find your bot, and send it any message. Because you are not in
-`allowed_users` yet, the bot replies with your `user_id` and `username`. Copy
-that id into `allowed_users`, stop the bot with `Ctrl+C`, and run it again.
+[allowed users](../concepts/allowed-users.md) yet, the bot replies with your
+`user_id` and `username`. Copy that id into `allowed_users`, stop the bot with
+`Ctrl+C`, and run it again.
 
 This behavior is part of how access control works; see
-[Configuration → telegram](config-reference.md#telegram).
+[Configuration → telegram](../configuration.md#telegram).
 
 ## Step 6: run
 
@@ -95,13 +114,13 @@ This behavior is part of how access control works; see
 ```
 
 Open your bot in Telegram and send `/start`. You should see your menu. Tap a
-button to run its command.
+[button](../concepts/button.md) to run its command.
 
 To keep the bot running after you log out of the server, set it up as a service.
-See [Install and service](install.md).
+See [Run as a service](run-as-a-service.md).
 
 ## What next
 
-- Add more buttons and categories: [Buttons and menus](buttons.md)
-- Understand what actually runs: [Functions](functions-reference.md)
-- See every command line option: [CLI](cli-reference.md)
+- Add more [buttons](../concepts/button.md) and [categories](../concepts/category.md): [Buttons and menus](../buttons.md)
+- Understand what actually runs: [Functions](../functions.md)
+- See every command line option: [CLI](../cli.md)
