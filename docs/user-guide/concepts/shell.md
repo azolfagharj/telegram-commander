@@ -12,8 +12,7 @@ You can change the shell globally with the `shell` key in your
 shell: /bin/bash
 ```
 
-Every [function](function.md) runs its final command through this shell unless
-overridden per button.
+Every [function](function.md) runs its command through this shell.
 
 ## Configuration
 

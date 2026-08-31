@@ -11,8 +11,8 @@ service, check disk space, tail logs, deploy, run a backup script, ping a host.
 You do not write any code: you describe your menu and your commands in a
 configuration file, then start the bot.
 
-There is no web panel to secure and no inbound port to open. The bot connects
-out to Telegram through [long polling](user-guide/concepts/long-polling.md), and only the
+There is no web panel to secure and no inbound port to open. The bot
+[connects out to Telegram](user-guide/concepts/long-polling.md), and only the
 [allowed users](user-guide/concepts/allowed-users.md) you list can use it.
 
 ## A tiny example

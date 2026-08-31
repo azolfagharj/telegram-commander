@@ -38,5 +38,5 @@ For button fields `command`, `path`, `args`, and `params`, see
 
 ## Related
 
-- [Function](function.md) — the template that uses parameters
+- [Function](function.md) — what uses parameters
 - [Functions](../functions.md) — parameter rules for custom functions

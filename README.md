@@ -37,13 +37,13 @@ in small **custom functions** so buttons stay short and consistent.
 - **Works from anywhere.** Manage the box from your phone, wherever you are.
 - **Safe by default.** Only listed users get in; unknown users are told to
   contact the admin. Add `confirm: true` to guard destructive actions.
-- **No open ports.** Uses Telegram long polling; nothing to expose to the internet.
+- **No open ports.** The bot connects out to Telegram; nothing to expose to the internet.
 - **Auditable.** A separate audit log records who ran what, the exit code, and duration.
 
 ## Features
 
 - YAML config with strict unknown-field rejection (typos become errors)
-- Nested category / button menu: one Telegram message that is updated in place, plus a Home-only reply keyboard under the type box
+- Nested category / button menu in Telegram
 - Run any shell command via the built-in `command` and `script` functions
 - Reusable custom functions, one YAML file each under `function_directory`
 - Confirmation prompts, pagination, and a per-user command queue (serial per user)
@@ -51,7 +51,7 @@ in small **custom functions** so buttons stay short and consistent.
 - Optional SOCKS5/HTTP proxy for the Telegram API
 - Structured logging plus a separate audit logger
 - Offline `validate` (with optional `--online` token check)
-- Caddy-inspired CLI: `run`, `validate`, `fmt`, `list-functions`, `version`, and more
+- CLI: `run`, `validate`, `fmt`, `list-functions`, `version`, and more
 
 ## Quick start
 

@@ -10,8 +10,8 @@ There are two kinds:
 - **Custom functions** are extra functions you define as YAML files in
   `function_directory`.
 
-When you tap a button, the bot looks up the function, fills its template with
-parameter values, and runs the result in the [shell](shell.md).
+When you tap a button, the bot looks up the function, fills in the values from
+the button, and runs the result in the [shell](shell.md).
 
 ## Example
 

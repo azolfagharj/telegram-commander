@@ -31,9 +31,7 @@ buttons:
     command: "df -h"
 ```
 
-Send `/start` in Telegram. The bot keeps **one menu message** and updates it
-when you tap. All action buttons sit on that message (inline keyboard). Under
-the type box there is only a **Home** reply button.
+Send `/start` in Telegram. You will see your menu.
 
 ## Grouping with categories
 
@@ -109,17 +107,14 @@ buttons:
 
 ## How the Telegram menu looks
 
-The last menu message is reused: the bot edits it instead of sending a new
-menu each time.
+- **Home** is always at the top. Tap it to go back to the first screen.
+- **Back** appears when you are inside a category.
+- Items sit in rows (two per row by default). If a screen has many items,
+  **Prev** and **Next** let you page through them.
+- Buttons with `confirm: true` ask Yes / Cancel before they run.
 
-- **On the message (inline):** `Home` is always there. Category and button
-  items use two columns by default (`buttons_columns`), at most `page_size`
-  items per page (default 8). `Back` appears only inside a category. `Prev` /
-  `Next` appear only when there is another page. Confirm Yes / Cancel also
-  appear here.
-- **Under the type box (reply keyboard):** only `Home`, always.
-
-Tapping Home, Back, Prev, Next, or an item updates that same message.
+If leftover buttons still appear under the message box (from an older version),
+send `/start` once.
 
 ## Confirmation
 

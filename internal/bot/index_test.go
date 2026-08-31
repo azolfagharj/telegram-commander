@@ -24,16 +24,6 @@ func sampleButtons() []config.ButtonNode {
 	}
 }
 
-func collectReply(kb *bot.MenuBuild) []string {
-	var texts []string
-	for _, row := range kb.Reply.Keyboard {
-		for _, b := range row {
-			texts = append(texts, b.Text)
-		}
-	}
-	return texts
-}
-
 func collectInline(kb *bot.MenuBuild) []string {
 	var texts []string
 	for _, row := range kb.Inline.InlineKeyboard {
@@ -51,12 +41,6 @@ func TestBuildIndexAndKeyboard(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, "Menu", view.Title)
 
-	texts := collectReply(view)
-	require.Contains(t, texts, "🏠 Home")
-	require.NotContains(t, texts, "⬅️ Back")
-	require.NotContains(t, texts, "📁 Cat")
-	require.NotContains(t, texts, "Top")
-
 	inline := collectInline(view)
 	require.Contains(t, inline, "🏠 Home")
 	require.NotContains(t, inline, "⬅️ Back")
@@ -68,11 +52,6 @@ func TestBuildIndexAndKeyboard(t *testing.T) {
 	view2, err := idx.BuildMenu(rootCat.ID, 0)
 	require.NoError(t, err)
 	require.Contains(t, view2.Title, "Cat")
-
-	texts2 := collectReply(view2)
-	require.Contains(t, texts2, "🏠 Home")
-	require.NotContains(t, texts2, "⬅️ Back")
-	require.NotContains(t, texts2, "Echo")
 
 	inline2 := collectInline(view2)
 	require.Contains(t, inline2, "🏠 Home")
@@ -122,12 +101,6 @@ func TestPagination(t *testing.T) {
 	require.False(t, view.HasPrev)
 	require.True(t, view.HasBack)
 
-	reply := collectReply(view)
-	require.Contains(t, reply, "🏠 Home")
-	require.NotContains(t, reply, "Next ▶️")
-	require.NotContains(t, reply, "◀️ Prev")
-	require.NotContains(t, reply, "⬅️ Back")
-
 	inline := collectInline(view)
 	require.Contains(t, inline, "Next ▶️")
 	require.NotContains(t, inline, "◀️ Prev")
@@ -138,9 +111,9 @@ func TestPagination(t *testing.T) {
 	require.NoError(t, err)
 	require.True(t, viewLast.HasPrev)
 	require.False(t, viewLast.HasNext)
-	require.Contains(t, collectReply(viewLast), "🏠 Home")
-	require.NotContains(t, collectReply(viewLast), "◀️ Prev")
-	require.NotContains(t, collectReply(viewLast), "Next ▶️")
+	last := collectInline(viewLast)
+	require.Contains(t, last, "◀️ Prev")
+	require.NotContains(t, last, "Next ▶️")
 }
 
 func TestConfirmInlineKeyboard(t *testing.T) {

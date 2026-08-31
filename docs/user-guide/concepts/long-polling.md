@@ -1,10 +1,9 @@
-# Long polling
+# How the bot connects
 
-How the bot receives messages from Telegram: it repeatedly asks Telegram for new
-updates. There is nothing to configure and no inbound port to open.
+The bot connects out to Telegram. You do not open a port on your server.
 
-If Telegram is blocked on your network, route it through a proxy under the
-`telegram` section of your [config file](config-file.md).
+If Telegram is blocked on your network, set a proxy under `telegram` in your
+[config file](config-file.md).
 
 ## Configuration
 

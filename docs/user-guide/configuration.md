@@ -109,7 +109,7 @@ This section is the field reference. For a guided explanation with examples, see
 | `command` | string | yes if `function: command` | Shell command for built-in `command` |
 | `path` | string | yes if `function: script` | Script path for built-in `script` |
 | `icon` | string | no | Optional emoji prefix |
-| `id` | string | no | Stable callback id; auto-hashed if omitted |
+| `id` | string | no | Optional id for this node. You can omit it |
 | `confirm` | bool | no | Ask for [confirmation](concepts/confirmation.md) before run (default `false`) |
 | `timeout` | duration | no | Override global timeout |
 | `workdir` | string | no | Override working directory |
@@ -126,7 +126,7 @@ parameters. For any other function, pass values under `params`. See
 
 Optional. If omitted, a default console logger on `stderr` at `info` is used.
 
-Caddy-style named loggers:
+Named loggers:
 
 ```yaml
 logging:

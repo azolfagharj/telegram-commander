@@ -24,20 +24,18 @@ const (
 	cbRun    = "r:"
 )
 
-// MenuBuild is one menu screen: title, reply nav, and inline items.
+// MenuBuild is one menu screen: title text plus inline buttons.
 type MenuBuild struct {
 	Title      string
 	Page       int
 	TotalPages int
-	Reply      *models.ReplyKeyboardMarkup
 	Inline     *models.InlineKeyboardMarkup
-	ReplySig   string
 	HasBack    bool
 	HasPrev    bool
 	HasNext    bool
 }
 
-// BuildMenu builds both keyboards for a category (or root when nodeID is empty).
+// BuildMenu builds the inline keyboard for a category (or root when nodeID is empty).
 func (idx *Index) BuildMenu(nodeID string, page int) (*MenuBuild, error) {
 	children, title, columns, err := idx.menuChildren(nodeID)
 	if err != nil {
@@ -57,32 +55,24 @@ func (idx *Index) BuildMenu(nodeID string, page int) (*MenuBuild, error) {
 		Title:      title,
 		Page:       page,
 		TotalPages: totalPages,
-		Reply:      homeReplyKeyboard(),
 		Inline:     menuInlineKeyboard(idx, slice, columns, hasBack, hasPrev, hasNext),
-		ReplySig:   replySigHome,
 		HasBack:    hasBack,
 		HasPrev:    hasPrev,
 		HasNext:    hasNext,
 	}, nil
 }
 
-const replySigHome = "home"
-
-func homeReplyKeyboard() *models.ReplyKeyboardMarkup {
-	return &models.ReplyKeyboardMarkup{
-		Keyboard:       [][]models.KeyboardButton{{{Text: btnHome}}},
-		ResizeKeyboard: true,
-		IsPersistent:   true,
-	}
-}
-
-func menuInlineKeyboard(idx *Index, ids []string, columns int, hasBack, hasPrev, hasNext bool) *models.InlineKeyboardMarkup {
-	var rows [][]models.InlineKeyboardButton
+func navRow(hasBack bool) []models.InlineKeyboardButton {
 	nav := []models.InlineKeyboardButton{{Text: btnHome, CallbackData: cbHome}}
 	if hasBack {
 		nav = append(nav, models.InlineKeyboardButton{Text: btnBack, CallbackData: cbBack})
 	}
-	rows = append(rows, nav)
+	return nav
+}
+
+func menuInlineKeyboard(idx *Index, ids []string, columns int, hasBack, hasPrev, hasNext bool) *models.InlineKeyboardMarkup {
+	var rows [][]models.InlineKeyboardButton
+	rows = append(rows, navRow(hasBack))
 	rows = append(rows, chunkInlineItems(idx, ids, columns)...)
 	var pager []models.InlineKeyboardButton
 	if hasPrev {
@@ -178,20 +168,23 @@ func (idx *Index) clampPage(nodeID string, page int) int {
 	return page
 }
 
-// ConfirmInlineKeyboard is Yes/Cancel on the last message, plus Home (and Back when nested).
+// ConfirmInlineKeyboard is Yes/Cancel plus Home (and Back when nested).
 func ConfirmInlineKeyboard(hasBack bool) *models.InlineKeyboardMarkup {
-	nav := []models.InlineKeyboardButton{{Text: btnHome, CallbackData: cbHome}}
-	if hasBack {
-		nav = append(nav, models.InlineKeyboardButton{Text: btnBack, CallbackData: cbBack})
-	}
 	return &models.InlineKeyboardMarkup{
 		InlineKeyboard: [][]models.InlineKeyboardButton{
-			nav,
+			navRow(hasBack),
 			{
 				{Text: btnYes, CallbackData: cbYes},
 				{Text: btnCancel, CallbackData: cbCancel},
 			},
 		},
+	}
+}
+
+// ResultInlineKeyboard is Home (and Back when nested) under a command result.
+func ResultInlineKeyboard(hasBack bool) *models.InlineKeyboardMarkup {
+	return &models.InlineKeyboardMarkup{
+		InlineKeyboard: [][]models.InlineKeyboardButton{navRow(hasBack)},
 	}
 }
 

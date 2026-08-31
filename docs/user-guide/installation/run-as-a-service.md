@@ -1,8 +1,7 @@
 # Run as a service
 
-This page covers running Telegram Commander as a systemd service and building
-from source. For a step-by-step first run in the terminal, see
-[Run in CLI](download-and-run.md).
+This page covers running Telegram Commander as a systemd service. For a
+step-by-step first run in the terminal, see [Run in CLI](download-and-run.md).
 
 ## systemd (root)
 
@@ -33,22 +32,8 @@ sudo systemctl status telegram-commander
 sudo journalctl -u telegram-commander -f
 ```
 
-The service runs the bot with [long polling](../concepts/long-polling.md). There
-is no hot reload — restart the service after you change your
+The service keeps the bot running. Restart the service after you change your
 [config file](../concepts/config-file.md).
-
-## Build from source
-
-```bash
-git clone https://github.com/azolfagharj/telegram-commander.git
-cd telegram-commander
-go build -o telegram-commander ./cmd/telegram-commander
-```
-
-The minimal config does not set `function_directory`. To try sample functions,
-use `config-examples/config.full.yaml` (it points to `./functions`) or set
-`function_directory` yourself. Each sample function is described in
-[Functions → Custom functions in the release pack](../functions.md#custom-functions-in-the-release-pack).
 
 ## Related pages
 

@@ -109,24 +109,11 @@ func callbackUpdate(userID int64, data string) *models.Update {
 	}
 }
 
-func textUpdate(userID int64, username, text string) *models.Update {
-	return &models.Update{
-		ID: 2,
-		Message: &models.Message{
-			ID:   2,
-			Date: int(time.Now().Unix()),
-			Chat: models.Chat{ID: 10, Type: models.ChatTypePrivate},
-			From: &models.User{ID: userID, FirstName: "U", Username: username},
-			Text: text,
-		},
-	}
-}
-
 func visibleTexts(s *apiServer) []string {
 	var texts []string
 	for _, m := range s.messages {
 		t, ok := m["text"].(string)
-		if !ok || t == "" || t == "\u2060" {
+		if !ok || t == "" || t == "\u2060" || t == "\u2800" {
 			continue
 		}
 		texts = append(texts, t)
@@ -204,7 +191,7 @@ func TestAllowedStartSendsMenu(t *testing.T) {
 	require.Contains(t, visibleTexts(srv), "Menu")
 }
 
-func TestReplyKeyboardNavigation(t *testing.T) {
+func TestInlineMenuNavigation(t *testing.T) {
 	srv := &apiServer{}
 	ts := httptest.NewServer(srv)
 	defer ts.Close()
@@ -240,7 +227,7 @@ func TestReplyKeyboardNavigation(t *testing.T) {
 	ctx := context.Background()
 	b.ProcessUpdate(ctx, startCommandUpdate(42, "admin", "/start"))
 	b.ProcessUpdate(ctx, callbackUpdate(42, "o:"+app.Index.Roots[0]))
-	b.ProcessUpdate(ctx, textUpdate(42, "admin", "🏠 Home"))
+	b.ProcessUpdate(ctx, callbackUpdate(42, "h"))
 
 	srv.mu.Lock()
 	defer srv.mu.Unlock()

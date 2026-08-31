@@ -15,16 +15,15 @@ into a shell command. When you tap a [button](concepts/button.md), the bot:
 
 1. Looks up the function named in the button's `function` field.
 2. Collects the button's parameter values.
-3. Fills those values into the function's command template.
-4. Runs the final command in the [shell](concepts/shell.md) and sends the output back.
+3. Builds the shell command from those values.
+4. Runs the command in the [shell](concepts/shell.md) and sends the output back.
 
 Think of a function as a fill-in-the-blanks command. For example, a "ping a
 host" function has one blank — the host — and you fill it in on each button.
 
 ### A worked example
 
-Take the built-in `command` function. Its template is simply `{{.command}}`,
-and it has one required parameter named `command`. This button:
+This button uses the built-in `command` function:
 
 ```yaml
 - name: Uptime
@@ -33,10 +32,8 @@ and it has one required parameter named `command`. This button:
   command: "uptime"
 ```
 
-provides `command: "uptime"`. The bot fills the template `{{.command}}` with
-`uptime`, producing the final command `uptime`, and runs it. The `{{.command}}`
-syntax is a placeholder that gets replaced with the parameter value — more on
-this in [Writing custom functions](#writing-custom-functions).
+The bot runs `uptime` on the server and sends the output back. To make reusable
+fill-in-the-blanks commands, see [Writing custom functions](#writing-custom-functions).
 
 ## The two kinds of functions
 
@@ -67,8 +64,6 @@ Runs a single shell command exactly as written.
 |-----------|----------|---------|---------|
 | `command` | yes | — | The shell command to run |
 
-Template: `{{.command}}`
-
 ```yaml
 - name: Show kernel
   type: button
@@ -94,8 +89,6 @@ Runs a script file, with optional arguments.
 |-----------|----------|---------|---------|
 | `path` | yes | — | Path to the script |
 | `args` | no | empty | Arguments passed after the path |
-
-Template: `{{.path}}{{if .args}} {{.args}}{{end}}`
 
 ```yaml
 - name: Nightly report
@@ -124,7 +117,7 @@ Below is exactly what each one does.
 Runs a script through `bash`, so the script itself does not need the execute
 bit.
 
-- Template: `bash {{.path}}{{if .args}} {{.args}}{{end}}`
+- Runs: `bash {{.path}}{{if .args}} {{.args}}{{end}}`
 - `path` (required): path to the script file
 - `args` (optional): extra arguments
 
@@ -141,7 +134,7 @@ bit.
 Fetches a URL with `curl`. Handy for health checks. It fails on HTTP errors
 (`-f`) and times out after 30 seconds.
 
-- Template: `curl -fsSL --max-time 30 {{.url}}`
+- Runs: `curl -fsSL --max-time 30 {{.url}}`
 - `url` (required): the URL to request
 
 ```yaml
@@ -160,7 +153,7 @@ Note: `url` is not one of the built-in button fields (`command`, `path`,
 
 Shows the most recent `journalctl` logs for a systemd unit.
 
-- Template: `journalctl -u {{.unit}} -n {{.lines}} --no-pager`
+- Runs: `journalctl -u {{.unit}} -n {{.lines}} --no-pager`
 - `unit` (required): unit name, for example `nginx.service`
 - `lines` (optional, default `50`): how many lines to show
 
@@ -177,7 +170,7 @@ Shows the most recent `journalctl` logs for a systemd unit.
 
 Shows disk usage for a path with `df -h`.
 
-- Template: `df -h {{.path}}`
+- Runs: `df -h {{.path}}`
 - `path` (optional, default `/`): filesystem path to check
 
 ```yaml
@@ -195,7 +188,7 @@ Shows disk usage for a path with `df -h`.
 
 Pings a host a few times.
 
-- Template: `ping -c {{.count}} {{.host}}`
+- Runs: `ping -c {{.count}} {{.host}}`
 - `host` (required): hostname or IP
 - `count` (optional, default `4`): number of packets
 
@@ -247,7 +240,7 @@ inside the file.
 
 ```yaml
 name: my-function          # required, must be unique and not reserved
-run: "echo {{.text}}"      # required, the command template
+run: "echo {{.text}}"      # required, the command to run
 params:                    # optional list of parameters
   - name: text             # required for each parameter
     type: string           # optional: string (default), int, or bool
@@ -266,8 +259,7 @@ The loader validates every file. Keep these rules in mind:
   also applies across built-ins and other custom files.
 - **Reserved names are forbidden:** you cannot name a custom function `command`
   or `script`.
-- **`run` is required** and is a
-  [Go text/template](https://pkg.go.dev/text/template). Every `{{.name}}` in it
+- **`run` is required.** Write the command with placeholders: every `{{.name}}`
   is replaced by the matching parameter value.
 - **Each parameter needs a `name`** matching the same character rule.
 - **`type` must be** `string`, `int`, or `bool` (empty means `string`).
@@ -277,9 +269,9 @@ The loader validates every file. Keep these rules in mind:
   problems are caught by [`validate`](cli.md#validate) before the bot
   runs.
 
-### Understanding the `run` template
+### Placeholders in `run`
 
-The template language is Go's `text/template`. The two things you will use most:
+Two patterns cover almost everything:
 
 - `{{.name}}` inserts the value of parameter `name`.
 - `{{if .name}} ... {{end}}` includes the middle part only when `name` has a

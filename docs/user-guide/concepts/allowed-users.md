@@ -24,4 +24,4 @@ For `allowed_users` and other Telegram settings, see
 ## Related
 
 - [Config file](config-file.md) — holds the `telegram` section
-- [Long polling](long-polling.md) — how the bot receives messages
+- [How the bot connects](long-polling.md) — no inbound port to open

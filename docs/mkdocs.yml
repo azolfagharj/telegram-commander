@@ -69,7 +69,7 @@ nav:
       - Shell: user-guide/concepts/shell.md
       - Allowed users: user-guide/concepts/allowed-users.md
       - Confirmation: user-guide/concepts/confirmation.md
-      - Long polling: user-guide/concepts/long-polling.md
+      - How the bot connects: user-guide/concepts/long-polling.md
       - Audit log: user-guide/concepts/audit-log.md
     - Guides:
       - Buttons and menus: user-guide/buttons.md

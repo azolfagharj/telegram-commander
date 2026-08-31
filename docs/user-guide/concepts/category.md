@@ -1,9 +1,7 @@
 # Category
 
-A menu node that opens a submenu instead of running something. A [category](category.md)
-A [category](category.md) has `items` (more [buttons](button.md) or categories)
-instead of a [function](function.md). Opening a category updates the same
-Telegram message and shows Back until you return to the root.
+A menu node that opens a submenu instead of running something. It has `items`
+(more [buttons](button.md) or categories) instead of a [function](function.md).
 
 ## Example
 

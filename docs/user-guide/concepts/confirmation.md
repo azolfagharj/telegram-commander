@@ -3,10 +3,9 @@
 An optional "Are you sure?" step before a [button](button.md) runs, enabled
 with `confirm: true`. Useful for destructive actions.
 
-The bot asks on the same menu message (`Confirm: … ?`) with Yes / Cancel, plus
-Home (and Back when you are inside a category). The prompt expires after a
-while (default 5 minutes). Change it with `confirm_ttl` in your
-[config file](config-file.md).
+The bot asks (`Confirm: … ?`) with Yes / Cancel, plus Home (and Back when you
+are inside a category). The prompt expires after a while (default 5 minutes).
+Change it with `confirm_ttl` in your [config file](config-file.md).
 
 ## Example
 

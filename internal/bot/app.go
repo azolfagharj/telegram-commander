@@ -38,11 +38,8 @@ type App struct {
 }
 
 type userMenu struct {
-	nodeID    string
-	page      int
-	messageID int
-	chatID    int64
-	replySig  string
+	nodeID string
+	page   int
 }
 
 type confirmWait struct {
@@ -195,7 +192,9 @@ func (a *App) handleStart(ctx context.Context, b *bot.Bot, update *models.Update
 		})
 		return
 	}
-	a.sendMenu(ctx, b, update.Message.Chat.ID, update.Message.From.ID, "", 0)
+	chatID := update.Message.Chat.ID
+	a.removeReplyKeyboard(ctx, b, chatID)
+	a.sendMenu(ctx, b, chatID, update.Message.From.ID, "", 0)
 }
 
 func (a *App) handleHelp(ctx context.Context, b *bot.Bot, update *models.Update) {
@@ -394,7 +393,7 @@ func (a *App) sendMenu(ctx context.Context, b *bot.Bot, chatID, userID int64, no
 	}
 	page = view.Page
 	a.setLocation(userID, nodeID, page)
-	a.showPanel(ctx, b, chatID, userID, view.Title, view.Inline, view.Reply, view.ReplySig)
+	a.sendInline(ctx, b, chatID, view.Title, view.Inline)
 }
 
 func (a *App) showStatus(ctx context.Context, b *bot.Bot, chatID, userID int64, text string) {
@@ -403,67 +402,42 @@ func (a *App) showStatus(ctx context.Context, b *bot.Bot, chatID, userID int64, 
 	if err != nil {
 		view, err = a.Index.BuildMenu("", 0)
 		if err != nil {
-			_, _ = b.SendMessage(ctx, &bot.SendMessageParams{ChatID: chatID, Text: text})
+			a.sendInline(ctx, b, chatID, text, nil)
 			return
 		}
 	}
-	a.showPanel(ctx, b, chatID, userID, text, view.Inline, view.Reply, view.ReplySig)
+	a.sendInline(ctx, b, chatID, text, view.Inline)
 }
 
-func (a *App) showPanel(ctx context.Context, b *bot.Bot, chatID, userID int64, text string, inline *models.InlineKeyboardMarkup, reply *models.ReplyKeyboardMarkup, replySig string) {
-	st := a.getNav(userID)
-	if st.messageID == 0 || st.replySig != replySig {
-		a.pushReplyKeyboard(ctx, b, chatID, reply)
+func (a *App) sendInline(ctx context.Context, b *bot.Bot, chatID int64, text string, inline *models.InlineKeyboardMarkup) {
+	params := &bot.SendMessageParams{
+		ChatID: chatID,
+		Text:   text,
 	}
-	if st.messageID != 0 {
-		_, err := b.EditMessageText(ctx, &bot.EditMessageTextParams{
-			ChatID:      chatID,
-			MessageID:   st.messageID,
-			Text:        text,
-			ReplyMarkup: inline,
-		})
-		if err == nil || isMessageNotModified(err) {
-			a.setPanelMeta(userID, st.messageID, chatID, replySig)
-			return
-		}
-		_, _ = b.DeleteMessage(ctx, &bot.DeleteMessageParams{
-			ChatID:    chatID,
-			MessageID: st.messageID,
-		})
+	if inline != nil {
+		params.ReplyMarkup = inline
 	}
-	msg, err := b.SendMessage(ctx, &bot.SendMessageParams{
-		ChatID:      chatID,
-		Text:        text,
-		ReplyMarkup: inline,
-	})
-	if err != nil || msg == nil {
+	if _, err := b.SendMessage(ctx, params); err != nil {
 		a.Log.Error("send menu", "err", err)
-		return
 	}
-	a.setPanelMeta(userID, msg.ID, chatID, replySig)
 }
 
-func (a *App) pushReplyKeyboard(ctx context.Context, b *bot.Bot, chatID int64, reply *models.ReplyKeyboardMarkup) {
-	if reply == nil {
-		return
-	}
+// removeReplyKeyboard drops a leftover custom keyboard from older versions.
+func (a *App) removeReplyKeyboard(ctx context.Context, b *bot.Bot, chatID int64) {
 	msg, err := b.SendMessage(ctx, &bot.SendMessageParams{
-		ChatID:      chatID,
-		Text:        "\u2060",
-		ReplyMarkup: reply,
+		ChatID: chatID,
+		Text:   "\u2800",
+		ReplyMarkup: &models.ReplyKeyboardRemove{
+			RemoveKeyboard: true,
+		},
 	})
 	if err != nil || msg == nil {
-		a.Log.Error("set reply keyboard", "err", err)
 		return
 	}
 	_, _ = b.DeleteMessage(ctx, &bot.DeleteMessageParams{
 		ChatID:    chatID,
 		MessageID: msg.ID,
 	})
-}
-
-func isMessageNotModified(err error) bool {
-	return err != nil && strings.Contains(strings.ToLower(err.Error()), "message is not modified")
 }
 
 func (a *App) getNav(userID int64) userMenu {
@@ -481,16 +455,6 @@ func (a *App) setLocation(userID int64, nodeID string, page int) {
 	a.navMu.Unlock()
 }
 
-func (a *App) setPanelMeta(userID int64, messageID int, chatID int64, replySig string) {
-	a.navMu.Lock()
-	st := a.nav[userID]
-	st.messageID = messageID
-	st.chatID = chatID
-	st.replySig = replySig
-	a.nav[userID] = st
-	a.navMu.Unlock()
-}
-
 func (a *App) showConfirm(ctx context.Context, b *bot.Bot, chatID, userID int64, node *Node) {
 	a.confirmMu.Lock()
 	a.confirms[userID] = confirmWait{
@@ -501,9 +465,7 @@ func (a *App) showConfirm(ctx context.Context, b *bot.Bot, chatID, userID int64,
 
 	st := a.getNav(userID)
 	hasBack := st.nodeID != ""
-	reply := homeReplyKeyboard()
-	inline := ConfirmInlineKeyboard(hasBack)
-	a.showPanel(ctx, b, chatID, userID, fmt.Sprintf("Confirm: %s ?", node.Label()), inline, reply, replySigHome)
+	a.sendInline(ctx, b, chatID, fmt.Sprintf("Confirm: %s ?", node.Label()), ConfirmInlineKeyboard(hasBack))
 }
 
 func (a *App) consumeConfirm(userID int64) (string, bool) {
@@ -595,14 +557,5 @@ func (a *App) deliverResult(ctx context.Context, b *bot.Bot, chatID, userID int6
 	}
 	st := a.getNav(userID)
 	hasBack := st.nodeID != ""
-	reply := homeReplyKeyboard()
-	inline := &models.InlineKeyboardMarkup{
-		InlineKeyboard: [][]models.InlineKeyboardButton{
-			{{Text: btnHome, CallbackData: cbHome}},
-		},
-	}
-	if hasBack {
-		inline.InlineKeyboard[0] = append(inline.InlineKeyboard[0], models.InlineKeyboardButton{Text: btnBack, CallbackData: cbBack})
-	}
-	a.showPanel(ctx, b, chatID, userID, text, inline, reply, replySigHome)
+	a.sendInline(ctx, b, chatID, text, ResultInlineKeyboard(hasBack))
 }

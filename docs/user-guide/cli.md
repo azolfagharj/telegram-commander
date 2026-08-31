@@ -15,13 +15,14 @@ shows these commands in the order you will use them.
 
 ### `run`
 
-Run the bot in the foreground ([long polling](concepts/long-polling.md)).
+Run the bot in the foreground.
 
 ```bash
 telegram-commander run --config /path/to/configfile.yaml
 ```
 
-There is no hot reload. To apply config changes, restart the process (for example `systemctl restart telegram-commander`).
+To apply config changes, restart the process (for example
+`systemctl restart telegram-commander`).
 
 ### `validate`
 
@@ -32,11 +33,11 @@ telegram-commander validate --config /path/to/configfile.yaml
 telegram-commander validate --config /path/to/configfile.yaml --online
 ```
 
-`--online` also calls Telegram `getMe` with the configured token.
+`--online` also checks the bot token with Telegram.
 
 ### `version`
 
-Print version and Go runtime info.
+Print the program version.
 
 ### `fmt`
 
