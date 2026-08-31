@@ -116,7 +116,7 @@ const (
 	DefaultShell          = "/bin/bash"
 	DefaultTimeout        = 60 * time.Second
 	DefaultMaxOutputBytes = 512 * 1024
-	DefaultButtonsColumns = 1
+	DefaultButtonsColumns = 2
 	DefaultPageSize       = 8
 	DefaultConfirmTTL     = 5 * time.Minute
 )

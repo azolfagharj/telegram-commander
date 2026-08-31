@@ -42,7 +42,6 @@ type userMenu struct {
 	page      int
 	messageID int
 	chatID    int64
-	homeKbSet bool
 }
 
 type confirmWait struct {
@@ -181,7 +180,6 @@ func (a *App) defaultHandler(ctx context.Context, b *bot.Bot, update *models.Upd
 		})
 		return
 	}
-	a.ensureHomeKeyboard(ctx, b, update.Message.Chat.ID, update.Message.From.ID)
 	a.handleMenuText(ctx, b, update.Message)
 }
 
@@ -198,7 +196,6 @@ func (a *App) handleStart(ctx context.Context, b *bot.Bot, update *models.Update
 	}
 	chatID := update.Message.Chat.ID
 	userID := update.Message.From.ID
-	a.ensureHomeKeyboard(ctx, b, chatID, userID)
 	a.sendMenu(ctx, b, chatID, userID, "", 0)
 }
 
@@ -213,7 +210,6 @@ func (a *App) handleHelp(ctx context.Context, b *bot.Bot, update *models.Update)
 		})
 		return
 	}
-	a.ensureHomeKeyboard(ctx, b, update.Message.Chat.ID, update.Message.From.ID)
 	text := "telegram-commander\n\n/start - open menu\n/help - show this help"
 	if a.Cfg.Telegram.EnableRunCommand {
 		text += "\n/run <button name> - run a button by name"
@@ -252,7 +248,6 @@ func (a *App) handleRun(ctx context.Context, b *bot.Bot, update *models.Update) 
 		})
 		return
 	}
-	a.ensureHomeKeyboard(ctx, b, update.Message.Chat.ID, update.Message.From.ID)
 	a.executeButton(ctx, b, update.Message.Chat.ID, update.Message.From, node)
 }
 
@@ -276,7 +271,6 @@ func (a *App) handleCallback(ctx context.Context, b *bot.Bot, update *models.Upd
 	if chatID == 0 {
 		return
 	}
-	a.ensureHomeKeyboard(ctx, b, chatID, user.ID)
 	a.applyAction(ctx, b, chatID, &user, cq.Data)
 }
 
@@ -401,7 +395,7 @@ func (a *App) sendMenu(ctx context.Context, b *bot.Bot, chatID, userID int64, no
 	}
 	page = view.Page
 	a.setLocation(userID, nodeID, page)
-	a.sendInline(ctx, b, chatID, userID, view.Title, view.Inline)
+	a.sendInline(ctx, b, chatID, userID, view.Title, view.Reply)
 }
 
 func (a *App) showStatus(ctx context.Context, b *bot.Bot, chatID, userID int64, text string) {
@@ -414,22 +408,22 @@ func (a *App) showStatus(ctx context.Context, b *bot.Bot, chatID, userID int64, 
 			return
 		}
 	}
-	a.sendInline(ctx, b, chatID, userID, text, view.Inline)
+	a.sendInline(ctx, b, chatID, userID, text, view.Reply)
 }
 
-// sendInline shows one screen. It always sends a brand new message (so the
-// menu is guaranteed to be the last message in the chat, and Telegram never
-// has to play its "menu transition" resize animation on an edited message,
-// which is what made button text look cut off or overlapping on Android).
+// sendInline shows one screen. It always sends a brand new message with the
+// screen's reply keyboard (so the menu is guaranteed to be the last message
+// in the chat). A reply keyboard always spans the full chat width, so button
+// text is never squeezed the way it can be inside a narrow inline keyboard.
 // The previous menu message, if any, is then deleted so the chat does not
 // fill up with old screens.
-func (a *App) sendInline(ctx context.Context, b *bot.Bot, chatID, userID int64, text string, inline *models.InlineKeyboardMarkup) {
+func (a *App) sendInline(ctx context.Context, b *bot.Bot, chatID, userID int64, text string, reply *models.ReplyKeyboardMarkup) {
 	params := &bot.SendMessageParams{
 		ChatID: chatID,
 		Text:   text,
 	}
-	if inline != nil {
-		params.ReplyMarkup = inline
+	if reply != nil {
+		params.ReplyMarkup = reply
 	}
 	msg, err := b.SendMessage(ctx, params)
 	if err != nil || msg == nil {
@@ -444,25 +438,6 @@ func (a *App) sendInline(ctx context.Context, b *bot.Bot, chatID, userID int64, 
 			MessageID: old.messageID,
 		})
 	}
-}
-
-// ensureHomeKeyboard sets the persistent Home keyboard under the message
-// box for this chat, once. It is sent as its own near-blank message that is
-// never deleted: Telegram ties a reply keyboard to the message that set it,
-// so deleting that message would also remove the keyboard.
-func (a *App) ensureHomeKeyboard(ctx context.Context, b *bot.Bot, chatID, userID int64) {
-	if a.getNav(userID).homeKbSet {
-		return
-	}
-	_, err := b.SendMessage(ctx, &bot.SendMessageParams{
-		ChatID:      chatID,
-		Text:        "\u2800",
-		ReplyMarkup: homeReplyKeyboard(),
-	})
-	if err != nil {
-		return
-	}
-	a.setHomeKbSet(userID)
 }
 
 func (a *App) getNav(userID int64) userMenu {
@@ -489,14 +464,6 @@ func (a *App) setMessageID(userID, chatID int64, messageID int) {
 	a.navMu.Unlock()
 }
 
-func (a *App) setHomeKbSet(userID int64) {
-	a.navMu.Lock()
-	st := a.nav[userID]
-	st.homeKbSet = true
-	a.nav[userID] = st
-	a.navMu.Unlock()
-}
-
 func (a *App) showConfirm(ctx context.Context, b *bot.Bot, chatID, userID int64, node *Node) {
 	a.confirmMu.Lock()
 	a.confirms[userID] = confirmWait{
@@ -507,7 +474,7 @@ func (a *App) showConfirm(ctx context.Context, b *bot.Bot, chatID, userID int64,
 
 	st := a.getNav(userID)
 	hasBack := st.nodeID != ""
-	a.sendInline(ctx, b, chatID, userID, fmt.Sprintf("Confirm: %s ?", node.Label()), ConfirmInlineKeyboard(hasBack))
+	a.sendInline(ctx, b, chatID, userID, fmt.Sprintf("Confirm: %s ?", node.Label()), ConfirmReplyKeyboard(hasBack))
 }
 
 func (a *App) consumeConfirm(userID int64) (string, bool) {
@@ -599,5 +566,5 @@ func (a *App) deliverResult(ctx context.Context, b *bot.Bot, chatID, userID int6
 	}
 	st := a.getNav(userID)
 	hasBack := st.nodeID != ""
-	a.sendInline(ctx, b, chatID, userID, text, ResultInlineKeyboard(hasBack))
+	a.sendInline(ctx, b, chatID, userID, text, ResultReplyKeyboard(hasBack))
 }

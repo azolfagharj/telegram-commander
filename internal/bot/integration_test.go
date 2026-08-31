@@ -42,10 +42,11 @@ func (s *apiServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case strings.HasSuffix(path, "/sendMessage"):
 		id := len(s.messages) + 1
 		m := map[string]any{
-			"chat_id":    r.FormValue("chat_id"),
-			"text":       r.FormValue("text"),
-			"message_id": id,
-			"kind":       "send",
+			"chat_id":      r.FormValue("chat_id"),
+			"text":         r.FormValue("text"),
+			"reply_markup": r.FormValue("reply_markup"),
+			"message_id":   id,
+			"kind":         "send",
 		}
 		s.messages = append(s.messages, m)
 		writeOK(w, map[string]any{
@@ -304,7 +305,7 @@ func TestMenuAlwaysSendsFreshMessageAndCleansUpOld(t *testing.T) {
 	require.Equal(t, 2, srv.deletes, "old menu messages should be cleaned up")
 }
 
-func TestHomeKeyboardIsSetOnceAndNeverDeleted(t *testing.T) {
+func TestMenuMessageCarriesHomeReplyKeyboard(t *testing.T) {
 	srv := &apiServer{}
 	ts := httptest.NewServer(srv)
 	defer ts.Close()
@@ -332,27 +333,23 @@ func TestHomeKeyboardIsSetOnceAndNeverDeleted(t *testing.T) {
 
 	ctx := context.Background()
 	b.ProcessUpdate(ctx, startCommandUpdate(42, "admin", "/start"))
-	b.ProcessUpdate(ctx, startCommandUpdate(42, "admin", "/start"))
-	b.ProcessUpdate(ctx, callbackUpdate(42, "h"))
 
 	srv.mu.Lock()
 	defer srv.mu.Unlock()
 
-	var homeKbID string
-	homeKbSends := 0
+	// No separate near-blank message should be sent anymore; the Home button
+	// now lives in the reply keyboard attached to the menu message itself.
 	for _, m := range srv.messages {
 		text, _ := m["text"].(string)
-		if text == "\u2800" {
-			homeKbSends++
-			homeKbID = fmt.Sprintf("%v", m["message_id"])
-		}
+		require.NotEqual(t, "\u2800", text, "no blank keyboard-priming message should be sent")
 	}
-	require.Equal(t, 1, homeKbSends, "the Home reply keyboard should be set only once per chat")
-	// The message that carries the reply keyboard must never be among the
-	// ones deleted, otherwise Telegram would drop the keyboard along with it.
-	for _, id := range srv.deletedIDs {
-		require.NotEqual(t, homeKbID, id, "the message carrying the Home keyboard must never be deleted")
-	}
+
+	// The menu message must carry a reply keyboard (shown under the message
+	// box) that includes the Home button.
+	require.NotEmpty(t, srv.messages)
+	rm := fmt.Sprintf("%v", srv.messages[0]["reply_markup"])
+	require.Contains(t, rm, "keyboard")
+	require.Contains(t, rm, "Home")
 }
 
 func TestTypedStartAfterTapSendsNewMessage(t *testing.T) {

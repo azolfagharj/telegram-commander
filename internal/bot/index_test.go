@@ -26,7 +26,7 @@ func sampleButtons() []config.ButtonNode {
 
 func collectInline(kb *bot.MenuBuild) []string {
 	var texts []string
-	for _, row := range kb.Inline.InlineKeyboard {
+	for _, row := range kb.Reply.Keyboard {
 		for _, b := range row {
 			texts = append(texts, b.Text)
 		}
@@ -125,13 +125,13 @@ func TestLabelStripsVariationSelectors(t *testing.T) {
 	require.NotContains(t, n.Label(), "\ufe0f")
 }
 
-func TestConfirmInlineKeyboard(t *testing.T) {
-	kb := bot.ConfirmInlineKeyboard(true)
-	require.Equal(t, "🏠 Home", kb.InlineKeyboard[0][0].Text)
-	require.Equal(t, "🔙 Back", kb.InlineKeyboard[0][1].Text)
-	require.Equal(t, "✅ Yes", kb.InlineKeyboard[1][0].Text)
-	require.Equal(t, "❌ Cancel", kb.InlineKeyboard[1][1].Text)
+func TestConfirmReplyKeyboard(t *testing.T) {
+	kb := bot.ConfirmReplyKeyboard(true)
+	require.Equal(t, "🏠 Home", kb.Keyboard[0][0].Text)
+	require.Equal(t, "🔙 Back", kb.Keyboard[0][1].Text)
+	require.Equal(t, "✅ Yes", kb.Keyboard[1][0].Text)
+	require.Equal(t, "❌ Cancel", kb.Keyboard[1][1].Text)
 
-	root := bot.ConfirmInlineKeyboard(false)
-	require.Len(t, root.InlineKeyboard[0], 1)
+	root := bot.ConfirmReplyKeyboard(false)
+	require.Len(t, root.Keyboard[0], 1)
 }

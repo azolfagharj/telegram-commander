@@ -15,7 +15,7 @@ function_directory: "examples/functions"
 shell: "/bin/bash"
 timeout: "60s"
 max_output_bytes: 524288
-buttons_columns: 1
+buttons_columns: 2
 page_size: 8
 confirm_ttl: "5m"
 

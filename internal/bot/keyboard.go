@@ -24,18 +24,19 @@ const (
 	cbRun    = "r:"
 )
 
-// MenuBuild is one menu screen: title text plus inline buttons.
+// MenuBuild is one menu screen: title text plus the reply keyboard shown
+// under the message box.
 type MenuBuild struct {
 	Title      string
 	Page       int
 	TotalPages int
-	Inline     *models.InlineKeyboardMarkup
+	Reply      *models.ReplyKeyboardMarkup
 	HasBack    bool
 	HasPrev    bool
 	HasNext    bool
 }
 
-// BuildMenu builds the inline keyboard for a category (or root when nodeID is empty).
+// BuildMenu builds the reply keyboard for a category (or root when nodeID is empty).
 func (idx *Index) BuildMenu(nodeID string, page int) (*MenuBuild, error) {
 	children, title, columns, err := idx.menuChildren(nodeID)
 	if err != nil {
@@ -55,54 +56,61 @@ func (idx *Index) BuildMenu(nodeID string, page int) (*MenuBuild, error) {
 		Title:      title,
 		Page:       page,
 		TotalPages: totalPages,
-		Inline:     menuInlineKeyboard(idx, slice, columns, hasBack, hasPrev, hasNext),
+		Reply:      menuReplyKeyboard(idx, slice, columns, hasBack, hasPrev, hasNext),
 		HasBack:    hasBack,
 		HasPrev:    hasPrev,
 		HasNext:    hasNext,
 	}, nil
 }
 
-func navRow(hasBack bool) []models.InlineKeyboardButton {
-	nav := []models.InlineKeyboardButton{{Text: btnHome, CallbackData: cbHome}}
+// replyKeyboard wraps rows into a persistent, full-width reply keyboard.
+// A reply keyboard always spans the whole chat width, so button text never
+// gets squeezed the way it can inside a narrow inline keyboard.
+func replyKeyboard(rows [][]models.KeyboardButton) *models.ReplyKeyboardMarkup {
+	return &models.ReplyKeyboardMarkup{
+		Keyboard:       rows,
+		ResizeKeyboard: true,
+		IsPersistent:   true,
+	}
+}
+
+func navRow(hasBack bool) []models.KeyboardButton {
+	nav := []models.KeyboardButton{{Text: btnHome}}
 	if hasBack {
-		nav = append(nav, models.InlineKeyboardButton{Text: btnBack, CallbackData: cbBack})
+		nav = append(nav, models.KeyboardButton{Text: btnBack})
 	}
 	return nav
 }
 
-func menuInlineKeyboard(idx *Index, ids []string, columns int, hasBack, hasPrev, hasNext bool) *models.InlineKeyboardMarkup {
-	var rows [][]models.InlineKeyboardButton
+func menuReplyKeyboard(idx *Index, ids []string, columns int, hasBack, hasPrev, hasNext bool) *models.ReplyKeyboardMarkup {
+	var rows [][]models.KeyboardButton
 	rows = append(rows, navRow(hasBack))
-	rows = append(rows, chunkInlineItems(idx, ids, columns)...)
-	var pager []models.InlineKeyboardButton
+	rows = append(rows, chunkItems(idx, ids, columns)...)
+	var pager []models.KeyboardButton
 	if hasPrev {
-		pager = append(pager, models.InlineKeyboardButton{Text: btnPrev, CallbackData: cbPrev})
+		pager = append(pager, models.KeyboardButton{Text: btnPrev})
 	}
 	if hasNext {
-		pager = append(pager, models.InlineKeyboardButton{Text: btnNext, CallbackData: cbNext})
+		pager = append(pager, models.KeyboardButton{Text: btnNext})
 	}
 	if len(pager) > 0 {
 		rows = append(rows, pager)
 	}
-	return &models.InlineKeyboardMarkup{InlineKeyboard: rows}
+	return replyKeyboard(rows)
 }
 
-func chunkInlineItems(idx *Index, ids []string, columns int) [][]models.InlineKeyboardButton {
+func chunkItems(idx *Index, ids []string, columns int) [][]models.KeyboardButton {
 	if columns < 1 {
 		columns = 2
 	}
-	var rows [][]models.InlineKeyboardButton
-	var row []models.InlineKeyboardButton
+	var rows [][]models.KeyboardButton
+	var row []models.KeyboardButton
 	for _, id := range ids {
 		n := idx.ByID[id]
 		if n == nil {
 			continue
 		}
-		data := cbRun + n.ID
-		if n.Type == "category" {
-			data = cbOpen + n.ID
-		}
-		row = append(row, models.InlineKeyboardButton{Text: n.Label(), CallbackData: data})
+		row = append(row, models.KeyboardButton{Text: n.Label()})
 		if len(row) >= columns {
 			rows = append(rows, row)
 			row = nil
@@ -168,36 +176,20 @@ func (idx *Index) clampPage(nodeID string, page int) int {
 	return page
 }
 
-// ConfirmInlineKeyboard is Yes/Cancel plus Home (and Back when nested).
-func ConfirmInlineKeyboard(hasBack bool) *models.InlineKeyboardMarkup {
-	return &models.InlineKeyboardMarkup{
-		InlineKeyboard: [][]models.InlineKeyboardButton{
-			navRow(hasBack),
-			{
-				{Text: btnYes, CallbackData: cbYes},
-				{Text: btnCancel, CallbackData: cbCancel},
-			},
+// ConfirmReplyKeyboard is Yes/Cancel plus Home (and Back when nested).
+func ConfirmReplyKeyboard(hasBack bool) *models.ReplyKeyboardMarkup {
+	return replyKeyboard([][]models.KeyboardButton{
+		navRow(hasBack),
+		{
+			{Text: btnYes},
+			{Text: btnCancel},
 		},
-	}
+	})
 }
 
-// ResultInlineKeyboard is Home (and Back when nested) under a command result.
-func ResultInlineKeyboard(hasBack bool) *models.InlineKeyboardMarkup {
-	return &models.InlineKeyboardMarkup{
-		InlineKeyboard: [][]models.InlineKeyboardButton{navRow(hasBack)},
-	}
-}
-
-// homeReplyKeyboard is the persistent keyboard shown under the message box.
-// It only ever has one button (Home) so it never needs its own layout
-// logic; every other button lives in the inline keyboard on the menu
-// message instead.
-func homeReplyKeyboard() *models.ReplyKeyboardMarkup {
-	return &models.ReplyKeyboardMarkup{
-		Keyboard:       [][]models.KeyboardButton{{{Text: btnHome}}},
-		ResizeKeyboard: true,
-		IsPersistent:   true,
-	}
+// ResultReplyKeyboard is Home (and Back when nested) under a command result.
+func ResultReplyKeyboard(hasBack bool) *models.ReplyKeyboardMarkup {
+	return replyKeyboard([][]models.KeyboardButton{navRow(hasBack)})
 }
 
 // ChildByLabel finds a direct child of nodeID (empty = root) by display label.

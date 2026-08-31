@@ -111,19 +111,18 @@ different emoji for it.
 
 ## How the Telegram menu looks
 
-Every screen (the menu, a confirmation, a command result) is its own message,
-and the bot always deletes the previous screen right after sending the new
-one. This keeps the chat tidy and guarantees the current screen is always the
-very last message, no matter whether you tapped a button or typed something.
+All buttons appear under the message box (the keyboard that shows and hides
+with the small button at the right end of the message box). This keyboard
+always spans the full width of the chat, so button text is never squeezed or
+cut off. Every screen (the menu, a confirmation, a command result) is its own
+message, and the bot deletes the previous screen right after sending the new
+one, so the chat stays tidy and the current screen is always the last message.
 
-- A small **Home** button is also pinned under the message box at all times,
-  so you can always get back to the first screen even without scrolling.
-- **Home** is also always at the top of every screen. Tap it to go back to
+- **Home** is always the first button on every screen. Tap it to go back to
   the first screen.
 - **Back** appears when you are inside a category.
-- Items sit one per row by default, full width, so text is not squeezed into
-  a narrow column. If a screen has many items, **Prev** and **Next** let you
-  page through them.
+- Items sit two per row by default. A category can change this with `columns`.
+  If a screen has many items, **Prev** and **Next** let you page through them.
 - Buttons with `confirm: true` ask Yes / Cancel before they run.
 
 ## Confirmation
@@ -163,8 +162,8 @@ See the full field list in
 
 ## Controlling layout
 
-`buttons_columns` sets how many **item** buttons appear per row on the message
-(default 1, full width). A category can override it with `columns`. When a menu has more
+`buttons_columns` sets how many **item** buttons appear per row (default 2).
+A category can override it with `columns`. When a menu has more
 than `page_size` items (default 8), it is split into pages and Prev/Next are
 shown until you reach the ends. See
 [Configuration → Root fields](configuration.md#root-fields).
