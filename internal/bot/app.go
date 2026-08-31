@@ -38,8 +38,10 @@ type App struct {
 }
 
 type userMenu struct {
-	nodeID string
-	page   int
+	nodeID    string
+	page      int
+	messageID int
+	chatID    int64
 }
 
 type confirmWait struct {
@@ -393,7 +395,7 @@ func (a *App) sendMenu(ctx context.Context, b *bot.Bot, chatID, userID int64, no
 	}
 	page = view.Page
 	a.setLocation(userID, nodeID, page)
-	a.sendInline(ctx, b, chatID, view.Title, view.Inline)
+	a.sendInline(ctx, b, chatID, userID, view.Title, view.Inline)
 }
 
 func (a *App) showStatus(ctx context.Context, b *bot.Bot, chatID, userID int64, text string) {
@@ -402,14 +404,31 @@ func (a *App) showStatus(ctx context.Context, b *bot.Bot, chatID, userID int64, 
 	if err != nil {
 		view, err = a.Index.BuildMenu("", 0)
 		if err != nil {
-			a.sendInline(ctx, b, chatID, text, nil)
+			a.sendInline(ctx, b, chatID, userID, text, nil)
 			return
 		}
 	}
-	a.sendInline(ctx, b, chatID, text, view.Inline)
+	a.sendInline(ctx, b, chatID, userID, text, view.Inline)
 }
 
-func (a *App) sendInline(ctx context.Context, b *bot.Bot, chatID int64, text string, inline *models.InlineKeyboardMarkup) {
+// sendInline shows one screen. It keeps a single message per chat: if that
+// message still exists, it is edited in place; otherwise (first screen, or
+// the old message can no longer be edited) a new message is sent.
+func (a *App) sendInline(ctx context.Context, b *bot.Bot, chatID, userID int64, text string, inline *models.InlineKeyboardMarkup) {
+	st := a.getNav(userID)
+	if st.messageID != 0 && st.chatID == chatID {
+		params := &bot.EditMessageTextParams{
+			ChatID:    chatID,
+			MessageID: st.messageID,
+			Text:      text,
+		}
+		if inline != nil {
+			params.ReplyMarkup = inline
+		}
+		if _, err := b.EditMessageText(ctx, params); err == nil || isMessageNotModified(err) {
+			return
+		}
+	}
 	params := &bot.SendMessageParams{
 		ChatID: chatID,
 		Text:   text,
@@ -417,9 +436,16 @@ func (a *App) sendInline(ctx context.Context, b *bot.Bot, chatID int64, text str
 	if inline != nil {
 		params.ReplyMarkup = inline
 	}
-	if _, err := b.SendMessage(ctx, params); err != nil {
+	msg, err := b.SendMessage(ctx, params)
+	if err != nil || msg == nil {
 		a.Log.Error("send menu", "err", err)
+		return
 	}
+	a.setMessageID(userID, chatID, msg.ID)
+}
+
+func isMessageNotModified(err error) bool {
+	return err != nil && strings.Contains(strings.ToLower(err.Error()), "message is not modified")
 }
 
 // removeReplyKeyboard drops a leftover custom keyboard from older versions.
@@ -455,6 +481,15 @@ func (a *App) setLocation(userID int64, nodeID string, page int) {
 	a.navMu.Unlock()
 }
 
+func (a *App) setMessageID(userID, chatID int64, messageID int) {
+	a.navMu.Lock()
+	st := a.nav[userID]
+	st.chatID = chatID
+	st.messageID = messageID
+	a.nav[userID] = st
+	a.navMu.Unlock()
+}
+
 func (a *App) showConfirm(ctx context.Context, b *bot.Bot, chatID, userID int64, node *Node) {
 	a.confirmMu.Lock()
 	a.confirms[userID] = confirmWait{
@@ -465,7 +500,7 @@ func (a *App) showConfirm(ctx context.Context, b *bot.Bot, chatID, userID int64,
 
 	st := a.getNav(userID)
 	hasBack := st.nodeID != ""
-	a.sendInline(ctx, b, chatID, fmt.Sprintf("Confirm: %s ?", node.Label()), ConfirmInlineKeyboard(hasBack))
+	a.sendInline(ctx, b, chatID, userID, fmt.Sprintf("Confirm: %s ?", node.Label()), ConfirmInlineKeyboard(hasBack))
 }
 
 func (a *App) consumeConfirm(userID int64) (string, bool) {
@@ -557,5 +592,5 @@ func (a *App) deliverResult(ctx context.Context, b *bot.Bot, chatID, userID int6
 	}
 	st := a.getNav(userID)
 	hasBack := st.nodeID != ""
-	a.sendInline(ctx, b, chatID, text, ResultInlineKeyboard(hasBack))
+	a.sendInline(ctx, b, chatID, userID, text, ResultInlineKeyboard(hasBack))
 }

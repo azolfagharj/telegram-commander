@@ -107,6 +107,9 @@ buttons:
 
 ## How the Telegram menu looks
 
+The bot keeps one menu message in the chat and updates it as you tap, instead
+of sending a new one every time.
+
 - **Home** is always at the top. Tap it to go back to the first screen.
 - **Back** appears when you are inside a category.
 - Items sit in rows (two per row by default). If a screen has many items,

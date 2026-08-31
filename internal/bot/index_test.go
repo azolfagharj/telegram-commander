@@ -43,7 +43,7 @@ func TestBuildIndexAndKeyboard(t *testing.T) {
 
 	inline := collectInline(view)
 	require.Contains(t, inline, "🏠 Home")
-	require.NotContains(t, inline, "⬅️ Back")
+	require.NotContains(t, inline, "🔙 Back")
 	require.Contains(t, inline, "📁 Cat")
 	require.Contains(t, inline, "Top")
 
@@ -55,7 +55,7 @@ func TestBuildIndexAndKeyboard(t *testing.T) {
 
 	inline2 := collectInline(view2)
 	require.Contains(t, inline2, "🏠 Home")
-	require.Contains(t, inline2, "⬅️ Back")
+	require.Contains(t, inline2, "🔙 Back")
 	require.Contains(t, inline2, "Echo")
 }
 
@@ -102,9 +102,9 @@ func TestPagination(t *testing.T) {
 	require.True(t, view.HasBack)
 
 	inline := collectInline(view)
-	require.Contains(t, inline, "Next ▶️")
-	require.NotContains(t, inline, "◀️ Prev")
-	require.Contains(t, inline, "⬅️ Back")
+	require.Contains(t, inline, "Next ⏩")
+	require.NotContains(t, inline, "⏪ Prev")
+	require.Contains(t, inline, "🔙 Back")
 	require.Contains(t, inline, "🏠 Home")
 
 	viewLast, err := idx.BuildMenu(catID, 2)
@@ -112,14 +112,14 @@ func TestPagination(t *testing.T) {
 	require.True(t, viewLast.HasPrev)
 	require.False(t, viewLast.HasNext)
 	last := collectInline(viewLast)
-	require.Contains(t, last, "◀️ Prev")
-	require.NotContains(t, last, "Next ▶️")
+	require.Contains(t, last, "⏪ Prev")
+	require.NotContains(t, last, "Next ⏩")
 }
 
 func TestConfirmInlineKeyboard(t *testing.T) {
 	kb := bot.ConfirmInlineKeyboard(true)
 	require.Equal(t, "🏠 Home", kb.InlineKeyboard[0][0].Text)
-	require.Equal(t, "⬅️ Back", kb.InlineKeyboard[0][1].Text)
+	require.Equal(t, "🔙 Back", kb.InlineKeyboard[0][1].Text)
 	require.Equal(t, "✅ Yes", kb.InlineKeyboard[1][0].Text)
 	require.Equal(t, "❌ Cancel", kb.InlineKeyboard[1][1].Text)
 

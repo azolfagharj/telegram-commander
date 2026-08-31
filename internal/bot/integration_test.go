@@ -244,3 +244,60 @@ func TestInlineMenuNavigation(t *testing.T) {
 	require.True(t, foundCat)
 	require.Equal(t, "Menu", texts[len(texts)-1])
 }
+
+func TestMenuReusesOneMessage(t *testing.T) {
+	srv := &apiServer{}
+	ts := httptest.NewServer(srv)
+	defer ts.Close()
+
+	cfg := &config.Config{
+		Telegram: config.TelegramConfig{
+			API:          ts.URL,
+			BotToken:     "123:ABC",
+			AllowedUsers: []string{"42"},
+		},
+		Buttons: []config.ButtonNode{
+			{
+				Name: "Cat",
+				Type: "category",
+				Items: []config.ButtonNode{
+					{Name: "Echo", Type: "button", Function: "command", Command: "echo hi"},
+				},
+			},
+		},
+	}
+	cfg.ApplyDefaults()
+
+	app := bot.NewApp(cfg, function.NewRegistry(), &executor.FakeExecutor{}, nil)
+	b, err := app.NewBotWithOptions(
+		tgbot.WithHTTPClient(5*time.Second, ts.Client()),
+		tgbot.WithServerURL(ts.URL),
+		tgbot.WithSkipGetMe(),
+		tgbot.WithNotAsyncHandlers(),
+	)
+	require.NoError(t, err)
+
+	ctx := context.Background()
+	b.ProcessUpdate(ctx, startCommandUpdate(42, "admin", "/start"))
+	b.ProcessUpdate(ctx, callbackUpdate(42, "o:"+app.Index.Roots[0]))
+	b.ProcessUpdate(ctx, callbackUpdate(42, "h"))
+
+	srv.mu.Lock()
+	defer srv.mu.Unlock()
+
+	realSends := 0
+	edits := 0
+	for _, m := range srv.messages {
+		text, _ := m["text"].(string)
+		if text == "\u2800" || text == "\u2060" {
+			continue // dummy message used only to clear an old reply keyboard
+		}
+		if _, ok := m["message_id"]; ok {
+			edits++
+			continue
+		}
+		realSends++
+	}
+	require.Equal(t, 1, realSends, "only the first screen should send a new message")
+	require.Equal(t, 2, edits, "later screens should edit the same message")
+}

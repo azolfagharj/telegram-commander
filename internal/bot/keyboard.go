@@ -8,9 +8,9 @@ import (
 
 const (
 	btnHome   = "🏠 Home"
-	btnBack   = "⬅️ Back"
-	btnPrev   = "◀️ Prev"
-	btnNext   = "Next ▶️"
+	btnBack   = "🔙 Back"
+	btnPrev   = "⏪ Prev"
+	btnNext   = "Next ⏩"
 	btnYes    = "✅ Yes"
 	btnCancel = "❌ Cancel"
 
