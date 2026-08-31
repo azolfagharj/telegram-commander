@@ -188,6 +188,18 @@ func ResultInlineKeyboard(hasBack bool) *models.InlineKeyboardMarkup {
 	}
 }
 
+// homeReplyKeyboard is the persistent keyboard shown under the message box.
+// It only ever has one button (Home) so it never needs its own layout
+// logic; every other button lives in the inline keyboard on the menu
+// message instead.
+func homeReplyKeyboard() *models.ReplyKeyboardMarkup {
+	return &models.ReplyKeyboardMarkup{
+		Keyboard:       [][]models.KeyboardButton{{{Text: btnHome}}},
+		ResizeKeyboard: true,
+		IsPersistent:   true,
+	}
+}
+
 // ChildByLabel finds a direct child of nodeID (empty = root) by display label.
 func (idx *Index) ChildByLabel(nodeID, label string) *Node {
 	var ids []string

@@ -3,6 +3,7 @@ package bot_test
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -21,8 +22,10 @@ import (
 )
 
 type apiServer struct {
-	mu       sync.Mutex
-	messages []map[string]any
+	mu         sync.Mutex
+	messages   []map[string]any
+	deletes    int
+	deletedIDs []string
 }
 
 func (s *apiServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -37,13 +40,16 @@ func (s *apiServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			"id": 1, "is_bot": true, "first_name": "Test", "username": "testbot",
 		})
 	case strings.HasSuffix(path, "/sendMessage"):
+		id := len(s.messages) + 1
 		m := map[string]any{
-			"chat_id": r.FormValue("chat_id"),
-			"text":    r.FormValue("text"),
+			"chat_id":    r.FormValue("chat_id"),
+			"text":       r.FormValue("text"),
+			"message_id": id,
+			"kind":       "send",
 		}
 		s.messages = append(s.messages, m)
 		writeOK(w, map[string]any{
-			"message_id": len(s.messages),
+			"message_id": id,
 			"date":       time.Now().Unix(),
 			"chat":       map[string]any{"id": 10, "type": "private"},
 			"text":       m["text"],
@@ -55,6 +61,7 @@ func (s *apiServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			"chat_id":    r.FormValue("chat_id"),
 			"message_id": r.FormValue("message_id"),
 			"text":       r.FormValue("text"),
+			"kind":       "edit",
 		}
 		s.messages = append(s.messages, m)
 		writeOK(w, map[string]any{
@@ -64,6 +71,8 @@ func (s *apiServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			"text":       m["text"],
 		})
 	case strings.HasSuffix(path, "/deleteMessage"):
+		s.deletes++
+		s.deletedIDs = append(s.deletedIDs, r.FormValue("message_id"))
 		writeOK(w, true)
 	default:
 		writeOK(w, true)
@@ -245,7 +254,7 @@ func TestInlineMenuNavigation(t *testing.T) {
 	require.Equal(t, "Menu", texts[len(texts)-1])
 }
 
-func TestMenuReusesOneMessage(t *testing.T) {
+func TestMenuAlwaysSendsFreshMessageAndCleansUpOld(t *testing.T) {
 	srv := &apiServer{}
 	ts := httptest.NewServer(srv)
 	defer ts.Close()
@@ -285,21 +294,65 @@ func TestMenuReusesOneMessage(t *testing.T) {
 	srv.mu.Lock()
 	defer srv.mu.Unlock()
 
-	realSends := 0
-	edits := 0
+	// Every screen (Menu, Cat, Menu) must be a brand new sendMessage call,
+	// never an editMessageText, so Telegram never plays its keyboard
+	// "menu transition" resize animation that can make button text look
+	// cut off or overlapping on Android.
+	require.Equal(t, 3, len(visibleTexts(srv)), "each screen should be its own new message")
+	// Each screen after the first deletes the previous menu message, so the
+	// chat never fills up with old screens.
+	require.Equal(t, 2, srv.deletes, "old menu messages should be cleaned up")
+}
+
+func TestHomeKeyboardIsSetOnceAndNeverDeleted(t *testing.T) {
+	srv := &apiServer{}
+	ts := httptest.NewServer(srv)
+	defer ts.Close()
+
+	cfg := &config.Config{
+		Telegram: config.TelegramConfig{
+			API:          ts.URL,
+			BotToken:     "123:ABC",
+			AllowedUsers: []string{"42"},
+		},
+		Buttons: []config.ButtonNode{
+			{Name: "Echo", Type: "button", Function: "command", Command: "echo hi"},
+		},
+	}
+	cfg.ApplyDefaults()
+
+	app := bot.NewApp(cfg, function.NewRegistry(), &executor.FakeExecutor{}, nil)
+	b, err := app.NewBotWithOptions(
+		tgbot.WithHTTPClient(5*time.Second, ts.Client()),
+		tgbot.WithServerURL(ts.URL),
+		tgbot.WithSkipGetMe(),
+		tgbot.WithNotAsyncHandlers(),
+	)
+	require.NoError(t, err)
+
+	ctx := context.Background()
+	b.ProcessUpdate(ctx, startCommandUpdate(42, "admin", "/start"))
+	b.ProcessUpdate(ctx, startCommandUpdate(42, "admin", "/start"))
+	b.ProcessUpdate(ctx, callbackUpdate(42, "h"))
+
+	srv.mu.Lock()
+	defer srv.mu.Unlock()
+
+	var homeKbID string
+	homeKbSends := 0
 	for _, m := range srv.messages {
 		text, _ := m["text"].(string)
-		if text == "\u2800" || text == "\u2060" {
-			continue // dummy message used only to clear an old reply keyboard
+		if text == "\u2800" {
+			homeKbSends++
+			homeKbID = fmt.Sprintf("%v", m["message_id"])
 		}
-		if _, ok := m["message_id"]; ok {
-			edits++
-			continue
-		}
-		realSends++
 	}
-	require.Equal(t, 1, realSends, "only the first screen should send a new message")
-	require.Equal(t, 2, edits, "later screens should edit the same message")
+	require.Equal(t, 1, homeKbSends, "the Home reply keyboard should be set only once per chat")
+	// The message that carries the reply keyboard must never be among the
+	// ones deleted, otherwise Telegram would drop the keyboard along with it.
+	for _, id := range srv.deletedIDs {
+		require.NotEqual(t, homeKbID, id, "the message carrying the Home keyboard must never be deleted")
+	}
 }
 
 func TestTypedStartAfterTapSendsNewMessage(t *testing.T) {
@@ -343,7 +396,6 @@ func TestTypedStartAfterTapSendsNewMessage(t *testing.T) {
 	defer srv.mu.Unlock()
 
 	last := srv.messages[len(srv.messages)-1]
-	_, wasEdit := last["message_id"]
-	require.False(t, wasEdit, "the menu after a typed command must be a new message, not an edit of an older one")
+	require.Equal(t, "send", last["kind"], "the menu after a typed command must be a new message, not an edit of an older one")
 	require.Equal(t, "Menu", last["text"])
 }

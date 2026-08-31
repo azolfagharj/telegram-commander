@@ -111,17 +111,19 @@ different emoji for it.
 
 ## How the Telegram menu looks
 
-The bot keeps one menu message in the chat and updates it as you tap, instead
-of sending a new one every time.
+Every screen (the menu, a confirmation, a command result) is its own message,
+and the bot always deletes the previous screen right after sending the new
+one. This keeps the chat tidy and guarantees the current screen is always the
+very last message, no matter whether you tapped a button or typed something.
 
-- **Home** is always at the top. Tap it to go back to the first screen.
+- A small **Home** button is also pinned under the message box at all times,
+  so you can always get back to the first screen even without scrolling.
+- **Home** is also always at the top of every screen. Tap it to go back to
+  the first screen.
 - **Back** appears when you are inside a category.
 - Items sit in rows (two per row by default). If a screen has many items,
   **Prev** and **Next** let you page through them.
 - Buttons with `confirm: true` ask Yes / Cancel before they run.
-
-If leftover buttons still appear under the message box (from an older version),
-send `/start` once.
 
 ## Confirmation
 

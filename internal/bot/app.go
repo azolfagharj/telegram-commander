@@ -42,6 +42,7 @@ type userMenu struct {
 	page      int
 	messageID int
 	chatID    int64
+	homeKbSet bool
 }
 
 type confirmWait struct {
@@ -180,6 +181,7 @@ func (a *App) defaultHandler(ctx context.Context, b *bot.Bot, update *models.Upd
 		})
 		return
 	}
+	a.ensureHomeKeyboard(ctx, b, update.Message.Chat.ID, update.Message.From.ID)
 	a.handleMenuText(ctx, b, update.Message)
 }
 
@@ -196,8 +198,7 @@ func (a *App) handleStart(ctx context.Context, b *bot.Bot, update *models.Update
 	}
 	chatID := update.Message.Chat.ID
 	userID := update.Message.From.ID
-	a.removeReplyKeyboard(ctx, b, chatID)
-	a.resetMessage(userID)
+	a.ensureHomeKeyboard(ctx, b, chatID, userID)
 	a.sendMenu(ctx, b, chatID, userID, "", 0)
 }
 
@@ -212,6 +213,7 @@ func (a *App) handleHelp(ctx context.Context, b *bot.Bot, update *models.Update)
 		})
 		return
 	}
+	a.ensureHomeKeyboard(ctx, b, update.Message.Chat.ID, update.Message.From.ID)
 	text := "telegram-commander\n\n/start - open menu\n/help - show this help"
 	if a.Cfg.Telegram.EnableRunCommand {
 		text += "\n/run <button name> - run a button by name"
@@ -250,7 +252,7 @@ func (a *App) handleRun(ctx context.Context, b *bot.Bot, update *models.Update) 
 		})
 		return
 	}
-	a.resetMessage(update.Message.From.ID)
+	a.ensureHomeKeyboard(ctx, b, update.Message.Chat.ID, update.Message.From.ID)
 	a.executeButton(ctx, b, update.Message.Chat.ID, update.Message.From, node)
 }
 
@@ -274,6 +276,7 @@ func (a *App) handleCallback(ctx context.Context, b *bot.Bot, update *models.Upd
 	if chatID == 0 {
 		return
 	}
+	a.ensureHomeKeyboard(ctx, b, chatID, user.ID)
 	a.applyAction(ctx, b, chatID, &user, cq.Data)
 }
 
@@ -281,10 +284,6 @@ func (a *App) handleMenuText(ctx context.Context, b *bot.Bot, msg *models.Messag
 	text := strings.TrimSpace(msg.Text)
 	chatID := msg.Chat.ID
 	userID := msg.From.ID
-	// The user just typed something, so it is the newest message in the
-	// chat. Force the next screen to be a fresh message so it stays last,
-	// instead of editing an older menu message that is now above it.
-	a.resetMessage(userID)
 	if text == "" || strings.HasPrefix(text, "/") {
 		a.showStatus(ctx, b, chatID, userID, "Use /start to open the menu.")
 		return
@@ -418,24 +417,13 @@ func (a *App) showStatus(ctx context.Context, b *bot.Bot, chatID, userID int64, 
 	a.sendInline(ctx, b, chatID, userID, text, view.Inline)
 }
 
-// sendInline shows one screen. It keeps a single message per chat: if that
-// message still exists, it is edited in place; otherwise (first screen, or
-// the old message can no longer be edited) a new message is sent.
+// sendInline shows one screen. It always sends a brand new message (so the
+// menu is guaranteed to be the last message in the chat, and Telegram never
+// has to play its "menu transition" resize animation on an edited message,
+// which is what made button text look cut off or overlapping on Android).
+// The previous menu message, if any, is then deleted so the chat does not
+// fill up with old screens.
 func (a *App) sendInline(ctx context.Context, b *bot.Bot, chatID, userID int64, text string, inline *models.InlineKeyboardMarkup) {
-	st := a.getNav(userID)
-	if st.messageID != 0 && st.chatID == chatID {
-		params := &bot.EditMessageTextParams{
-			ChatID:    chatID,
-			MessageID: st.messageID,
-			Text:      text,
-		}
-		if inline != nil {
-			params.ReplyMarkup = inline
-		}
-		if _, err := b.EditMessageText(ctx, params); err == nil || isMessageNotModified(err) {
-			return
-		}
-	}
 	params := &bot.SendMessageParams{
 		ChatID: chatID,
 		Text:   text,
@@ -448,29 +436,33 @@ func (a *App) sendInline(ctx context.Context, b *bot.Bot, chatID, userID int64, 
 		a.Log.Error("send menu", "err", err)
 		return
 	}
+	old := a.getNav(userID)
 	a.setMessageID(userID, chatID, msg.ID)
+	if old.messageID != 0 && old.chatID == chatID {
+		_, _ = b.DeleteMessage(ctx, &bot.DeleteMessageParams{
+			ChatID:    old.chatID,
+			MessageID: old.messageID,
+		})
+	}
 }
 
-func isMessageNotModified(err error) bool {
-	return err != nil && strings.Contains(strings.ToLower(err.Error()), "message is not modified")
-}
-
-// removeReplyKeyboard drops a leftover custom keyboard from older versions.
-func (a *App) removeReplyKeyboard(ctx context.Context, b *bot.Bot, chatID int64) {
-	msg, err := b.SendMessage(ctx, &bot.SendMessageParams{
-		ChatID: chatID,
-		Text:   "\u2800",
-		ReplyMarkup: &models.ReplyKeyboardRemove{
-			RemoveKeyboard: true,
-		},
-	})
-	if err != nil || msg == nil {
+// ensureHomeKeyboard sets the persistent Home keyboard under the message
+// box for this chat, once. It is sent as its own near-blank message that is
+// never deleted: Telegram ties a reply keyboard to the message that set it,
+// so deleting that message would also remove the keyboard.
+func (a *App) ensureHomeKeyboard(ctx context.Context, b *bot.Bot, chatID, userID int64) {
+	if a.getNav(userID).homeKbSet {
 		return
 	}
-	_, _ = b.DeleteMessage(ctx, &bot.DeleteMessageParams{
-		ChatID:    chatID,
-		MessageID: msg.ID,
+	_, err := b.SendMessage(ctx, &bot.SendMessageParams{
+		ChatID:      chatID,
+		Text:        "\u2800",
+		ReplyMarkup: homeReplyKeyboard(),
 	})
+	if err != nil {
+		return
+	}
+	a.setHomeKbSet(userID)
 }
 
 func (a *App) getNav(userID int64) userMenu {
@@ -488,26 +480,19 @@ func (a *App) setLocation(userID int64, nodeID string, page int) {
 	a.navMu.Unlock()
 }
 
-// resetMessage forgets the tracked menu message for userID, so the next
-// screen is sent as a brand new message instead of editing an older one.
-// Call this before reacting to a typed message (a real new chat bubble),
-// so the response is guaranteed to land after it. Do not call it for
-// inline button taps: those do not add a new chat bubble, so editing the
-// existing menu message in place is correct there.
-func (a *App) resetMessage(userID int64) {
-	a.navMu.Lock()
-	st := a.nav[userID]
-	st.messageID = 0
-	st.chatID = 0
-	a.nav[userID] = st
-	a.navMu.Unlock()
-}
-
 func (a *App) setMessageID(userID, chatID int64, messageID int) {
 	a.navMu.Lock()
 	st := a.nav[userID]
 	st.chatID = chatID
 	st.messageID = messageID
+	a.nav[userID] = st
+	a.navMu.Unlock()
+}
+
+func (a *App) setHomeKbSet(userID int64) {
+	a.navMu.Lock()
+	st := a.nav[userID]
+	st.homeKbSet = true
 	a.nav[userID] = st
 	a.navMu.Unlock()
 }
