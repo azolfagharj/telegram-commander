@@ -18,6 +18,7 @@ func (a *App) NewBotWithOptions(extra ...bot.Option) (*bot.Bot, error) {
 		bot.WithHTTPClient(60*time.Second, client),
 		bot.WithServerURL(api),
 		bot.WithDefaultHandler(a.defaultHandler),
+		bot.WithCallbackQueryDataHandler("", bot.MatchTypePrefix, a.handleCallback),
 		bot.WithMessageTextHandler("start", bot.MatchTypeCommandStartOnly, a.handleStart),
 		bot.WithMessageTextHandler("help", bot.MatchTypeCommandStartOnly, a.handleHelp),
 	}

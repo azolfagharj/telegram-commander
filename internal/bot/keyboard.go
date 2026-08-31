@@ -13,45 +13,131 @@ const (
 	btnNext   = "Next ▶️"
 	btnYes    = "✅ Yes"
 	btnCancel = "❌ Cancel"
+
+	cbHome   = "h"
+	cbBack   = "b"
+	cbPrev   = "p"
+	cbNext   = "n"
+	cbYes    = "y"
+	cbCancel = "x"
+	cbOpen   = "o:"
+	cbRun    = "r:"
 )
 
-// KeyboardFor builds a reply keyboard for a category (or root when nodeID is empty).
-func (idx *Index) KeyboardFor(nodeID string, page int) (*models.ReplyKeyboardMarkup, string, error) {
+// MenuBuild is one menu screen: title, reply nav, and inline items.
+type MenuBuild struct {
+	Title      string
+	Page       int
+	TotalPages int
+	Reply      *models.ReplyKeyboardMarkup
+	Inline     *models.InlineKeyboardMarkup
+	ReplySig   string
+	HasBack    bool
+	HasPrev    bool
+	HasNext    bool
+}
+
+// BuildMenu builds both keyboards for a category (or root when nodeID is empty).
+func (idx *Index) BuildMenu(nodeID string, page int) (*MenuBuild, error) {
 	children, title, columns, err := idx.menuChildren(nodeID)
 	if err != nil {
-		return nil, "", err
+		return nil, err
 	}
 
 	page, totalPages, slice := paginateIDs(children, idx.pageSize(), page)
-
-	rows := make([][]models.KeyboardButton, 0, 4)
-	nav := []models.KeyboardButton{{Text: btnHome}}
-	if nodeID != "" {
-		nav = append(nav, models.KeyboardButton{Text: btnBack})
-	}
-	rows = append(rows, nav)
-	rows = append(rows, chunkReplyButtons(idx, slice, columns)...)
-
-	var pager []models.KeyboardButton
-	if page > 0 {
-		pager = append(pager, models.KeyboardButton{Text: btnPrev})
-	}
-	if page < totalPages-1 {
-		pager = append(pager, models.KeyboardButton{Text: btnNext})
-	}
-	if len(pager) > 0 {
-		rows = append(rows, pager)
-	}
+	hasBack := nodeID != ""
+	hasPrev := page > 0
+	hasNext := page < totalPages-1
 
 	if totalPages > 1 {
 		title = fmt.Sprintf("%s (%d/%d)", title, page+1, totalPages)
 	}
 
+	return &MenuBuild{
+		Title:      title,
+		Page:       page,
+		TotalPages: totalPages,
+		Reply:      navReplyKeyboard(hasBack, hasPrev, hasNext),
+		Inline:     menuInlineKeyboard(idx, slice, columns, hasBack, hasPrev, hasNext),
+		ReplySig:   replySig(hasBack, hasPrev, hasNext),
+		HasBack:    hasBack,
+		HasPrev:    hasPrev,
+		HasNext:    hasNext,
+	}, nil
+}
+
+func replySig(hasBack, hasPrev, hasNext bool) string {
+	return fmt.Sprintf("h:%t:%t:%t", hasBack, hasPrev, hasNext)
+}
+
+func navReplyKeyboard(hasBack, hasPrev, hasNext bool) *models.ReplyKeyboardMarkup {
+	rows := [][]models.KeyboardButton{{{Text: btnHome}}}
+	if hasBack {
+		rows[0] = append(rows[0], models.KeyboardButton{Text: btnBack})
+	}
+	var pager []models.KeyboardButton
+	if hasPrev {
+		pager = append(pager, models.KeyboardButton{Text: btnPrev})
+	}
+	if hasNext {
+		pager = append(pager, models.KeyboardButton{Text: btnNext})
+	}
+	if len(pager) > 0 {
+		rows = append(rows, pager)
+	}
 	return &models.ReplyKeyboardMarkup{
 		Keyboard:       rows,
 		ResizeKeyboard: true,
 		IsPersistent:   true,
-	}, title, nil
+	}
+}
+
+func menuInlineKeyboard(idx *Index, ids []string, columns int, hasBack, hasPrev, hasNext bool) *models.InlineKeyboardMarkup {
+	var rows [][]models.InlineKeyboardButton
+	nav := []models.InlineKeyboardButton{{Text: btnHome, CallbackData: cbHome}}
+	if hasBack {
+		nav = append(nav, models.InlineKeyboardButton{Text: btnBack, CallbackData: cbBack})
+	}
+	rows = append(rows, nav)
+	rows = append(rows, chunkInlineItems(idx, ids, columns)...)
+	var pager []models.InlineKeyboardButton
+	if hasPrev {
+		pager = append(pager, models.InlineKeyboardButton{Text: btnPrev, CallbackData: cbPrev})
+	}
+	if hasNext {
+		pager = append(pager, models.InlineKeyboardButton{Text: btnNext, CallbackData: cbNext})
+	}
+	if len(pager) > 0 {
+		rows = append(rows, pager)
+	}
+	return &models.InlineKeyboardMarkup{InlineKeyboard: rows}
+}
+
+func chunkInlineItems(idx *Index, ids []string, columns int) [][]models.InlineKeyboardButton {
+	if columns < 1 {
+		columns = 2
+	}
+	var rows [][]models.InlineKeyboardButton
+	var row []models.InlineKeyboardButton
+	for _, id := range ids {
+		n := idx.ByID[id]
+		if n == nil {
+			continue
+		}
+		data := cbRun + n.ID
+		if n.Type == "category" {
+			data = cbOpen + n.ID
+		}
+		row = append(row, models.InlineKeyboardButton{Text: n.Label(), CallbackData: data})
+		if len(row) >= columns {
+			rows = append(rows, row)
+			row = nil
+		}
+	}
+	if len(row) > 0 {
+		rows = append(rows, row)
+	}
+	return rows
 }
 
 func (idx *Index) menuChildren(nodeID string) (children []string, title string, columns int, err error) {
@@ -108,40 +194,20 @@ func (idx *Index) clampPage(nodeID string, page int) int {
 	return page
 }
 
-func chunkReplyButtons(idx *Index, ids []string, columns int) [][]models.KeyboardButton {
-	if columns < 1 {
-		columns = 2
+// ConfirmInlineKeyboard is Yes/Cancel on the last message, plus Home (and Back when nested).
+func ConfirmInlineKeyboard(hasBack bool) *models.InlineKeyboardMarkup {
+	nav := []models.InlineKeyboardButton{{Text: btnHome, CallbackData: cbHome}}
+	if hasBack {
+		nav = append(nav, models.InlineKeyboardButton{Text: btnBack, CallbackData: cbBack})
 	}
-	var rows [][]models.KeyboardButton
-	var row []models.KeyboardButton
-	for _, id := range ids {
-		n := idx.ByID[id]
-		if n == nil {
-			continue
-		}
-		row = append(row, models.KeyboardButton{Text: n.Label()})
-		if len(row) >= columns {
-			rows = append(rows, row)
-			row = nil
-		}
-	}
-	if len(row) > 0 {
-		rows = append(rows, row)
-	}
-	return rows
-}
-
-// ConfirmKeyboard builds yes/cancel reply buttons for a confirmable action.
-func ConfirmKeyboard() *models.ReplyKeyboardMarkup {
-	return &models.ReplyKeyboardMarkup{
-		Keyboard: [][]models.KeyboardButton{
+	return &models.InlineKeyboardMarkup{
+		InlineKeyboard: [][]models.InlineKeyboardButton{
+			nav,
 			{
-				{Text: btnYes},
-				{Text: btnCancel},
+				{Text: btnYes, CallbackData: cbYes},
+				{Text: btnCancel, CallbackData: cbCancel},
 			},
 		},
-		ResizeKeyboard: true,
-		IsPersistent:   true,
 	}
 }
 

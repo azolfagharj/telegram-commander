@@ -31,13 +31,16 @@ buttons:
     command: "df -h"
 ```
 
-Send `/start` in Telegram and you get three buttons. Tapping one runs its
-command and sends the output back.
+Send `/start` in Telegram. The bot keeps **one menu message** and updates it
+when you tap. Action buttons sit on that message (inline keyboard). A small
+reply keyboard at the bottom repeats Home, and Back / Prev / Next only when
+those actions work.
 
 ## Grouping with categories
 
 As your menu grows, group related actions into categories. A category shows its
-`items` when tapped, and a back button to go up.
+`items` when tapped. Home is always on the menu. Back appears only inside a
+category.
 
 ```yaml
 buttons:
@@ -105,6 +108,20 @@ buttons:
   confirm: true
 ```
 
+## How the Telegram menu looks
+
+The last menu message is reused: the bot edits it instead of sending a new
+menu each time.
+
+- **On the message (inline):** `Home` is always there. Category and button
+  items use two columns by default (`buttons_columns`), at most `page_size`
+  items per page (default 8). `Back` appears only inside a category. `Prev` /
+  `Next` appear only when there is another page.
+- **Bottom reply keyboard:** the same nav buttons, with the same rules. Menu
+  items are not duplicated there.
+
+Tapping Home, Back, Prev, Next, or an item updates that same message.
+
 ## Confirmation
 
 Add `confirm: true` to any button to require a second tap ("Are you sure?")
@@ -142,10 +159,11 @@ See the full field list in
 
 ## Controlling layout
 
-`buttons_columns` sets how many buttons appear per row (default 2). A category
-can override it with `columns`. When a menu has many items, it is split into
-pages of `page_size` items (default 8) with next/previous buttons. Both are
-documented in [Configuration → Root fields](configuration.md#root-fields).
+`buttons_columns` sets how many **item** buttons appear per row on the message
+(default 2). A category can override it with `columns`. When a menu has more
+than `page_size` items (default 8), it is split into pages and Prev/Next are
+shown until you reach the ends. See
+[Configuration → Root fields](configuration.md#root-fields).
 
 ## Running a button by name
 

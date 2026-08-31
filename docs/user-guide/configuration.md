@@ -48,7 +48,7 @@ example.
 | `max_output_bytes` | int | no | `524288` | Max captured stdout/stderr bytes |
 | `workdir` | string | no | process cwd | Default working directory for commands |
 | `env` | map | no | empty | Extra environment variables for commands |
-| `buttons_columns` | int | no | `2` | Default inline keyboard columns |
+| `buttons_columns` | int | no | `2` | Item buttons per row on the menu message |
 | `page_size` | int | no | `8` | Items per page before pagination |
 | `confirm_ttl` | duration | no | `5m` | How long a [confirmation](concepts/confirmation.md) prompt stays valid |
 | `logging` | object | no | built-in default logger | Named loggers (see below) |

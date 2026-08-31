@@ -51,6 +51,19 @@ func (s *apiServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case strings.HasSuffix(path, "/answerCallbackQuery"):
 		writeOK(w, true)
 	case strings.HasSuffix(path, "/editMessageText"):
+		m := map[string]any{
+			"chat_id":    r.FormValue("chat_id"),
+			"message_id": r.FormValue("message_id"),
+			"text":       r.FormValue("text"),
+		}
+		s.messages = append(s.messages, m)
+		writeOK(w, map[string]any{
+			"message_id": 1,
+			"date":       time.Now().Unix(),
+			"chat":       map[string]any{"id": 10, "type": "private"},
+			"text":       m["text"],
+		})
+	case strings.HasSuffix(path, "/deleteMessage"):
 		writeOK(w, true)
 	default:
 		writeOK(w, true)
@@ -72,6 +85,25 @@ func startCommandUpdate(userID int64, username, text string) *models.Update {
 			Text: text,
 			Entities: []models.MessageEntity{
 				{Type: models.MessageEntityTypeBotCommand, Offset: 0, Length: len(strings.SplitN(text, " ", 2)[0])},
+			},
+		},
+	}
+}
+
+func callbackUpdate(userID int64, data string) *models.Update {
+	return &models.Update{
+		ID: 3,
+		CallbackQuery: &models.CallbackQuery{
+			ID:   "cb1",
+			From: models.User{ID: userID, FirstName: "U", Username: "admin"},
+			Data: data,
+			Message: models.MaybeInaccessibleMessage{
+				Type: models.MaybeInaccessibleMessageTypeMessage,
+				Message: &models.Message{
+					ID:   1,
+					Date: int(time.Now().Unix()),
+					Chat: models.Chat{ID: 10, Type: models.ChatTypePrivate},
+				},
 			},
 		},
 	}
@@ -197,13 +229,26 @@ func TestReplyKeyboardNavigation(t *testing.T) {
 
 	ctx := context.Background()
 	b.ProcessUpdate(ctx, startCommandUpdate(42, "admin", "/start"))
-	b.ProcessUpdate(ctx, textUpdate(42, "admin", "📁 Cat"))
+	b.ProcessUpdate(ctx, callbackUpdate(42, "o:"+app.Index.Roots[0]))
 	b.ProcessUpdate(ctx, textUpdate(42, "admin", "🏠 Home"))
 
 	srv.mu.Lock()
 	defer srv.mu.Unlock()
-	require.GreaterOrEqual(t, len(srv.messages), 3)
-	require.Equal(t, "Menu", srv.messages[0]["text"])
-	require.Contains(t, srv.messages[1]["text"], "Cat")
-	require.Equal(t, "Menu", srv.messages[2]["text"])
+	require.NotEmpty(t, srv.messages)
+	var texts []string
+	for _, m := range srv.messages {
+		if t, ok := m["text"].(string); ok {
+			texts = append(texts, t)
+		}
+	}
+	require.Contains(t, texts, "Menu")
+	foundCat := false
+	for _, line := range texts {
+		if strings.Contains(line, "Cat") {
+			foundCat = true
+			break
+		}
+	}
+	require.True(t, foundCat)
+	require.Equal(t, "Menu", texts[len(texts)-1])
 }

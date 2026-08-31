@@ -38,8 +38,11 @@ type App struct {
 }
 
 type userMenu struct {
-	nodeID string
-	page   int
+	nodeID    string
+	page      int
+	messageID int
+	chatID    int64
+	replySig  string
 }
 
 type confirmWait struct {
@@ -111,6 +114,7 @@ func (a *App) NewBot() (*bot.Bot, error) {
 			a.Log.Warn("telegram client error", "err", err)
 		}),
 		bot.WithDefaultHandler(a.defaultHandler),
+		bot.WithCallbackQueryDataHandler("", bot.MatchTypePrefix, a.handleCallback),
 		bot.WithMessageTextHandler("start", bot.MatchTypeCommandStartOnly, a.handleStart),
 		bot.WithMessageTextHandler("help", bot.MatchTypeCommandStartOnly, a.handleHelp),
 	}
@@ -164,6 +168,9 @@ func (a *App) denyMessage(user *models.User) string {
 }
 
 func (a *App) defaultHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
+	if update.CallbackQuery != nil {
+		return
+	}
 	if update.Message == nil || update.Message.From == nil {
 		return
 	}
@@ -243,23 +250,81 @@ func (a *App) handleRun(ctx context.Context, b *bot.Bot, update *models.Update) 
 	a.executeButton(ctx, b, update.Message.Chat.ID, update.Message.From, node)
 }
 
+func (a *App) handleCallback(ctx context.Context, b *bot.Bot, update *models.Update) {
+	cq := update.CallbackQuery
+	if cq == nil {
+		return
+	}
+	_, _ = b.AnswerCallbackQuery(ctx, &bot.AnswerCallbackQueryParams{
+		CallbackQueryID: cq.ID,
+		ShowAlert:       false,
+	})
+	user := cq.From
+	if !a.isAllowed(&user) {
+		return
+	}
+	chatID := int64(0)
+	if cq.Message.Message != nil {
+		chatID = cq.Message.Message.Chat.ID
+	}
+	if chatID == 0 {
+		return
+	}
+	a.applyAction(ctx, b, chatID, &user, cq.Data)
+}
+
 func (a *App) handleMenuText(ctx context.Context, b *bot.Bot, msg *models.Message) {
 	text := strings.TrimSpace(msg.Text)
 	chatID := msg.Chat.ID
 	userID := msg.From.ID
 	if text == "" || strings.HasPrefix(text, "/") {
-		a.replyWithMenu(ctx, b, chatID, userID, "Use /start to open the menu.")
+		a.showStatus(ctx, b, chatID, userID, "Use /start to open the menu.")
+		return
+	}
+
+	switch text {
+	case btnHome:
+		a.applyAction(ctx, b, chatID, msg.From, cbHome)
+		return
+	case btnBack:
+		a.applyAction(ctx, b, chatID, msg.From, cbBack)
+		return
+	case btnPrev:
+		a.applyAction(ctx, b, chatID, msg.From, cbPrev)
+		return
+	case btnNext:
+		a.applyAction(ctx, b, chatID, msg.From, cbNext)
+		return
+	case btnYes:
+		a.applyAction(ctx, b, chatID, msg.From, cbYes)
+		return
+	case btnCancel:
+		a.applyAction(ctx, b, chatID, msg.From, cbCancel)
 		return
 	}
 
 	st := a.getNav(userID)
+	node := a.Index.ChildByLabel(st.nodeID, text)
+	if node == nil {
+		a.showStatus(ctx, b, chatID, userID, "Unknown option. Use /start to open the menu.")
+		return
+	}
+	if node.Type == "category" {
+		a.applyAction(ctx, b, chatID, msg.From, cbOpen+node.ID)
+		return
+	}
+	a.applyAction(ctx, b, chatID, msg.From, cbRun+node.ID)
+}
 
-	switch text {
-	case btnHome:
+func (a *App) applyAction(ctx context.Context, b *bot.Bot, chatID int64, user *models.User, data string) {
+	userID := user.ID
+	st := a.getNav(userID)
+
+	switch {
+	case data == cbHome:
 		a.clearConfirm(userID)
 		a.sendMenu(ctx, b, chatID, userID, "", 0)
-		return
-	case btnBack:
+	case data == cbBack:
 		a.clearConfirm(userID)
 		parent := ""
 		if st.nodeID != "" {
@@ -268,90 +333,118 @@ func (a *App) handleMenuText(ctx context.Context, b *bot.Bot, msg *models.Messag
 			}
 		}
 		a.sendMenu(ctx, b, chatID, userID, parent, 0)
-		return
-	case btnYes:
+	case data == cbPrev:
+		page := st.page - 1
+		if page < 0 {
+			return
+		}
+		a.sendMenu(ctx, b, chatID, userID, st.nodeID, page)
+	case data == cbNext:
+		view, err := a.Index.BuildMenu(st.nodeID, st.page)
+		if err != nil || !view.HasNext {
+			return
+		}
+		a.sendMenu(ctx, b, chatID, userID, st.nodeID, st.page+1)
+	case data == cbYes:
 		buttonID, ok := a.consumeConfirm(userID)
 		if !ok {
-			a.replyWithMenu(ctx, b, chatID, userID, "Confirmation expired. Please try again.")
+			a.showStatus(ctx, b, chatID, userID, "Confirmation expired. Please try again.")
 			return
 		}
 		node := a.Index.ByID[buttonID]
 		if node == nil {
 			return
 		}
-		a.executeButton(ctx, b, chatID, msg.From, node)
-		return
-	case btnCancel:
+		a.executeButton(ctx, b, chatID, user, node)
+	case data == cbCancel:
 		a.clearConfirm(userID)
 		a.sendMenu(ctx, b, chatID, userID, st.nodeID, st.page)
-		return
-	case btnPrev:
-		page := st.page - 1
-		if page < 0 {
-			page = 0
+	case strings.HasPrefix(data, cbOpen):
+		id := strings.TrimPrefix(data, cbOpen)
+		node := a.Index.ByID[id]
+		if node == nil || node.Type != "category" {
+			return
 		}
-		a.sendMenu(ctx, b, chatID, userID, st.nodeID, page)
-		return
-	case btnNext:
-		a.sendMenu(ctx, b, chatID, userID, st.nodeID, st.page+1)
-		return
-	}
-
-	node := a.Index.ChildByLabel(st.nodeID, text)
-	if node == nil {
-		a.replyWithMenu(ctx, b, chatID, userID, "Unknown option. Use /start to open the menu.")
-		return
-	}
-	if node.Type == "category" {
 		a.clearConfirm(userID)
 		a.sendMenu(ctx, b, chatID, userID, node.ID, 0)
-		return
+	case strings.HasPrefix(data, cbRun):
+		id := strings.TrimPrefix(data, cbRun)
+		node := a.Index.ByID[id]
+		if node == nil || node.Type != "button" {
+			return
+		}
+		if node.Confirm {
+			a.showConfirm(ctx, b, chatID, userID, node)
+			return
+		}
+		a.executeButton(ctx, b, chatID, user, node)
 	}
-	if node.Confirm {
-		a.showConfirm(ctx, b, chatID, userID, node)
-		return
-	}
-	a.executeButton(ctx, b, chatID, msg.From, node)
 }
 
 func (a *App) sendMenu(ctx context.Context, b *bot.Bot, chatID, userID int64, nodeID string, page int) {
-	kb, title, err := a.Index.KeyboardFor(nodeID, page)
+	view, err := a.Index.BuildMenu(nodeID, page)
 	if err != nil {
 		a.Log.Error("keyboard", "err", err)
 		nodeID = ""
 		page = 0
-		kb, title, err = a.Index.KeyboardFor("", 0)
+		view, err = a.Index.BuildMenu("", 0)
 		if err != nil {
 			return
 		}
 	}
-	page = a.Index.clampPage(nodeID, page)
-	a.setNav(userID, nodeID, page)
-	_, _ = b.SendMessage(ctx, &bot.SendMessageParams{
-		ChatID:      chatID,
-		Text:        title,
-		ReplyMarkup: kb,
-	})
+	page = view.Page
+	a.setLocation(userID, nodeID, page)
+	a.showPanel(ctx, b, chatID, userID, view.Title, view.Inline, view.Reply, view.ReplySig)
 }
 
-func (a *App) replyWithMenu(ctx context.Context, b *bot.Bot, chatID, userID int64, text string) {
-	params := &bot.SendMessageParams{ChatID: chatID, Text: text}
-	if kb := a.menuKeyboard(userID); kb != nil {
-		params.ReplyMarkup = kb
-	}
-	_, _ = b.SendMessage(ctx, params)
-}
-
-func (a *App) menuKeyboard(userID int64) *models.ReplyKeyboardMarkup {
+func (a *App) showStatus(ctx context.Context, b *bot.Bot, chatID, userID int64, text string) {
 	st := a.getNav(userID)
-	kb, _, err := a.Index.KeyboardFor(st.nodeID, st.page)
+	view, err := a.Index.BuildMenu(st.nodeID, st.page)
 	if err != nil {
-		kb, _, err = a.Index.KeyboardFor("", 0)
+		view, err = a.Index.BuildMenu("", 0)
 		if err != nil {
-			return nil
+			_, _ = b.SendMessage(ctx, &bot.SendMessageParams{ChatID: chatID, Text: text})
+			return
 		}
 	}
-	return kb
+	a.showPanel(ctx, b, chatID, userID, text, view.Inline, view.Reply, view.ReplySig)
+}
+
+func (a *App) showPanel(ctx context.Context, b *bot.Bot, chatID, userID int64, text string, inline *models.InlineKeyboardMarkup, reply *models.ReplyKeyboardMarkup, replySig string) {
+	st := a.getNav(userID)
+	if st.messageID != 0 && st.replySig == replySig {
+		_, err := b.EditMessageText(ctx, &bot.EditMessageTextParams{
+			ChatID:      chatID,
+			MessageID:   st.messageID,
+			Text:        text,
+			ReplyMarkup: inline,
+		})
+		if err == nil {
+			return
+		}
+	}
+	if st.messageID != 0 {
+		_, _ = b.DeleteMessage(ctx, &bot.DeleteMessageParams{
+			ChatID:    chatID,
+			MessageID: st.messageID,
+		})
+	}
+	msg, err := b.SendMessage(ctx, &bot.SendMessageParams{
+		ChatID:      chatID,
+		Text:        text,
+		ReplyMarkup: reply,
+	})
+	if err != nil || msg == nil {
+		a.Log.Error("send menu", "err", err)
+		return
+	}
+	a.setPanelMeta(userID, msg.ID, chatID, replySig)
+	_, _ = b.EditMessageText(ctx, &bot.EditMessageTextParams{
+		ChatID:      chatID,
+		MessageID:   msg.ID,
+		Text:        text,
+		ReplyMarkup: inline,
+	})
 }
 
 func (a *App) getNav(userID int64) userMenu {
@@ -360,9 +453,22 @@ func (a *App) getNav(userID int64) userMenu {
 	return a.nav[userID]
 }
 
-func (a *App) setNav(userID int64, nodeID string, page int) {
+func (a *App) setLocation(userID int64, nodeID string, page int) {
 	a.navMu.Lock()
-	a.nav[userID] = userMenu{nodeID: nodeID, page: page}
+	st := a.nav[userID]
+	st.nodeID = nodeID
+	st.page = page
+	a.nav[userID] = st
+	a.navMu.Unlock()
+}
+
+func (a *App) setPanelMeta(userID int64, messageID int, chatID int64, replySig string) {
+	a.navMu.Lock()
+	st := a.nav[userID]
+	st.messageID = messageID
+	st.chatID = chatID
+	st.replySig = replySig
+	a.nav[userID] = st
 	a.navMu.Unlock()
 }
 
@@ -374,11 +480,11 @@ func (a *App) showConfirm(ctx context.Context, b *bot.Bot, chatID, userID int64,
 	}
 	a.confirmMu.Unlock()
 
-	_, _ = b.SendMessage(ctx, &bot.SendMessageParams{
-		ChatID:      chatID,
-		Text:        fmt.Sprintf("Confirm: %s ?", node.Label()),
-		ReplyMarkup: ConfirmKeyboard(),
-	})
+	st := a.getNav(userID)
+	hasBack := st.nodeID != ""
+	reply := navReplyKeyboard(hasBack, false, false)
+	inline := ConfirmInlineKeyboard(hasBack)
+	a.showPanel(ctx, b, chatID, userID, fmt.Sprintf("Confirm: %s ?", node.Label()), inline, reply, replySig(hasBack, false, false))
 }
 
 func (a *App) consumeConfirm(userID int64) (string, bool) {
@@ -401,13 +507,13 @@ func (a *App) clearConfirm(userID int64) {
 func (a *App) executeButton(ctx context.Context, b *bot.Bot, chatID int64, user *models.User, node *Node) {
 	def, ok := a.Registry.GetCaseInsensitive(node.Function)
 	if !ok {
-		a.replyWithMenu(ctx, b, chatID, user.ID, fmt.Sprintf("Unknown function %q", node.Function))
+		a.showStatus(ctx, b, chatID, user.ID, fmt.Sprintf("Unknown function %q", node.Function))
 		return
 	}
 	params := function.ButtonParams(node.Raw)
 	cmd, err := def.RenderRun(params)
 	if err != nil {
-		a.replyWithMenu(ctx, b, chatID, user.ID, "Failed to build command: "+err.Error())
+		a.showStatus(ctx, b, chatID, user.ID, "Failed to build command: "+err.Error())
 		return
 	}
 
@@ -427,7 +533,7 @@ func (a *App) executeButton(ctx context.Context, b *bot.Bot, chatID int64, user 
 		env[k] = v
 	}
 
-	a.replyWithMenu(ctx, b, chatID, user.ID, fmt.Sprintf("Running: %s …", node.Label()))
+	a.showStatus(ctx, b, chatID, user.ID, fmt.Sprintf("Running: %s …", node.Label()))
 
 	res, err := a.Exec.Run(ctx, executor.Spec{
 		UserID:   user.ID,
@@ -465,23 +571,19 @@ func (a *App) deliverResult(ctx context.Context, b *bot.Bot, chatID, userID int6
 		body.WriteString(res.Stderr)
 	}
 	text := body.String()
-	kb := a.menuKeyboard(userID)
-	if len(text) <= telegramMaxMessageLen {
-		_, _ = b.SendMessage(ctx, &bot.SendMessageParams{
-			ChatID:      chatID,
-			Text:        text,
-			ReplyMarkup: kb,
-		})
-		return
+	if len(text) > telegramMaxMessageLen {
+		text = text[:telegramMaxMessageLen]
 	}
-	// Send as document when too long.
-	_, _ = b.SendDocument(ctx, &bot.SendDocumentParams{
-		ChatID: chatID,
-		Document: &models.InputFileUpload{
-			Filename: "output.txt",
-			Data:     strings.NewReader(text),
+	st := a.getNav(userID)
+	hasBack := st.nodeID != ""
+	reply := navReplyKeyboard(hasBack, false, false)
+	inline := &models.InlineKeyboardMarkup{
+		InlineKeyboard: [][]models.InlineKeyboardButton{
+			{{Text: btnHome, CallbackData: cbHome}},
 		},
-		Caption:     fmt.Sprintf("%s output (too long for a message)", node.Name),
-		ReplyMarkup: kb,
-	})
+	}
+	if hasBack {
+		inline.InlineKeyboard[0] = append(inline.InlineKeyboard[0], models.InlineKeyboardButton{Text: btnBack, CallbackData: cbBack})
+	}
+	a.showPanel(ctx, b, chatID, userID, text, inline, reply, replySig(hasBack, false, false))
 }
