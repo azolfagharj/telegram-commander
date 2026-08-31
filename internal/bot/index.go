@@ -100,9 +100,22 @@ func walk(idx *Index, n *config.ButtonNode, parentID, id string, defaultColumns 
 // Label returns the display label for a node.
 func (n *Node) Label() string {
 	if n.Icon != "" {
-		return n.Icon + " " + n.Name
+		return stripVariationSelectors(n.Icon + " " + n.Name)
 	}
 	return n.Name
+}
+
+// stripVariationSelectors drops emoji variation selectors (U+FE0E, U+FE0F).
+// Some Telegram Android clients miscompute an inline button's width when its
+// label contains one, which can make the text spill outside the button. The
+// base emoji still renders fine without it.
+func stripVariationSelectors(s string) string {
+	return strings.Map(func(r rune) rune {
+		if r == '\uFE0E' || r == '\uFE0F' {
+			return -1
+		}
+		return r
+	}, s)
 }
 
 // FindByName searches the tree for a button by name (case-insensitive).

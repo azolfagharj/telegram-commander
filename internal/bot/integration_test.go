@@ -301,3 +301,49 @@ func TestMenuReusesOneMessage(t *testing.T) {
 	require.Equal(t, 1, realSends, "only the first screen should send a new message")
 	require.Equal(t, 2, edits, "later screens should edit the same message")
 }
+
+func TestTypedStartAfterTapSendsNewMessage(t *testing.T) {
+	srv := &apiServer{}
+	ts := httptest.NewServer(srv)
+	defer ts.Close()
+
+	cfg := &config.Config{
+		Telegram: config.TelegramConfig{
+			API:          ts.URL,
+			BotToken:     "123:ABC",
+			AllowedUsers: []string{"42"},
+		},
+		Buttons: []config.ButtonNode{
+			{
+				Name: "Cat",
+				Type: "category",
+				Items: []config.ButtonNode{
+					{Name: "Echo", Type: "button", Function: "command", Command: "echo hi"},
+				},
+			},
+		},
+	}
+	cfg.ApplyDefaults()
+
+	app := bot.NewApp(cfg, function.NewRegistry(), &executor.FakeExecutor{}, nil)
+	b, err := app.NewBotWithOptions(
+		tgbot.WithHTTPClient(5*time.Second, ts.Client()),
+		tgbot.WithServerURL(ts.URL),
+		tgbot.WithSkipGetMe(),
+		tgbot.WithNotAsyncHandlers(),
+	)
+	require.NoError(t, err)
+
+	ctx := context.Background()
+	b.ProcessUpdate(ctx, startCommandUpdate(42, "admin", "/start"))
+	b.ProcessUpdate(ctx, callbackUpdate(42, "o:"+app.Index.Roots[0])) // a button tap: edits in place
+	b.ProcessUpdate(ctx, startCommandUpdate(42, "admin", "/start"))   // typed again: must be a new message
+
+	srv.mu.Lock()
+	defer srv.mu.Unlock()
+
+	last := srv.messages[len(srv.messages)-1]
+	_, wasEdit := last["message_id"]
+	require.False(t, wasEdit, "the menu after a typed command must be a new message, not an edit of an older one")
+	require.Equal(t, "Menu", last["text"])
+}

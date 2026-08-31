@@ -116,6 +116,15 @@ func TestPagination(t *testing.T) {
 	require.NotContains(t, last, "Next ⏩")
 }
 
+func TestLabelStripsVariationSelectors(t *testing.T) {
+	idx := bot.BuildIndex([]config.ButtonNode{
+		{Name: "System", Type: "button", Icon: "🖥️", Function: "command", Command: "true"},
+	}, 2, 8)
+	n := idx.ByID[idx.Roots[0]]
+	require.Equal(t, "🖥 System", n.Label())
+	require.NotContains(t, n.Label(), "\ufe0f")
+}
+
 func TestConfirmInlineKeyboard(t *testing.T) {
 	kb := bot.ConfirmInlineKeyboard(true)
 	require.Equal(t, "🏠 Home", kb.InlineKeyboard[0][0].Text)

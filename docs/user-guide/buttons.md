@@ -43,7 +43,7 @@ category.
 buttons:
   - name: System
     type: category
-    icon: "🖥️"
+    icon: "💻"
     items:
       - name: Uptime
         type: button
@@ -99,11 +99,15 @@ buttons:
 ```yaml
 - name: Reboot
   type: button
-  icon: "♻️"
+  icon: "🔁"
   function: command
   command: "reboot"
   confirm: true
 ```
+
+Pick a simple, common emoji. A few emoji make some phones show the button
+text cut off or overflowing the button. If a button looks cut off, try a
+different emoji for it.
 
 ## How the Telegram menu looks
 

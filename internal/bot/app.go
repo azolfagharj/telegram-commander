@@ -195,8 +195,10 @@ func (a *App) handleStart(ctx context.Context, b *bot.Bot, update *models.Update
 		return
 	}
 	chatID := update.Message.Chat.ID
+	userID := update.Message.From.ID
 	a.removeReplyKeyboard(ctx, b, chatID)
-	a.sendMenu(ctx, b, chatID, update.Message.From.ID, "", 0)
+	a.resetMessage(userID)
+	a.sendMenu(ctx, b, chatID, userID, "", 0)
 }
 
 func (a *App) handleHelp(ctx context.Context, b *bot.Bot, update *models.Update) {
@@ -248,6 +250,7 @@ func (a *App) handleRun(ctx context.Context, b *bot.Bot, update *models.Update) 
 		})
 		return
 	}
+	a.resetMessage(update.Message.From.ID)
 	a.executeButton(ctx, b, update.Message.Chat.ID, update.Message.From, node)
 }
 
@@ -278,6 +281,10 @@ func (a *App) handleMenuText(ctx context.Context, b *bot.Bot, msg *models.Messag
 	text := strings.TrimSpace(msg.Text)
 	chatID := msg.Chat.ID
 	userID := msg.From.ID
+	// The user just typed something, so it is the newest message in the
+	// chat. Force the next screen to be a fresh message so it stays last,
+	// instead of editing an older menu message that is now above it.
+	a.resetMessage(userID)
 	if text == "" || strings.HasPrefix(text, "/") {
 		a.showStatus(ctx, b, chatID, userID, "Use /start to open the menu.")
 		return
@@ -477,6 +484,21 @@ func (a *App) setLocation(userID int64, nodeID string, page int) {
 	st := a.nav[userID]
 	st.nodeID = nodeID
 	st.page = page
+	a.nav[userID] = st
+	a.navMu.Unlock()
+}
+
+// resetMessage forgets the tracked menu message for userID, so the next
+// screen is sent as a brand new message instead of editing an older one.
+// Call this before reacting to a typed message (a real new chat bubble),
+// so the response is guaranteed to land after it. Do not call it for
+// inline button taps: those do not add a new chat bubble, so editing the
+// existing menu message in place is correct there.
+func (a *App) resetMessage(userID int64) {
+	a.navMu.Lock()
+	st := a.nav[userID]
+	st.messageID = 0
+	st.chatID = 0
 	a.nav[userID] = st
 	a.navMu.Unlock()
 }
