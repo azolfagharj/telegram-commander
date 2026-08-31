@@ -121,8 +121,9 @@ very last message, no matter whether you tapped a button or typed something.
 - **Home** is also always at the top of every screen. Tap it to go back to
   the first screen.
 - **Back** appears when you are inside a category.
-- Items sit in rows (two per row by default). If a screen has many items,
-  **Prev** and **Next** let you page through them.
+- Items sit one per row by default, full width, so text is not squeezed into
+  a narrow column. If a screen has many items, **Prev** and **Next** let you
+  page through them.
 - Buttons with `confirm: true` ask Yes / Cancel before they run.
 
 ## Confirmation
@@ -163,7 +164,7 @@ See the full field list in
 ## Controlling layout
 
 `buttons_columns` sets how many **item** buttons appear per row on the message
-(default 2). A category can override it with `columns`. When a menu has more
+(default 1, full width). A category can override it with `columns`. When a menu has more
 than `page_size` items (default 8), it is split into pages and Prev/Next are
 shown until you reach the ends. See
 [Configuration → Root fields](configuration.md#root-fields).
