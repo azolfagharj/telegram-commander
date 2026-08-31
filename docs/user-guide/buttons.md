@@ -32,9 +32,8 @@ buttons:
 ```
 
 Send `/start` in Telegram. The bot keeps **one menu message** and updates it
-when you tap. Action buttons sit on that message (inline keyboard). A small
-reply keyboard at the bottom repeats Home, and Back / Prev / Next only when
-those actions work.
+when you tap. All action buttons sit on that message (inline keyboard). Under
+the type box there is only a **Home** reply button.
 
 ## Grouping with categories
 
@@ -116,9 +115,9 @@ menu each time.
 - **On the message (inline):** `Home` is always there. Category and button
   items use two columns by default (`buttons_columns`), at most `page_size`
   items per page (default 8). `Back` appears only inside a category. `Prev` /
-  `Next` appear only when there is another page.
-- **Bottom reply keyboard:** the same nav buttons, with the same rules. Menu
-  items are not duplicated there.
+  `Next` appear only when there is another page. Confirm Yes / Cancel also
+  appear here.
+- **Under the type box (reply keyboard):** only `Home`, always.
 
 Tapping Home, Back, Prev, Next, or an item updates that same message.
 

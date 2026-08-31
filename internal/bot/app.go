@@ -412,18 +412,20 @@ func (a *App) showStatus(ctx context.Context, b *bot.Bot, chatID, userID int64, 
 
 func (a *App) showPanel(ctx context.Context, b *bot.Bot, chatID, userID int64, text string, inline *models.InlineKeyboardMarkup, reply *models.ReplyKeyboardMarkup, replySig string) {
 	st := a.getNav(userID)
-	if st.messageID != 0 && st.replySig == replySig {
+	if st.messageID == 0 || st.replySig != replySig {
+		a.pushReplyKeyboard(ctx, b, chatID, reply)
+	}
+	if st.messageID != 0 {
 		_, err := b.EditMessageText(ctx, &bot.EditMessageTextParams{
 			ChatID:      chatID,
 			MessageID:   st.messageID,
 			Text:        text,
 			ReplyMarkup: inline,
 		})
-		if err == nil {
+		if err == nil || isMessageNotModified(err) {
+			a.setPanelMeta(userID, st.messageID, chatID, replySig)
 			return
 		}
-	}
-	if st.messageID != 0 {
 		_, _ = b.DeleteMessage(ctx, &bot.DeleteMessageParams{
 			ChatID:    chatID,
 			MessageID: st.messageID,
@@ -432,19 +434,36 @@ func (a *App) showPanel(ctx context.Context, b *bot.Bot, chatID, userID int64, t
 	msg, err := b.SendMessage(ctx, &bot.SendMessageParams{
 		ChatID:      chatID,
 		Text:        text,
-		ReplyMarkup: reply,
+		ReplyMarkup: inline,
 	})
 	if err != nil || msg == nil {
 		a.Log.Error("send menu", "err", err)
 		return
 	}
 	a.setPanelMeta(userID, msg.ID, chatID, replySig)
-	_, _ = b.EditMessageText(ctx, &bot.EditMessageTextParams{
+}
+
+func (a *App) pushReplyKeyboard(ctx context.Context, b *bot.Bot, chatID int64, reply *models.ReplyKeyboardMarkup) {
+	if reply == nil {
+		return
+	}
+	msg, err := b.SendMessage(ctx, &bot.SendMessageParams{
 		ChatID:      chatID,
-		MessageID:   msg.ID,
-		Text:        text,
-		ReplyMarkup: inline,
+		Text:        "\u2060",
+		ReplyMarkup: reply,
 	})
+	if err != nil || msg == nil {
+		a.Log.Error("set reply keyboard", "err", err)
+		return
+	}
+	_, _ = b.DeleteMessage(ctx, &bot.DeleteMessageParams{
+		ChatID:    chatID,
+		MessageID: msg.ID,
+	})
+}
+
+func isMessageNotModified(err error) bool {
+	return err != nil && strings.Contains(strings.ToLower(err.Error()), "message is not modified")
 }
 
 func (a *App) getNav(userID int64) userMenu {
@@ -482,9 +501,9 @@ func (a *App) showConfirm(ctx context.Context, b *bot.Bot, chatID, userID int64,
 
 	st := a.getNav(userID)
 	hasBack := st.nodeID != ""
-	reply := navReplyKeyboard(hasBack, false, false)
+	reply := homeReplyKeyboard()
 	inline := ConfirmInlineKeyboard(hasBack)
-	a.showPanel(ctx, b, chatID, userID, fmt.Sprintf("Confirm: %s ?", node.Label()), inline, reply, replySig(hasBack, false, false))
+	a.showPanel(ctx, b, chatID, userID, fmt.Sprintf("Confirm: %s ?", node.Label()), inline, reply, replySigHome)
 }
 
 func (a *App) consumeConfirm(userID int64) (string, bool) {
@@ -576,7 +595,7 @@ func (a *App) deliverResult(ctx context.Context, b *bot.Bot, chatID, userID int6
 	}
 	st := a.getNav(userID)
 	hasBack := st.nodeID != ""
-	reply := navReplyKeyboard(hasBack, false, false)
+	reply := homeReplyKeyboard()
 	inline := &models.InlineKeyboardMarkup{
 		InlineKeyboard: [][]models.InlineKeyboardButton{
 			{{Text: btnHome, CallbackData: cbHome}},
@@ -585,5 +604,5 @@ func (a *App) deliverResult(ctx context.Context, b *bot.Bot, chatID, userID int6
 	if hasBack {
 		inline.InlineKeyboard[0] = append(inline.InlineKeyboard[0], models.InlineKeyboardButton{Text: btnBack, CallbackData: cbBack})
 	}
-	a.showPanel(ctx, b, chatID, userID, text, inline, reply, replySig(hasBack, false, false))
+	a.showPanel(ctx, b, chatID, userID, text, inline, reply, replySigHome)
 }

@@ -57,36 +57,20 @@ func (idx *Index) BuildMenu(nodeID string, page int) (*MenuBuild, error) {
 		Title:      title,
 		Page:       page,
 		TotalPages: totalPages,
-		Reply:      navReplyKeyboard(hasBack, hasPrev, hasNext),
+		Reply:      homeReplyKeyboard(),
 		Inline:     menuInlineKeyboard(idx, slice, columns, hasBack, hasPrev, hasNext),
-		ReplySig:   replySig(hasBack, hasPrev, hasNext),
+		ReplySig:   replySigHome,
 		HasBack:    hasBack,
 		HasPrev:    hasPrev,
 		HasNext:    hasNext,
 	}, nil
 }
 
-func replySig(hasBack, hasPrev, hasNext bool) string {
-	return fmt.Sprintf("h:%t:%t:%t", hasBack, hasPrev, hasNext)
-}
+const replySigHome = "home"
 
-func navReplyKeyboard(hasBack, hasPrev, hasNext bool) *models.ReplyKeyboardMarkup {
-	rows := [][]models.KeyboardButton{{{Text: btnHome}}}
-	if hasBack {
-		rows[0] = append(rows[0], models.KeyboardButton{Text: btnBack})
-	}
-	var pager []models.KeyboardButton
-	if hasPrev {
-		pager = append(pager, models.KeyboardButton{Text: btnPrev})
-	}
-	if hasNext {
-		pager = append(pager, models.KeyboardButton{Text: btnNext})
-	}
-	if len(pager) > 0 {
-		rows = append(rows, pager)
-	}
+func homeReplyKeyboard() *models.ReplyKeyboardMarkup {
 	return &models.ReplyKeyboardMarkup{
-		Keyboard:       rows,
+		Keyboard:       [][]models.KeyboardButton{{{Text: btnHome}}},
 		ResizeKeyboard: true,
 		IsPersistent:   true,
 	}

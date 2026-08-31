@@ -43,7 +43,7 @@ in small **custom functions** so buttons stay short and consistent.
 ## Features
 
 - YAML config with strict unknown-field rejection (typos become errors)
-- Nested category / button menu: one Telegram message that is updated in place, plus a small reply keyboard for Home / Back / paging
+- Nested category / button menu: one Telegram message that is updated in place, plus a Home-only reply keyboard under the type box
 - Run any shell command via the built-in `command` and `script` functions
 - Reusable custom functions, one YAML file each under `function_directory`
 - Confirmation prompts, pagination, and a per-user command queue (serial per user)

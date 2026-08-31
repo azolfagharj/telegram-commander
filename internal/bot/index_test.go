@@ -71,7 +71,7 @@ func TestBuildIndexAndKeyboard(t *testing.T) {
 
 	texts2 := collectReply(view2)
 	require.Contains(t, texts2, "🏠 Home")
-	require.Contains(t, texts2, "⬅️ Back")
+	require.NotContains(t, texts2, "⬅️ Back")
 	require.NotContains(t, texts2, "Echo")
 
 	inline2 := collectInline(view2)
@@ -123,9 +123,10 @@ func TestPagination(t *testing.T) {
 	require.True(t, view.HasBack)
 
 	reply := collectReply(view)
-	require.Contains(t, reply, "Next ▶️")
+	require.Contains(t, reply, "🏠 Home")
+	require.NotContains(t, reply, "Next ▶️")
 	require.NotContains(t, reply, "◀️ Prev")
-	require.Contains(t, reply, "⬅️ Back")
+	require.NotContains(t, reply, "⬅️ Back")
 
 	inline := collectInline(view)
 	require.Contains(t, inline, "Next ▶️")
@@ -137,7 +138,8 @@ func TestPagination(t *testing.T) {
 	require.NoError(t, err)
 	require.True(t, viewLast.HasPrev)
 	require.False(t, viewLast.HasNext)
-	require.Contains(t, collectReply(viewLast), "◀️ Prev")
+	require.Contains(t, collectReply(viewLast), "🏠 Home")
+	require.NotContains(t, collectReply(viewLast), "◀️ Prev")
 	require.NotContains(t, collectReply(viewLast), "Next ▶️")
 }
 

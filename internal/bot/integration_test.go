@@ -122,6 +122,18 @@ func textUpdate(userID int64, username, text string) *models.Update {
 	}
 }
 
+func visibleTexts(s *apiServer) []string {
+	var texts []string
+	for _, m := range s.messages {
+		t, ok := m["text"].(string)
+		if !ok || t == "" || t == "\u2060" {
+			continue
+		}
+		texts = append(texts, t)
+	}
+	return texts
+}
+
 func TestUnauthorizedUserGetsDenyMessage(t *testing.T) {
 	srv := &apiServer{}
 	ts := httptest.NewServer(srv)
@@ -189,9 +201,7 @@ func TestAllowedStartSendsMenu(t *testing.T) {
 
 	srv.mu.Lock()
 	defer srv.mu.Unlock()
-	require.NotEmpty(t, srv.messages)
-	text, _ := srv.messages[0]["text"].(string)
-	require.Equal(t, "Menu", text)
+	require.Contains(t, visibleTexts(srv), "Menu")
 }
 
 func TestReplyKeyboardNavigation(t *testing.T) {
@@ -235,12 +245,7 @@ func TestReplyKeyboardNavigation(t *testing.T) {
 	srv.mu.Lock()
 	defer srv.mu.Unlock()
 	require.NotEmpty(t, srv.messages)
-	var texts []string
-	for _, m := range srv.messages {
-		if t, ok := m["text"].(string); ok {
-			texts = append(texts, t)
-		}
-	}
+	texts := visibleTexts(srv)
 	require.Contains(t, texts, "Menu")
 	foundCat := false
 	for _, line := range texts {
