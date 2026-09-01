@@ -395,7 +395,7 @@ func (a *App) sendMenu(ctx context.Context, b *bot.Bot, chatID, userID int64, no
 	}
 	page = view.Page
 	a.setLocation(userID, nodeID, page)
-	a.sendInline(ctx, b, chatID, userID, view.Title, view.Reply)
+	a.sendInline(ctx, b, chatID, userID, view.Title, view.Reply, "")
 }
 
 func (a *App) showStatus(ctx context.Context, b *bot.Bot, chatID, userID int64, text string) {
@@ -404,11 +404,11 @@ func (a *App) showStatus(ctx context.Context, b *bot.Bot, chatID, userID int64, 
 	if err != nil {
 		view, err = a.Index.BuildMenu("", 0)
 		if err != nil {
-			a.sendInline(ctx, b, chatID, userID, text, nil)
+			a.sendInline(ctx, b, chatID, userID, text, nil, "")
 			return
 		}
 	}
-	a.sendInline(ctx, b, chatID, userID, text, view.Reply)
+	a.sendInline(ctx, b, chatID, userID, text, view.Reply, "")
 }
 
 // sendInline shows one screen. It always sends a brand new message with the
@@ -417,10 +417,11 @@ func (a *App) showStatus(ctx context.Context, b *bot.Bot, chatID, userID int64, 
 // text is never squeezed the way it can be inside a narrow inline keyboard.
 // The previous menu message, if any, is then deleted so the chat does not
 // fill up with old screens.
-func (a *App) sendInline(ctx context.Context, b *bot.Bot, chatID, userID int64, text string, reply *models.ReplyKeyboardMarkup) {
+func (a *App) sendInline(ctx context.Context, b *bot.Bot, chatID, userID int64, text string, reply *models.ReplyKeyboardMarkup, parseMode models.ParseMode) {
 	params := &bot.SendMessageParams{
-		ChatID: chatID,
-		Text:   text,
+		ChatID:    chatID,
+		Text:      text,
+		ParseMode: parseMode,
 	}
 	if reply != nil {
 		params.ReplyMarkup = reply
@@ -474,7 +475,7 @@ func (a *App) showConfirm(ctx context.Context, b *bot.Bot, chatID, userID int64,
 
 	st := a.getNav(userID)
 	hasBack := st.nodeID != ""
-	a.sendInline(ctx, b, chatID, userID, fmt.Sprintf("Confirm: %s ?", node.Label()), ConfirmReplyKeyboard(hasBack))
+	a.sendInline(ctx, b, chatID, userID, fmt.Sprintf("Confirm: %s ?", node.Label()), ConfirmReplyKeyboard(hasBack), "")
 }
 
 func (a *App) consumeConfirm(userID int64) (string, bool) {
@@ -541,30 +542,8 @@ func (a *App) executeButton(ctx context.Context, b *bot.Bot, chatID int64, user 
 }
 
 func (a *App) deliverResult(ctx context.Context, b *bot.Bot, chatID, userID int64, node *Node, res executor.Result, err error) {
-	var body strings.Builder
-	body.WriteString(fmt.Sprintf("Button: %s\n", node.Name))
-	body.WriteString(fmt.Sprintf("Exit: %d\n", res.ExitCode))
-	body.WriteString(fmt.Sprintf("Duration: %s\n", res.Duration.Round(time.Millisecond)))
-	if res.TimedOut {
-		body.WriteString("Status: TIMED OUT\n")
-	}
-	if err != nil && !res.TimedOut {
-		body.WriteString("Error: " + err.Error() + "\n")
-	}
-	if res.Truncated {
-		body.WriteString("(output truncated)\n")
-	}
-	body.WriteString("\n--- stdout ---\n")
-	body.WriteString(res.Stdout)
-	if res.Stderr != "" {
-		body.WriteString("\n--- stderr ---\n")
-		body.WriteString(res.Stderr)
-	}
-	text := body.String()
-	if len(text) > telegramMaxMessageLen {
-		text = text[:telegramMaxMessageLen]
-	}
+	text := formatCommandResult(node, res, err)
 	st := a.getNav(userID)
 	hasBack := st.nodeID != ""
-	a.sendInline(ctx, b, chatID, userID, text, ResultReplyKeyboard(hasBack))
+	a.sendInline(ctx, b, chatID, userID, text, ResultReplyKeyboard(hasBack), models.ParseModeMarkdown)
 }

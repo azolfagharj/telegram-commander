@@ -16,7 +16,7 @@ into a shell command. When you tap a [button](concepts/button.md), the bot:
 1. Looks up the function named in the button's `function` field.
 2. Collects the button's parameter values.
 3. Builds the shell command from those values.
-4. Runs the command in the [shell](concepts/shell.md) and sends the output back.
+4. Runs the command in the [shell](concepts/shell.md) and sends the output back as a code block.
 
 Think of a function as a fill-in-the-blanks command. For example, a "ping a
 host" function has one blank — the host — and you fill it in on each button.
@@ -32,7 +32,7 @@ This button uses the built-in `command` function:
   command: "uptime"
 ```
 
-The bot runs `uptime` on the server and sends the output back. To make reusable
+The bot runs `uptime` on the server and sends the output back as a code block. To make reusable
 fill-in-the-blanks commands, see [Writing custom functions](#writing-custom-functions).
 
 ## The two kinds of functions

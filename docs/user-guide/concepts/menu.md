@@ -124,6 +124,7 @@ one, so the chat stays tidy and the current screen is always the last message.
 - Items sit two per row by default. A category can change this with `columns`.
   If a screen has many items, **Prev** and **Next** let you page through them.
 - Buttons with `confirm: true` ask Yes / Cancel before they run.
+- Command stdout and stderr are shown as a code block.
 
 ## Confirmation
 
