@@ -45,7 +45,7 @@ example.
 | `function_directory` | string | no | unset | Custom function YAML directory (see rules below) |
 | `shell` | string | no | `/bin/bash` | [Shell](concepts/shell.md) used as `shell -c "<command>"` |
 | `timeout` | duration | no | `60s` | Default command timeout |
-| `max_output_bytes` | int | no | `524288` | Max captured stdout/stderr bytes |
+| `max_output_bytes` | int | no | `524288` | Max output kept per command (see [How much command output you see](#how-much-command-output-you-see)) |
 | `workdir` | string | no | process cwd | Default working directory for commands |
 | `env` | map | no | empty | Extra environment variables for commands |
 | `menu_columns` | int | no | `2` | Item buttons per row under the message box |
@@ -57,6 +57,35 @@ example.
 ### What if I omit `shell`?
 
 You can omit it. The bot uses `/bin/bash`. Same for `timeout`, `page_size`, and other optional root fields: omit them and defaults apply. You only need to set them when you want a non-default value (for example `shell: /bin/sh`).
+
+### How much command output you see
+
+Two limits apply, one after the other. `max_output_bytes` is **your** limit and
+comes on top of a Telegram limit you cannot change.
+
+**1. Your limit: `max_output_bytes`** (default `524288`, so 512 KB)
+
+While a command runs, the bot keeps at most this much of its output, counted
+separately for normal output and error output. Anything past that is dropped,
+but the command itself keeps running until it finishes or hits its `timeout`.
+When this happens, the result starts with `(output truncated)`.
+
+**2. Telegram's limit: one message holds about 4000 characters**
+
+This one is fixed by Telegram. If the result is longer than a single message,
+the bot splits it into several messages. Each part is sent as a reply to the
+part before it, so they stay together and in order, and the menu buttons appear
+on the last part. The split happens on line boundaries whenever possible, so
+lines are not cut in half.
+
+If the result is still very long after splitting, the bot stops after 10
+messages and the last one ends with a note like
+`(output too long; showing first 38000 bytes)`.
+
+So raising `max_output_bytes` lets the bot keep more output, but you still see
+at most about ten messages of it. For output that long, it is usually better to
+shorten the command itself (for example `journalctl -u nginx | tail -n 50`) or
+write the full output to a file on the server.
 
 ### `function_directory` rules
 

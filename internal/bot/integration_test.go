@@ -42,11 +42,13 @@ func (s *apiServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case strings.HasSuffix(path, "/sendMessage"):
 		id := len(s.messages) + 1
 		m := map[string]any{
-			"chat_id":      r.FormValue("chat_id"),
-			"text":         r.FormValue("text"),
-			"reply_markup": r.FormValue("reply_markup"),
-			"message_id":   id,
-			"kind":         "send",
+			"chat_id":          r.FormValue("chat_id"),
+			"text":             r.FormValue("text"),
+			"reply_markup":     r.FormValue("reply_markup"),
+			"reply_parameters": r.FormValue("reply_parameters"),
+			"parse_mode":       r.FormValue("parse_mode"),
+			"message_id":       id,
+			"kind":             "send",
 		}
 		s.messages = append(s.messages, m)
 		writeOK(w, map[string]any{
@@ -598,4 +600,73 @@ func TestRunCommandButtonAbsentWhenDisabled(t *testing.T) {
 	defer srv.mu.Unlock()
 	rm := fmt.Sprintf("%v", srv.messages[0]["reply_markup"])
 	require.NotContains(t, rm, "Run Command")
+}
+
+func TestLongCommandResultIsSplitAndReplied(t *testing.T) {
+	srv := &apiServer{}
+	ts := httptest.NewServer(srv)
+	defer ts.Close()
+
+	var stdout strings.Builder
+	line := `udp UNCONN 0 0 0.0.0.0:80 0.0.0.0:* users:(("python3",pid=1,fd=2))`
+	for i := 0; i < 80; i++ {
+		stdout.WriteString(line)
+		stdout.WriteByte('\n')
+	}
+
+	fake := &executor.FakeExecutor{
+		Fn: func(_ context.Context, _ executor.Spec) (executor.Result, error) {
+			return executor.Result{ExitCode: 0, Stdout: stdout.String()}, nil
+		},
+	}
+
+	cfg := &config.Config{
+		Telegram: config.TelegramConfig{
+			API:          ts.URL,
+			BotToken:     "123:ABC",
+			AllowedUsers: []string{"42"},
+		},
+		Menu: []config.ButtonNode{
+			{Name: "Echo", Type: "button", Function: "command", Command: "echo hi"},
+		},
+	}
+	cfg.ApplyDefaults()
+
+	app := bot.NewApp(cfg, function.NewRegistry(), fake, nil)
+	b, err := app.NewBotWithOptions(
+		tgbot.WithHTTPClient(5*time.Second, ts.Client()),
+		tgbot.WithServerURL(ts.URL),
+		tgbot.WithSkipGetMe(),
+		tgbot.WithNotAsyncHandlers(),
+	)
+	require.NoError(t, err)
+
+	ctx := context.Background()
+	b.ProcessUpdate(ctx, startCommandUpdate(42, "admin", "/start"))
+	b.ProcessUpdate(ctx, textUpdate(42, "admin", "Echo"))
+
+	srv.mu.Lock()
+	defer srv.mu.Unlock()
+
+	var result []map[string]any
+	for _, m := range srv.messages {
+		text, _ := m["text"].(string)
+		if strings.Contains(text, "<pre>") {
+			result = append(result, m)
+		}
+	}
+	require.Greater(t, len(result), 1, "long output should be more than one message")
+	for i, m := range result {
+		text, _ := m["text"].(string)
+		require.LessOrEqual(t, len(text), 4096, "chunk %d", i)
+		require.Contains(t, text, "</pre>")
+		require.Equal(t, "HTML", m["parse_mode"])
+	}
+	last := result[len(result)-1]
+	rm := fmt.Sprintf("%v", last["reply_markup"])
+	require.Contains(t, rm, "Home")
+	firstRM := fmt.Sprintf("%v", result[0]["reply_markup"])
+	require.NotContains(t, firstRM, "Home")
+	reply := fmt.Sprintf("%v", result[1]["reply_parameters"])
+	require.Contains(t, reply, "message_id")
 }

@@ -353,8 +353,10 @@ A button using it:
 - Parameter values are inserted into the command as text. Treat them like shell
   input: prefer fixed values on buttons, and add
   [`confirm: true`](concepts/confirmation.md) to anything destructive.
-- Output is truncated at `max_output_bytes` and commands stop at their
-  `timeout`. See [Configuration → Root fields](configuration.md#root-fields).
+- Commands stop at their `timeout`, and the bot keeps at most
+  `max_output_bytes` of their output. Anything longer than one Telegram message
+  arrives as several messages. See
+  [Configuration → How much command output you see](configuration.md#how-much-command-output-you-see).
 
 ## Related pages
 

@@ -21,8 +21,6 @@ import (
 	"github.com/azolfagharj/telegram-commander/internal/function"
 )
 
-const telegramMaxMessageLen = 4096
-
 // App wires config, functions, executor and Telegram handlers.
 type App struct {
 	Cfg      *config.Config
@@ -568,8 +566,43 @@ func (a *App) executeRawCommand(ctx context.Context, b *bot.Bot, chatID int64, u
 }
 
 func (a *App) deliverResult(ctx context.Context, b *bot.Bot, chatID, userID int64, node *Node, res executor.Result, err error) {
-	text := formatCommandResult(node, res, err)
+	chunks := formatCommandResult(node, res, err)
+	if len(chunks) == 0 {
+		chunks = []string{buildResultHeader(node, res, err)}
+	}
 	st := a.getNav(userID)
 	hasBack := st.nodeID != ""
-	a.sendInline(ctx, b, chatID, userID, text, ResultReplyKeyboard(hasBack, a.Cfg.EnableRunCommand), models.ParseModeHTML)
+	kb := ResultReplyKeyboard(hasBack, a.Cfg.EnableRunCommand)
+	old := st
+
+	var lastID int
+	for i, chunk := range chunks {
+		params := &bot.SendMessageParams{
+			ChatID:    chatID,
+			Text:      chunk,
+			ParseMode: models.ParseModeHTML,
+		}
+		if lastID != 0 {
+			params.ReplyParameters = &models.ReplyParameters{MessageID: lastID}
+		}
+		if i == len(chunks)-1 {
+			params.ReplyMarkup = kb
+		}
+		msg, sendErr := b.SendMessage(ctx, params)
+		if sendErr != nil || msg == nil {
+			a.Log.Error("send result", "err", sendErr)
+			break
+		}
+		lastID = msg.ID
+	}
+	if lastID == 0 {
+		return
+	}
+	a.setMessageID(userID, chatID, lastID)
+	if old.messageID != 0 && old.chatID == chatID {
+		_, _ = b.DeleteMessage(ctx, &bot.DeleteMessageParams{
+			ChatID:    old.chatID,
+			MessageID: old.messageID,
+		})
+	}
 }

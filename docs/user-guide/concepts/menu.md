@@ -125,7 +125,10 @@ one, so the chat stays tidy and the current screen is always the last message.
 - Items sit two per row by default. A category can change this with `columns`.
   If a screen has many items, **Prev** and **Next** let you page through them.
 - Buttons with `confirm: true` ask Yes / Cancel before they run.
-- Command stdout and stderr are shown as a code block.
+- Command output is shown as a code block. If it is longer than one Telegram
+  message, it arrives as several messages, each a reply to the one before it,
+  with the menu on the last one. See
+  [Configuration → How much command output you see](../configuration.md#how-much-command-output-you-see).
 
 ## Confirmation
 

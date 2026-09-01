@@ -17,6 +17,7 @@ max_output_bytes: 524288
 menu_columns: 2
 page_size: 8
 confirm_ttl: "5m"
+# Show a Run Command button that runs the next message as a shell command.
 enable_run_command: true
 
 logging:
@@ -33,6 +34,60 @@ logging:
         - output: stderr
 
 menu:
+  - name: "System"
+    type: category
+    icon: "🖥️"
+    items:
+      - name: "Uptime & Load"
+        type: button
+        icon: "🕒"
+        function: command
+        command: "uptime && uptime -p"
+      - name: "Disk Space (/)"
+        type: button
+        icon: "💾"
+        function: command
+        command: "df -h /"
+      - name: "Memory Usage"
+        type: button
+        icon: "🧮"
+        function: command
+        command: "free -h"
+      - name: "CPU Usage"
+        type: button
+        icon: "🧠"
+        function: command
+        command: "top -bn1 | grep 'Cpu(s)'"
+      - name: "APT Updates"
+        type: button
+        icon: "📦"
+        function: command
+        command: "apt update -qq"
+      - name: "APT Upgrades"
+        type: button
+        icon: "📦"
+        function: command
+        command: "apt upgrade -y -qq"
+        confirm: true
+  - name: "Network"
+    type: category
+    icon: "🌐"
+    items:
+      - name: "Public IP"
+        type: button
+        icon: "🌍"
+        function: command
+        command: "curl -sk ip4you.ir"
+      - name: "Listening Ports"
+        type: button
+        icon: "🔌"
+        function: command
+        command: "ss -tulpn"
+  - name: "Echo"
+    type: button
+    icon: "📢"
+    function: command
+    command: "echo hello from telegram-commander"
   - name: "MY_SCRIPT"
     type: category
     icon: "🛠️"
@@ -63,12 +118,6 @@ menu:
             function: command
             command: "systemctl restart docker"
             confirm: true
-  - name: "Echo demo"
-    type: button
-    icon: "📢"
-    function: command
-    command: "echo hello from telegram-commander"
-    confirm: false
   - name: "Restart SSH"
     type: button
     icon: "🔐"
