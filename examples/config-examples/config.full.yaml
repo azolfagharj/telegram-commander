@@ -38,54 +38,119 @@ menu:
     type: category
     icon: "🖥️"
     items:
-      - name: "Uptime & Load"
-        type: button
-        icon: "🕒"
-        function: command
-        command: "uptime && uptime -p"
-      - name: "Disk Space (/)"
-        type: button
+      - name: "Resources"
+        type: category
+        icon: "📊"
+        items:
+          - name: "Uptime & Load"
+            type: button
+            icon: "🕒"
+            function: command
+            command: "uptime && uptime -p"
+          - name: "Memory Usage"
+            type: button
+            icon: "🧮"
+            function: command
+            command: "free -h"
+          - name: "CPU Usage"
+            type: button
+            icon: "🧠"
+            function: command
+            command: "top -bn1 | grep 'Cpu(s)'"
+      - name: "Processes"
+        type: category
+        icon: "⚡"
+        items:
+          - name: "Top CPU Processes"
+            type: button
+            icon: "⚡"
+            function: command
+            command: "ps -eo pid,%cpu,%mem,comm --sort=-%cpu | head -15"
+          - name: "Top I/O Processes"
+            type: button
+            icon: "🗃️"
+            function: command
+            command: "ps -eo pid,rbytes,wbytes,comm --no-headers | sort -k2,2nr -k3,3nr | head -15"
+          - name: "Top Memory Processes"
+            type: button
+            icon: "🧮"
+            function: command
+            command: "ps -eo pid,%cpu,%mem,comm --sort=-%mem | head -15"
+      - name: "Storage"
+        type: category
         icon: "💾"
-        function: command
-        command: "df -h /"
-      - name: "Memory Usage"
-        type: button
-        icon: "🧮"
-        function: command
-        command: "free -h"
-      - name: "CPU Usage"
-        type: button
-        icon: "🧠"
-        function: command
-        command: "top -bn1 | grep 'Cpu(s)'"
-      - name: "APT Updates"
-        type: button
+        items:
+          - name: "Disk Space (/)"
+            type: button
+            icon: "💾"
+            function: command
+            command: "df -h /"
+          - name: "LSBLK"
+            type: button
+            icon: "🧱"
+            function: command
+            command: "lsblk"
+      - name: "APT"
+        type: category
         icon: "📦"
-        function: command
-        command: "apt update -qq"
-      - name: "APT Upgrades"
+        items:
+          - name: "APT Updates"
+            type: button
+            icon: "📦"
+            function: command
+            command: "apt update -qq"
+          - name: "APT Upgrades"
+            type: button
+            icon: "📦"
+            function: command
+            command: "apt upgrade -y -qq"
+            confirm: true
+      - name: "HostnameCTL"
         type: button
-        icon: "📦"
+        icon: "🏷️"
         function: command
-        command: "apt upgrade -y -qq"
-        confirm: true
+        command: "hostnamectl"
   - name: "Network"
     type: category
     icon: "🌐"
     items:
       - name: "Public IP"
         type: button
-        icon: "🌍"
+        icon: "📍"
         function: command
         command: "curl -sk ip4you.ir"
+      - name: "Show resolv.conf"
+        type: button
+        icon: "🧭"
+        function: command
+        command: "grep -vE '^[[:space:]]*(#|$)' /etc/resolv.conf"
       - name: "Listening Ports"
         type: button
         icon: "🔌"
         function: command
         command: "ss -tulpn"
+      - name: "Show /etc/hosts"
+        type: button
+        icon: "🗺️"
+        function: command
+        command: "grep -vE '^[[:space:]]*(#|$)' /etc/hosts"
+      - name: "Network Interfaces"
+        type: button
+        icon: "🔗"
+        function: command
+        command: "ip -br addr"
+      - name: "Neighbors"
+        type: button
+        icon: "🕸️"
+        function: command
+        command: "ip neigh"
+      - name: "IP Routes"
+        type: button
+        icon: "🛣️"
+        function: command
+        command: "ip route"
   - name: "Echo"
     type: button
-    icon: "📢"
     function: command
     command: "echo hello from telegram-commander"
   - name: "MY_SCRIPT"

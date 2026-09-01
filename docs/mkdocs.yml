@@ -80,6 +80,7 @@ nav:
 
 markdown_extensions:
   - attr_list
+  - md_in_html
   - tables
   - meta
   - admonition
@@ -102,6 +103,7 @@ markdown_extensions:
 # site_url enables sitemap.xml and canonical URLs
 plugins:
   - search
+  - glightbox
   - redirects:
       redirect_maps:
         getting-started.md: user-guide/installation/download-and-run.md

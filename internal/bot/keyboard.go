@@ -9,7 +9,7 @@ import (
 const (
 	btnHome       = "🏠 Home"
 	btnBack       = "🔙 Back"
-	btnRunCommand = "⌨️ Run Command"
+	btnRunCommand = "$ >_ Run Command"
 	btnPrev       = "⏪ Prev"
 	btnNext       = "Next ⏩"
 	btnYes        = "✅ Yes"

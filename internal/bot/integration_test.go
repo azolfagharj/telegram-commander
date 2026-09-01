@@ -562,7 +562,7 @@ func TestRunCommandPromptAndExecutesNextText(t *testing.T) {
 
 	ctx := context.Background()
 	b.ProcessUpdate(ctx, startCommandUpdate(42, "admin", "/start"))
-	b.ProcessUpdate(ctx, textUpdate(42, "admin", "⌨️ Run Command"))
+	b.ProcessUpdate(ctx, textUpdate(42, "admin", "$ >_ Run Command"))
 
 	srv.mu.Lock()
 	require.Contains(t, visibleTexts(srv), "Type your command and send it.")
@@ -617,7 +617,7 @@ func TestRunCommandHomeCancelsAwaiting(t *testing.T) {
 
 	ctx := context.Background()
 	b.ProcessUpdate(ctx, startCommandUpdate(42, "admin", "/start"))
-	b.ProcessUpdate(ctx, textUpdate(42, "admin", "⌨️ Run Command"))
+	b.ProcessUpdate(ctx, textUpdate(42, "admin", "$ >_ Run Command"))
 	b.ProcessUpdate(ctx, textUpdate(42, "admin", "🏠 Home"))
 	b.ProcessUpdate(ctx, textUpdate(42, "admin", "echo hello-raw"))
 
@@ -671,7 +671,7 @@ func TestRunCommandBackCancelsAwaiting(t *testing.T) {
 	ctx := context.Background()
 	b.ProcessUpdate(ctx, startCommandUpdate(42, "admin", "/start"))
 	b.ProcessUpdate(ctx, callbackUpdate(42, "o:"+app.Index.Roots[0]))
-	b.ProcessUpdate(ctx, textUpdate(42, "admin", "⌨️ Run Command"))
+	b.ProcessUpdate(ctx, textUpdate(42, "admin", "$ >_ Run Command"))
 	b.ProcessUpdate(ctx, textUpdate(42, "admin", "🔙 Back"))
 	b.ProcessUpdate(ctx, textUpdate(42, "admin", "echo hello-raw"))
 

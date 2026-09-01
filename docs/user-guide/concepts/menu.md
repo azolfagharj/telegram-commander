@@ -122,7 +122,7 @@ open the menu again.
 - **Home** is always the first button on every screen. Tap it to go back to
   the first screen.
 - **Back** appears when you are inside a category.
-- **Run Command** appears when `enable_run_command` is on (see below).
+- **$ >_ Run Command** appears when `enable_run_command` is on (see below).
 - Items sit two per row by default. A category can change this with `columns`.
   If a screen has many items, **Prev** and **Next** let you page through them.
 - Buttons with `confirm: true` ask Yes / Cancel before they run.
@@ -177,11 +177,11 @@ shown until you reach the ends. See
 
 ## Run Command
 
-If you set `enable_run_command: true` at the root of your config, a **Run
-Command** button stays on the menu (after Back inside a category, or after
-Home on the first screen). Tap it, then send the shell command you want to
-run. The bot uses the same shell, timeout, working directory, and output
-limits as your other buttons.
+If you set `enable_run_command: true` at the root of your config, a
+**$ >_ Run Command** button stays on the menu (after Back inside a category,
+or after Home on the first screen). Tap it, then send the shell command you
+want to run. The bot uses the same shell, timeout, working directory, and
+output limits as your other buttons.
 
 Home or Back cancels the prompt without running anything. This is off by
 default. Anyone who can use the bot can then run any command on the host, so

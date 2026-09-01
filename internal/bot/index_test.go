@@ -130,7 +130,7 @@ func TestConfirmReplyKeyboard(t *testing.T) {
 	require.Len(t, root.Keyboard[0], 1)
 
 	withRun := bot.ConfirmReplyKeyboard(true, true)
-	require.Equal(t, "⌨️ Run Command", withRun.Keyboard[0][2].Text)
+	require.Equal(t, "$ >_ Run Command", withRun.Keyboard[0][2].Text)
 }
 
 func TestRunCommandNavOrder(t *testing.T) {
@@ -138,22 +138,22 @@ func TestRunCommandNavOrder(t *testing.T) {
 
 	off, err := idx.BuildMenu("", 0)
 	require.NoError(t, err)
-	require.NotContains(t, collectInline(off), "⌨️ Run Command")
+	require.NotContains(t, collectInline(off), "$ >_ Run Command")
 
 	idx.EnableRunCommand = true
 	root, err := idx.BuildMenu("", 0)
 	require.NoError(t, err)
 	rootNav := root.Reply.Keyboard[0]
-	require.Equal(t, []string{"🏠 Home", "⌨️ Run Command"}, buttonTexts(rootNav))
+	require.Equal(t, []string{"🏠 Home", "$ >_ Run Command"}, buttonTexts(rootNav))
 
 	catID := idx.Roots[0]
 	nested, err := idx.BuildMenu(catID, 0)
 	require.NoError(t, err)
 	nestedNav := nested.Reply.Keyboard[0]
-	require.Equal(t, []string{"🏠 Home", "🔙 Back", "⌨️ Run Command"}, buttonTexts(nestedNav))
+	require.Equal(t, []string{"🏠 Home", "🔙 Back", "$ >_ Run Command"}, buttonTexts(nestedNav))
 
 	result := bot.ResultReplyKeyboard(true, true)
-	require.Equal(t, []string{"🏠 Home", "🔙 Back", "⌨️ Run Command"}, buttonTexts(result.Keyboard[0]))
+	require.Equal(t, []string{"🏠 Home", "🔙 Back", "$ >_ Run Command"}, buttonTexts(result.Keyboard[0]))
 }
 
 func buttonTexts(row []models.KeyboardButton) []string {
