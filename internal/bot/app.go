@@ -597,8 +597,13 @@ func (a *App) deliverResult(ctx context.Context, b *bot.Bot, chatID, userID int6
 		chunks = []string{buildResultHeader(node, res, err)}
 	}
 	st := a.getNav(userID)
-	hasBack := st.nodeID != ""
-	kb := ResultReplyKeyboard(hasBack, a.Cfg.EnableRunCommand)
+	view, viewErr := a.Index.BuildMenu(st.nodeID, st.page)
+	if viewErr != nil {
+		view, viewErr = a.Index.BuildMenu("", 0)
+		if viewErr != nil {
+			view = nil
+		}
+	}
 
 	var lastID int
 	for i, chunk := range chunks {
@@ -610,8 +615,8 @@ func (a *App) deliverResult(ctx context.Context, b *bot.Bot, chatID, userID int6
 		if lastID != 0 {
 			params.ReplyParameters = &models.ReplyParameters{MessageID: lastID}
 		}
-		if i == len(chunks)-1 {
-			params.ReplyMarkup = kb
+		if i == len(chunks)-1 && view != nil {
+			params.ReplyMarkup = view.Reply
 		}
 		msg, sendErr := b.SendMessage(ctx, params)
 		if sendErr != nil || msg == nil {

@@ -127,8 +127,9 @@ open the menu again.
   If a screen has many items, **Prev** and **Next** let you page through them.
 - Buttons with `confirm: true` ask Yes / Cancel before they run.
 - Command output is shown as a code block. If it is longer than one Telegram
-  message, it arrives as several messages, each a reply to the one before it,
-  with the menu on the last one. See
+  message, it arrives as several messages, each a reply to the one before it.
+  The last part keeps the same buttons as the page you were on, so Back still
+  means leave that category. See
   [Configuration → How much command output you see](../configuration.md#how-much-command-output-you-see).
 
 ## Confirmation

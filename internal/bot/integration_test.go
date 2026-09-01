@@ -368,6 +368,71 @@ func TestCommandRunKeepsRunningAndResultAfterHome(t *testing.T) {
 	require.Equal(t, 1, srv.deletes)
 }
 
+func TestResultKeepsCategoryMenuKeyboard(t *testing.T) {
+	srv := &apiServer{}
+	ts := httptest.NewServer(srv)
+	defer ts.Close()
+
+	fake := &executor.FakeExecutor{
+		Fn: func(_ context.Context, _ executor.Spec) (executor.Result, error) {
+			return executor.Result{ExitCode: 0, Stdout: "ok"}, nil
+		},
+	}
+
+	cfg := &config.Config{
+		Telegram: config.TelegramConfig{
+			API:          ts.URL,
+			BotToken:     "123:ABC",
+			AllowedUsers: []string{"42"},
+		},
+		Menu: []config.ButtonNode{
+			{
+				Name: "Cat",
+				Type: "category",
+				Items: []config.ButtonNode{
+					{Name: "Echo", Type: "button", Function: "command", Command: "echo hi"},
+				},
+			},
+		},
+	}
+	cfg.ApplyDefaults()
+
+	app := bot.NewApp(cfg, function.NewRegistry(), fake, nil)
+	b, err := app.NewBotWithOptions(
+		tgbot.WithHTTPClient(5*time.Second, ts.Client()),
+		tgbot.WithServerURL(ts.URL),
+		tgbot.WithSkipGetMe(),
+		tgbot.WithNotAsyncHandlers(),
+	)
+	require.NoError(t, err)
+
+	ctx := context.Background()
+	b.ProcessUpdate(ctx, startCommandUpdate(42, "admin", "/start"))
+	b.ProcessUpdate(ctx, callbackUpdate(42, "o:"+app.Index.Roots[0]))
+	b.ProcessUpdate(ctx, textUpdate(42, "admin", "Echo"))
+
+	srv.mu.Lock()
+	var lastResult map[string]any
+	for _, m := range srv.messages {
+		text, _ := m["text"].(string)
+		if strings.Contains(text, "<pre>") {
+			lastResult = m
+		}
+	}
+	require.NotNil(t, lastResult)
+	rm := fmt.Sprintf("%v", lastResult["reply_markup"])
+	require.Contains(t, rm, "Echo")
+	require.Contains(t, rm, "Back")
+	srv.mu.Unlock()
+
+	b.ProcessUpdate(ctx, textUpdate(42, "admin", "🔙 Back"))
+
+	srv.mu.Lock()
+	defer srv.mu.Unlock()
+	texts := visibleTexts(srv)
+	require.Equal(t, "Menu", texts[len(texts)-1], "Back from a root category should open Home")
+}
+
 func TestMenuMessageCarriesHomeReplyKeyboard(t *testing.T) {
 	srv := &apiServer{}
 	ts := httptest.NewServer(srv)
@@ -711,6 +776,7 @@ func TestLongCommandResultIsSplitAndReplied(t *testing.T) {
 	last := result[len(result)-1]
 	rm := fmt.Sprintf("%v", last["reply_markup"])
 	require.Contains(t, rm, "Home")
+	require.Contains(t, rm, "Echo")
 	firstRM := fmt.Sprintf("%v", result[0]["reply_markup"])
 	require.NotContains(t, firstRM, "Home")
 	reply := fmt.Sprintf("%v", result[1]["reply_parameters"])
