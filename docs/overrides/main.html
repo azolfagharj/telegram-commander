@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+<!-- Structured data for search engines. Home page only. -->
+{% block extrahead %}
+  {{ super() }}
+  {% if page and page.is_homepage %}
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "{{ config.site_url }}#website",
+            "url": "{{ config.site_url }}",
+            "name": "Telegram Commander",
+            "description": "Documentation for Telegram Commander, a Telegram bot that runs shell commands on a Linux server from a button menu described in one YAML file.",
+            "inLanguage": "en",
+            "publisher": {
+              "@id": "{{ config.site_url }}#author"
+            }
+          },
+          {
+            "@type": "SoftwareApplication",
+            "@id": "{{ config.site_url }}#software",
+            "name": "Telegram Commander",
+            "url": "{{ config.site_url }}",
+            "description": "Free and open source Telegram bot for Linux. Describe a menu of buttons in one YAML file, tap a button in Telegram, and the bot runs the command on your server and sends the output back to the chat.",
+            "applicationCategory": "DeveloperApplication",
+            "operatingSystem": "Linux",
+            "inLanguage": "en",
+            "isAccessibleForFree": true,
+            "codeRepository": "{{ config.repo_url }}",
+            "downloadUrl": "{{ config.repo_url }}/releases/latest",
+            "softwareHelp": {
+              "@type": "WebPage",
+              "url": "{{ config.site_url }}user-guide/installation/download-and-run/"
+            },
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            },
+            "author": {
+              "@type": "Person",
+              "@id": "{{ config.site_url }}#author",
+              "name": "azolfagharj",
+              "url": "https://github.com/azolfagharj"
+            }
+          }
+        ]
+      }
+    </script>
+  {% endif %}
+{% endblock %}

@@ -1,4 +1,10 @@
-# Function
+---
+title: Function
+description: A function turns the values on a button into a shell command. Use the built-in command and script functions, or add your own as YAML files.
+icon: material/function
+---
+
+# :material-function: Function
 
 The thing that runs when a [button](button.md) is tapped. A [function](function.md)
 takes some [parameters](parameter.md) and turns them into a shell command.
@@ -13,16 +19,14 @@ There are two kinds:
 When you tap a button, the bot looks up the function, fills in the values from
 the button, and runs the result in the [shell](shell.md).
 
-## Example
+!!! example "A button using the built-in `command` function"
 
-This button uses the built-in `command` function:
-
-```yaml
-- name: Uptime
-  type: button
-  function: command
-  command: "uptime"
-```
+    ```yaml title="Uptime button"
+    - name: Uptime
+      type: button
+      function: command
+      command: "uptime"
+    ```
 
 ## Configuration
 

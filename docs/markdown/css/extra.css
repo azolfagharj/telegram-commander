@@ -1,0 +1,24 @@
+/* Smaller, finer cards */
+.md-typeset .grid { grid-gap: .5rem; margin: .9em 0 }
+.md-typeset .grid.cards > ul > li,
+.md-typeset .grid.cards > ol > li,
+.md-typeset .grid > .card { padding: .55rem .7rem; border-radius: .25rem; font-size: .72rem; line-height: 1.55 }
+.md-typeset .grid.cards > ul > li > hr { margin: .45em 0 }
+.md-typeset .grid.cards p { margin: .35em 0 }
+
+/* Exactly this many columns on wide screens */
+@media screen and (min-width: 76.25em) {
+  .md-typeset .grid.cols-2 { grid-template-columns: repeat(2, 1fr) }
+  .md-typeset .grid.cols-3 { grid-template-columns: repeat(3, 1fr) }
+}
+
+/* Tighter buttons on the landing page */
+.md-typeset .md-button { padding: .35em .8em; font-size: .72rem }
+
+/* The site name is already in the top bar, so drop it from the sidebar */
+@media screen and (min-width: 76.25em) {
+  .md-nav--primary > .md-nav__title { display: none }
+}
+
+/* Page icons belong in the sidebar; keep the top tabs plain text */
+.md-tabs__link svg { display: none }

@@ -1,8 +1,15 @@
-# Configuration
+---
+icon: material/file-cog-outline
+title: Configuration
+description: Every Telegram Commander setting with its type, default, and meaning: telegram, menu, function_directory, timeouts, output limits, and logging.
+---
+
+# :material-file-cog-outline: Configuration
 
 The [config file](concepts/config-file.md) describes your whole bot: the Telegram
 connection, who may use it, the [button](concepts/button.md) menu, and logging.
-You pass it to every command with `--config` (see [CLI](cli.md)).
+You pass it with `--config` to the commands that read it — `run`, `validate`,
+`fmt`, and `list-functions` (see [CLI](cli.md)).
 
 All keys use `lower_snake_case`. **Unknown keys are rejected**, so a typo is an
 error you will see immediately when you [validate](cli.md#validate).
@@ -15,28 +22,30 @@ New to the project? Start with [Run in CLI](installation/download-and-run.md),
 which walks through building a first config. See [Concepts](concepts/config-file.md)
 for the vocabulary used below.
 
-## A minimal config
+## :material-rocket-launch-outline: A minimal config
 
 Only `telegram` (with a token and one [allowed user](concepts/allowed-users.md))
 and `menu` are required. Everything else has a default:
 
-```yaml
-telegram:
-  bot_token: "YOUR_BOT_TOKEN"
-  allowed_users:
-    - "123456789"
+!!! example "Start with one allowed user and one button"
 
-menu:
-  - name: Uptime
-    type: button
-    function: command
-    command: "uptime"
-```
+    ```yaml title="config.yaml (minimal)"
+    telegram:
+      bot_token: "YOUR_BOT_TOKEN"
+      allowed_users:
+        - "123456789"
+
+    menu:
+      - name: Uptime
+        type: button
+        function: command
+        command: "uptime"
+    ```
 
 The `config-examples/` folder in the release includes both a minimal and a full
 example.
 
-## Root fields
+## :material-card-bulleted-outline: Root fields
 
 | Field | Type | Required | Default | Description |
 |-------|------|----------|---------|-------------|
@@ -51,12 +60,15 @@ example.
 | `menu_columns` | int | no | `2` | Item buttons per row under the message box |
 | `page_size` | int | no | `8` | Items per page before pagination |
 | `confirm_ttl` | duration | no | `5m` | How long a [confirmation](concepts/confirmation.md) prompt stays valid |
-| `enable_run_command` | bool | no | `false` | Show a **Run Command** button that runs the next message as a shell command. Off by default. Anyone who can use the bot can then run any command on the host, so only turn this on if you trust every allowed user. Putting this key under `telegram` is invalid. |
+| `enable_run_command` | bool | no | `false` | Show a **`$ >_ Run Command`** button that runs the next message as a shell command. Off by default. Anyone who can use the bot can then run any command on the host, so only turn this on if you trust every allowed user. Putting this key under `telegram` is invalid. |
 | `logging` | object | no | built-in default logger | Named loggers (see below) |
 
-### What if I omit `shell`?
+??? note "What if I omit `shell`?"
 
-You can omit it. The bot uses `/bin/bash`. Same for `timeout`, `page_size`, and other optional root fields: omit them and defaults apply. You only need to set them when you want a non-default value (for example `shell: /bin/sh`).
+    You can omit it. The bot uses `/bin/bash`. Same for `timeout`, `page_size`,
+    and other optional root fields: omit them and defaults apply. You only need
+    to set them when you want a non-default value (for example
+    `shell: /bin/sh`).
 
 ### How much command output you see
 
@@ -70,7 +82,7 @@ separately for normal output and error output. Anything past that is dropped,
 but the command itself keeps running until it finishes or hits its `timeout`.
 When this happens, the result starts with `(output truncated)`.
 
-**2. Telegram's limit: one message holds about 4000 characters**
+**2. Telegram's limit: one message holds at most 4096 bytes**
 
 This one is fixed by Telegram. If the result is longer than a single message,
 the bot splits it into several messages. Each part is sent as a reply to the
@@ -80,7 +92,8 @@ lines are not cut in half.
 
 If the result is still very long after splitting, the bot stops after 10
 messages and the last one ends with a note like
-`(output too long; showing first 38000 bytes)`.
+`(output too long; showing first N bytes)`, where `N` is how much of the output
+you actually received.
 
 So raising `max_output_bytes` lets the bot keep more output, but you still see
 at most about ten messages of it. For output that long, it is usually better to
@@ -96,7 +109,13 @@ write the full output to a file on the server.
 | Key set to a path that does not exist or is not accessible | Hard error; process stops |
 | Path exists but directory is empty | OK |
 
-## `telegram`
+!!! warning "A wrong path stops the bot"
+
+    If `function_directory` points to a folder that does not exist or cannot be
+    read, the program stops with an error instead of starting without your
+    custom functions.
+
+## :material-send-circle-outline: `telegram`
 
 | Field | Type | Required | Default | Description |
 |-------|------|----------|---------|-------------|
@@ -109,26 +128,28 @@ write the full output to a file on the server.
 
 Unauthorized users receive a message with their `user_id` and `username` so they can ask an admin for access. This is also how you find your own id the first time — see [Run in CLI → Step 5](installation/download-and-run.md#step-5-find-your-user-id-if-needed).
 
-Example:
+!!! example "Connect through a proxy"
 
-```yaml
-telegram:
-  bot_token: "123456789:AAExampleTokenValue"
-  allowed_users:
-    - "123456789"        # numeric user id
-    - "@alice"           # or a username
-  proxy:
-    enabled: true
-    url: "socks5://127.0.0.1:10808"
-```
+    ```yaml title="telegram section with a proxy"
+    telegram:
+      bot_token: "123456789:AAExampleTokenValue"
+      allowed_users:
+        - "123456789"        # numeric user id
+        - "@alice"           # or a username
+      proxy:
+        enabled: true
+        url: "socks5://127.0.0.1:10808"
+    ```
 
 To let allowed users type a shell command from Telegram, set this at the **root** of the file (not under `telegram`):
 
-```yaml
-enable_run_command: true
-```
+!!! tip "Add one root setting"
 
-## Menu
+    ```yaml title="Enable the Run Command button"
+    enable_run_command: true
+    ```
+
+## :material-menu: Menu
 
 This section is the field reference. For a guided explanation with examples, see
 [Menu](concepts/menu.md). Each [button](concepts/button.md) or
@@ -150,33 +171,39 @@ This section is the field reference. For a guided explanation with examples, see
 | `env` | map | no | Extra env for this button |
 | `columns` | int | no | Override columns for this category |
 | `args` | string | no | Optional args for `script` |
-| `params` | map | no | [Parameter](concepts/parameter.md) values for the button's function |
 
-`command`, `path`, and `args` are shortcuts for the matching built-in function
-parameters. For any other function, pass values under `params`. See
-[Functions → Passing parameters from a button](functions.md#passing-parameters-from-a-button).
+These are all the fields a node accepts. **Any other key is an error**, so the
+config will not load if you add one.
 
-## `logging`
+`command`, `path`, and `args` are also the only [parameter](concepts/parameter.md)
+values a button can pass to a function: each field fills the function parameter
+with the same name. A function whose required parameter has some other name
+cannot be used from a button. See
+[Functions → Passing values from a button](functions.md#passing-values-from-a-button).
+
+## :material-math-log: `logging`
 
 Optional. If omitted, a default console logger on `stderr` at `info` is used.
 
 Named loggers:
 
-```yaml
-logging:
-  logs:
-    default:
-      level: info
-      format: console   # or json
-      output:
-        - output: stderr
-    audit:
-      level: info
-      format: json
-      output:
-        - output: file
-          file: /var/log/telegram-commander/audit.log
-```
+!!! example "Write normal logs and an audit file"
+
+    ```yaml title="logging section with an audit file"
+    logging:
+      logs:
+        default:
+          level: info
+          format: console   # or json
+          output:
+            - output: stderr
+        audit:
+          level: info
+          format: json
+          output:
+            - output: file
+              file: /var/log/telegram-commander/audit.log
+    ```
 
 Supported outputs: `stdout`, `stderr`, `file`, `discard`.
 
@@ -187,5 +214,5 @@ exit code, duration). See [Audit log](concepts/audit-log.md).
 
 - [Run in CLI](installation/download-and-run.md) — build and run a first config
 - [Menu](concepts/menu.md) — the menu tree in depth
-- [Functions](functions.md) — what `function`, `command`, and `params` mean
+- [Functions](functions.md) — what `function`, `command`, `path`, and `args` mean
 - [CLI](cli.md) — validate and run with your config

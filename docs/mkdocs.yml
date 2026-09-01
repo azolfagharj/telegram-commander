@@ -1,5 +1,8 @@
 site_name: Telegram Commander
-site_description: Telegram bot that shows a button menu and runs host commands from a YAML config
+site_description: >-
+  Telegram Commander is a free Linux bot that turns one YAML file into a button
+  menu in Telegram. Tap a button to run a shell command on your server and read
+  the output in the chat. No coding and no open ports.
 site_author: azolfagharj
 site_url: https://azolfagharj.github.io/telegram-commander/
 
@@ -10,21 +13,27 @@ edit_uri: ""
 
 copyright: 'Built by <a href="https://github.com/azolfagharj">azolfagharj</a> · <a href="https://github.com/azolfagharj/telegram-commander">Source on GitHub</a> · <a href="https://azolfagharj.github.io/donate/">Donate</a>'
 
-docs_dir: .
+# Page sources live in a sibling folder so mkdocs serve can watch them
+# without also watching this config file.
+docs_dir: markdown
 site_dir: ../statics
 use_directory_urls: true
 
-# Do not copy build files into the published site.
-exclude_docs: |
-  mkdocs.yml
-  requirements.txt
-
 theme:
   name: material
+  # Small theme change: the sidebar shows the whole menu, not just the open tab.
+  custom_dir: overrides
   language: en
   icon:
     logo: simple/linux
     repo: fontawesome/brands/github
+    admonition:
+      note: material/note-text-outline
+      info: material/information-outline
+      tip: material/lightbulb-on-outline
+      success: material/check-circle-outline
+      warning: material/alert-outline
+      example: material/code-braces
   palette:
     - scheme: default
       primary: blue
@@ -39,11 +48,23 @@ theme:
         icon: material/brightness-4
         name: Switch to light mode
   features:
+    - navigation.tabs
     - navigation.sections
+    - navigation.path
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.top
+    - navigation.footer
     - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+    - content.tooltips
     - search.suggest
     - search.highlight
     - toc.follow
+
+extra_css:
+  - css/extra.css
 
 extra:
   social:
@@ -56,11 +77,10 @@ extra:
 
 nav:
   - Home: index.md
-  - User Guide:
-    - Installation:
+  - Installation:
       - Run in CLI: user-guide/installation/download-and-run.md
       - Run as a service: user-guide/installation/run-as-a-service.md
-    - Concepts:
+  - Concepts:
       - Config file: user-guide/concepts/config-file.md
       - Menu: user-guide/concepts/menu.md
       - Button: user-guide/concepts/button.md
@@ -72,9 +92,8 @@ nav:
       - Confirmation: user-guide/concepts/confirmation.md
       - How the bot connects: user-guide/concepts/long-polling.md
       - Audit log: user-guide/concepts/audit-log.md
-    - Guides:
-      - Functions: user-guide/functions.md
-    - Reference:
+  - Functions: user-guide/functions.md
+  - Reference:
       - Configuration: user-guide/configuration.md
       - CLI: user-guide/cli.md
 

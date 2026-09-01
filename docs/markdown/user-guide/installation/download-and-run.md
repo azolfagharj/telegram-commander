@@ -1,10 +1,16 @@
-# Run in CLI
+---
+title: Run in CLI
+description: Get your bot running from the terminal, step by step, from downloading the release and writing a small config file to tapping the first button.
+icon: material/console
+---
+
+# :material-console: Run in CLI
 
 This page takes you from nothing to a running bot. No prior experience with the
 project is needed. If a word is unclear, check the [Concepts](../concepts/config-file.md)
 pages.
 
-## Before you begin
+## :material-clipboard-check-outline: Before you begin
 
 You need two things from Telegram:
 
@@ -15,15 +21,17 @@ You need two things from Telegram:
    not know it, do not worry — the bot will tell you your id the first time you
    message it (see [step 5](#step-5-find-your-user-id-if-needed)).
 
-## Step 1: download
+## :material-download: Step 1: download
 
 Download the release archive and extract it.
 
-```bash
-wget -O telegram-commander.tar.gz https://github.com/azolfagharj/telegram-commander/releases/latest/download/telegram-commander.tar.gz
-tar -xzf telegram-commander.tar.gz
-cd telegram-commander
-```
+!!! example "Download and open the release folder"
+
+    ```bash title="Download and extract the release"
+    wget -O telegram-commander.tar.gz https://github.com/azolfagharj/telegram-commander/releases/latest/download/telegram-commander.tar.gz
+    tar -xzf telegram-commander.tar.gz
+    cd telegram-commander
+    ```
 
 Inside the folder you will find:
 
@@ -31,19 +39,19 @@ Inside the folder you will find:
 - `config-examples/` — ready-made [config files](../concepts/config-file.md) (see [Configuration](../configuration.md))
 - `functions/` — example custom [functions](../concepts/function.md) (see [Functions](../functions.md))
 
-## Step 2: pick your binary
-!!! info
-      Most servers and PCs are `amd64` (also called `x86_64`). Small ARM boards and some cloud VMs are `arm64`.
+## :material-chip: Step 2: pick your binary
 
-      If unsure, run `uname -m`:
+!!! info "Which file is for your machine?"
 
-      `x86_64` means amd64,`aarch64` means arm64.
+    Most servers and PCs are `amd64` (also called `x86_64`). Small ARM boards
+    and some cloud VMs are `arm64`.
+
+    If you are unsure, run `uname -m`: `x86_64` means amd64, `aarch64` means
+    arm64.
 
 === ":fontawesome-brands-linux: AMD64"
 
-    ``` bash
-    # amd64
-
+    ```bash title="Keep the amd64 program"
     mv telegram-commander-linux-amd64 telegram-commander
     chmod +x telegram-commander
     rm telegram-commander-linux-arm64
@@ -51,9 +59,7 @@ Inside the folder you will find:
 
 === ":fontawesome-brands-linux: ARM64"
 
-    ``` bash
-    # ARM64
-
+    ```bash title="Keep the arm64 program"
     mv telegram-commander-linux-arm64 telegram-commander
     chmod +x telegram-commander
     rm telegram-commander-linux-amd64
@@ -61,15 +67,15 @@ Inside the folder you will find:
 
 Now you have a single program named `telegram-commander`.
 
-
-
-## Step 3: create your config
+## :material-file-cog-outline: Step 3: create your config
 
 Copy the minimal example to a working file:
 
-```bash
-cp config-examples/config.minimal.yaml ./config.yaml
-```
+!!! example "Make an editable config"
+
+    ```bash title="Copy the example config"
+    cp config-examples/config.minimal.yaml ./config.yaml
+    ```
 
 Open `config.yaml` and replace two placeholders:
 
@@ -78,26 +84,30 @@ Open `config.yaml` and replace two placeholders:
 
 To learn what every setting means, read [Configuration](../configuration.md).
 
-## Step 4: validate
+## :material-file-check-outline: Step 4: validate
 
 Always check the config before running. This catches typos and mistakes without
 starting the bot.
 
-```bash
-./telegram-commander validate --config config.yaml
-```
+!!! success "Check that the config works"
+
+    ```bash title="Validate the config"
+    ./telegram-commander validate --config config.yaml
+    ```
 
 If it prints `Valid configuration`, you are good. If not, it lists exactly what
 is wrong and where. See the [CLI page](../cli.md#validate) for details.
 
-## Step 5: find your user id (if needed)
+## :material-account-search: Step 5: find your user id (if needed)
 
 If you did not know your user id, set only the token in `config.yaml`, put any
 number in `allowed_users` for now, then run the bot:
 
-```bash
-./telegram-commander run --config config.yaml
-```
+!!! info "Start once to see your user id"
+
+    ```bash title="Run the bot to learn your id"
+    ./telegram-commander run --config config.yaml
+    ```
 
 Open Telegram, find your bot, and send it any message. Because you are not in
 [allowed users](../concepts/allowed-users.md) yet, the bot replies with your
@@ -107,19 +117,26 @@ Open Telegram, find your bot, and send it any message. Because you are not in
 This behavior is part of how access control works; see
 [Configuration → telegram](../configuration.md#telegram).
 
-## Step 6: run
+## :material-play-circle-outline: Step 6: run
 
-```bash
-./telegram-commander run --config config.yaml
-```
+!!! example "Start the bot in the terminal"
+
+    ```bash title="Start the bot"
+    ./telegram-commander run --config config.yaml
+    ```
 
 Open your bot in Telegram and send `/start`. You should see your menu. Tap a
 [button](../concepts/button.md) to run its command.
 
+!!! success "Your bot is live"
+
+    The menu you described in `config.yaml` is now in your chat, and every tap
+    runs its command on this machine.
+
 To keep the bot running after you log out of the server, set it up as a service.
 See [Run as a service](run-as-a-service.md).
 
-## What next
+## :material-map-marker-path: What next
 
 - Add more [buttons](../concepts/button.md) and [categories](../concepts/category.md): [Menu](../concepts/menu.md)
 - Understand what actually runs: [Functions](../functions.md)

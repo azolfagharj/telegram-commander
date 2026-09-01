@@ -139,13 +139,20 @@ Handy entry points:
 - [CLI](https://azolfagharj.github.io/telegram-commander/user-guide/cli/) — command line reference
 - [Run as a service](https://azolfagharj.github.io/telegram-commander/user-guide/installation/run-as-a-service/) — systemd setup
 
-The same pages live as Markdown in [`docs/`](docs/).
+The same pages live as Markdown in [`docs/markdown/`](docs/markdown/).
 
 ## Example configs
+
+In this repository:
 
 - Minimal: [`examples/config-examples/config.minimal.yaml`](examples/config-examples/config.minimal.yaml)
 - Full: [`examples/config-examples/config.full.yaml`](examples/config-examples/config.full.yaml)
 - Sample functions: [`examples/functions/`](examples/functions/)
+
+In the release archive the same files sit next to the binaries, without the
+`examples/` prefix: after extracting you have `config-examples/` and
+`functions/` inside the `telegram-commander/` folder, which is why Quick start
+above uses `config-examples/config.minimal.yaml`.
 
 ## License
 

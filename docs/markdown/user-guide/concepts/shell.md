@@ -1,4 +1,10 @@
-# Shell
+---
+title: Shell
+description: Every command runs through a shell, /bin/bash by default, so pipes and redirects work. Change it once at the root of your config file.
+icon: material/console-line
+---
+
+# :material-console-line: Shell
 
 The program that runs your command, by default `/bin/bash`. Commands run as
 `bash -c "your command"`, so pipes and redirects work.
@@ -6,11 +12,11 @@ The program that runs your command, by default `/bin/bash`. Commands run as
 You can change the shell globally with the `shell` key in your
 [config file](config-file.md).
 
-## Example
+!!! example "Choosing the shell"
 
-```yaml
-shell: /bin/bash
-```
+    ```yaml title="Root of config.yaml"
+    shell: /bin/bash
+    ```
 
 Every [function](function.md) runs its command through this shell.
 
