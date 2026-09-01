@@ -545,5 +545,5 @@ func (a *App) deliverResult(ctx context.Context, b *bot.Bot, chatID, userID int6
 	text := formatCommandResult(node, res, err)
 	st := a.getNav(userID)
 	hasBack := st.nodeID != ""
-	a.sendInline(ctx, b, chatID, userID, text, ResultReplyKeyboard(hasBack), models.ParseModeMarkdown)
+	a.sendInline(ctx, b, chatID, userID, text, ResultReplyKeyboard(hasBack), "")
 }

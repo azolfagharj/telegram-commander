@@ -9,10 +9,10 @@ import (
 	"github.com/azolfagharj/telegram-commander/internal/executor"
 )
 
-func TestFormatCommandResultWrapsOutputInCodeBlock(t *testing.T) {
+func TestFormatCommandResultWrapsOutputInCodeFence(t *testing.T) {
 	n := &Node{Name: "Uptime"}
 	text := formatCommandResult(n, executor.Result{
-		Stdout:   " 12:00:01 up 1 day",
+		Stdout:   " 12:00:01 up 1 day\n",
 		Stderr:   "warn",
 		ExitCode: 0,
 		Duration: 12 * time.Millisecond,
@@ -22,9 +22,7 @@ func TestFormatCommandResultWrapsOutputInCodeBlock(t *testing.T) {
 	require.Contains(t, text, "Button: Uptime")
 }
 
-func TestFormatCommandResultSanitizesFences(t *testing.T) {
-	n := &Node{Name: "Echo"}
-	text := formatCommandResult(n, executor.Result{Stdout: "``` rm -rf"}, nil)
-	require.NotContains(t, text, "``` rm")
-	require.Contains(t, text, "''' rm -rf")
+func TestCodeFenceShape(t *testing.T) {
+	require.Equal(t, "```\nhi\n```", codeFence("hi"))
+	require.Equal(t, "```\nhi\n```", codeFence("hi\n"))
 }
