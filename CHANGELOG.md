@@ -17,4 +17,3 @@
 - The docs side menu now lists every page, not only the pages of the open tab, and each page has its own icon
 - Docs now match how a button passes values: only command, path, and args on the button
 - Each docs page has its own title and description for search results
-
