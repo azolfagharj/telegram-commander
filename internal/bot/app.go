@@ -42,6 +42,7 @@ type userMenu struct {
 	page      int
 	messageID int
 	chatID    int64
+	awaiting  bool
 }
 
 type confirmWait struct {
@@ -54,11 +55,13 @@ func NewApp(cfg *config.Config, reg *function.Registry, exec executor.Executor, 
 	if log == nil {
 		log = slog.Default()
 	}
+	idx := BuildIndex(cfg.Menu, cfg.MenuColumns, cfg.PageSize)
+	idx.EnableRunCommand = cfg.EnableRunCommand
 	return &App{
 		Cfg:      cfg,
 		Registry: reg,
 		Exec:     exec,
-		Index:    BuildIndex(cfg.Menu, cfg.MenuColumns, cfg.PageSize),
+		Index:    idx,
 		Log:      log,
 		nav:      make(map[int64]userMenu),
 		confirms: make(map[int64]confirmWait),
@@ -116,9 +119,6 @@ func (a *App) NewBot() (*bot.Bot, error) {
 		bot.WithCallbackQueryDataHandler("", bot.MatchTypePrefix, a.handleCallback),
 		bot.WithMessageTextHandler("start", bot.MatchTypeCommandStartOnly, a.handleStart),
 		bot.WithMessageTextHandler("help", bot.MatchTypeCommandStartOnly, a.handleHelp),
-	}
-	if a.Cfg.Telegram.EnableRunCommand {
-		opts = append(opts, bot.WithMessageTextHandler("run", bot.MatchTypeCommandStartOnly, a.handleRun))
 	}
 	return bot.New(a.Cfg.Telegram.BotToken, opts...)
 }
@@ -211,44 +211,13 @@ func (a *App) handleHelp(ctx context.Context, b *bot.Bot, update *models.Update)
 		return
 	}
 	text := "telegram-commander\n\n/start - open menu\n/help - show this help"
-	if a.Cfg.Telegram.EnableRunCommand {
-		text += "\n/run <button name> - run a button by name"
+	if a.Cfg.EnableRunCommand {
+		text += "\nTap Run Command to type a shell command."
 	}
 	_, _ = b.SendMessage(ctx, &bot.SendMessageParams{
 		ChatID: update.Message.Chat.ID,
 		Text:   text,
 	})
-}
-
-func (a *App) handleRun(ctx context.Context, b *bot.Bot, update *models.Update) {
-	if update.Message == nil || update.Message.From == nil {
-		return
-	}
-	if !a.isAllowed(update.Message.From) {
-		_, _ = b.SendMessage(ctx, &bot.SendMessageParams{
-			ChatID: update.Message.Chat.ID,
-			Text:   a.denyMessage(update.Message.From),
-		})
-		return
-	}
-	parts := strings.SplitN(update.Message.Text, " ", 2)
-	if len(parts) < 2 || strings.TrimSpace(parts[1]) == "" {
-		_, _ = b.SendMessage(ctx, &bot.SendMessageParams{
-			ChatID: update.Message.Chat.ID,
-			Text:   "Usage: /run <button name>",
-		})
-		return
-	}
-	name := strings.TrimSpace(parts[1])
-	node := a.Index.FindByName(name)
-	if node == nil {
-		_, _ = b.SendMessage(ctx, &bot.SendMessageParams{
-			ChatID: update.Message.Chat.ID,
-			Text:   fmt.Sprintf("Button %q not found", name),
-		})
-		return
-	}
-	a.executeButton(ctx, b, update.Message.Chat.ID, update.Message.From, node)
 }
 
 func (a *App) handleCallback(ctx context.Context, b *bot.Bot, update *models.Update) {
@@ -290,6 +259,20 @@ func (a *App) handleMenuText(ctx context.Context, b *bot.Bot, msg *models.Messag
 	case btnBack:
 		a.applyAction(ctx, b, chatID, msg.From, cbBack)
 		return
+	case btnRunCommand:
+		if a.Cfg.EnableRunCommand {
+			a.promptRunCommand(ctx, b, chatID, userID)
+			return
+		}
+	}
+
+	if a.isAwaiting(userID) {
+		a.setAwaiting(userID, false)
+		a.executeRawCommand(ctx, b, chatID, msg.From, text)
+		return
+	}
+
+	switch text {
 	case btnPrev:
 		a.applyAction(ctx, b, chatID, msg.From, cbPrev)
 		return
@@ -394,6 +377,7 @@ func (a *App) sendMenu(ctx context.Context, b *bot.Bot, chatID, userID int64, no
 		}
 	}
 	page = view.Page
+	a.setAwaiting(userID, false)
 	a.setLocation(userID, nodeID, page)
 	a.sendInline(ctx, b, chatID, userID, view.Title, view.Reply, "")
 }
@@ -465,6 +449,24 @@ func (a *App) setMessageID(userID, chatID int64, messageID int) {
 	a.navMu.Unlock()
 }
 
+func (a *App) setAwaiting(userID int64, v bool) {
+	a.navMu.Lock()
+	st := a.nav[userID]
+	st.awaiting = v
+	a.nav[userID] = st
+	a.navMu.Unlock()
+}
+
+func (a *App) isAwaiting(userID int64) bool {
+	return a.getNav(userID).awaiting
+}
+
+func (a *App) promptRunCommand(ctx context.Context, b *bot.Bot, chatID, userID int64) {
+	a.setAwaiting(userID, true)
+	st := a.getNav(userID)
+	a.sendInline(ctx, b, chatID, userID, "Type your command and send it.", ResultReplyKeyboard(st.nodeID != "", true), "")
+}
+
 func (a *App) showConfirm(ctx context.Context, b *bot.Bot, chatID, userID int64, node *Node) {
 	a.confirmMu.Lock()
 	a.confirms[userID] = confirmWait{
@@ -475,7 +477,7 @@ func (a *App) showConfirm(ctx context.Context, b *bot.Bot, chatID, userID int64,
 
 	st := a.getNav(userID)
 	hasBack := st.nodeID != ""
-	a.sendInline(ctx, b, chatID, userID, fmt.Sprintf("Confirm: %s ?", node.Label()), ConfirmReplyKeyboard(hasBack), "")
+	a.sendInline(ctx, b, chatID, userID, fmt.Sprintf("Confirm: %s ?", node.Label()), ConfirmReplyKeyboard(hasBack, a.Cfg.EnableRunCommand), "")
 }
 
 func (a *App) consumeConfirm(userID int64) (string, bool) {
@@ -541,9 +543,33 @@ func (a *App) executeButton(ctx context.Context, b *bot.Bot, chatID int64, user 
 	a.deliverResult(ctx, b, chatID, user.ID, node, res, err)
 }
 
+func (a *App) executeRawCommand(ctx context.Context, b *bot.Bot, chatID int64, user *models.User, command string) {
+	node := &Node{Name: "Run Command", ID: "run-command"}
+	env := map[string]string{}
+	for k, v := range a.Cfg.Env {
+		env[k] = v
+	}
+
+	a.showStatus(ctx, b, chatID, user.ID, "Running: Run Command …")
+
+	res, err := a.Exec.Run(ctx, executor.Spec{
+		UserID:   user.ID,
+		ButtonID: node.ID,
+		Button:   node.Name,
+		Command:  command,
+		Shell:    a.Cfg.Shell,
+		WorkDir:  a.Cfg.WorkDir,
+		Env:      env,
+		Timeout:  a.Cfg.Timeout.Duration,
+		MaxBytes: a.Cfg.MaxOutputBytes,
+	})
+
+	a.deliverResult(ctx, b, chatID, user.ID, node, res, err)
+}
+
 func (a *App) deliverResult(ctx context.Context, b *bot.Bot, chatID, userID int64, node *Node, res executor.Result, err error) {
 	text := formatCommandResult(node, res, err)
 	st := a.getNav(userID)
 	hasBack := st.nodeID != ""
-	a.sendInline(ctx, b, chatID, userID, text, ResultReplyKeyboard(hasBack), models.ParseModeHTML)
+	a.sendInline(ctx, b, chatID, userID, text, ResultReplyKeyboard(hasBack, a.Cfg.EnableRunCommand), models.ParseModeHTML)
 }

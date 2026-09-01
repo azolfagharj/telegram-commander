@@ -34,10 +34,11 @@ type Node struct {
 
 // Index maps node IDs and holds the root child IDs.
 type Index struct {
-	Roots          []string
-	ByID           map[string]*Node
-	DefaultColumns int
-	PageSize       int
+	Roots            []string
+	ByID             map[string]*Node
+	DefaultColumns   int
+	PageSize         int
+	EnableRunCommand bool
 }
 
 // BuildIndex walks the button tree and assigns stable IDs.
@@ -116,15 +117,4 @@ func stripVariationSelectors(s string) string {
 		}
 		return r
 	}, s)
-}
-
-// FindByName searches the tree for a button by name (case-insensitive).
-func (idx *Index) FindByName(name string) *Node {
-	lower := strings.ToLower(name)
-	for _, n := range idx.ByID {
-		if n.Type == "button" && strings.ToLower(n.Name) == lower {
-			return n
-		}
-	}
-	return nil
 }

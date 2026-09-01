@@ -22,9 +22,6 @@ func (a *App) NewBotWithOptions(extra ...bot.Option) (*bot.Bot, error) {
 		bot.WithMessageTextHandler("start", bot.MatchTypeCommandStartOnly, a.handleStart),
 		bot.WithMessageTextHandler("help", bot.MatchTypeCommandStartOnly, a.handleHelp),
 	}
-	if a.Cfg.Telegram.EnableRunCommand {
-		opts = append(opts, bot.WithMessageTextHandler("run", bot.MatchTypeCommandStartOnly, a.handleRun))
-	}
 	opts = append(opts, extra...)
 	return bot.New(a.Cfg.Telegram.BotToken, opts...)
 }

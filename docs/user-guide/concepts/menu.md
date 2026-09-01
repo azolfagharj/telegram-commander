@@ -121,6 +121,7 @@ one, so the chat stays tidy and the current screen is always the last message.
 - **Home** is always the first button on every screen. Tap it to go back to
   the first screen.
 - **Back** appears when you are inside a category.
+- **Run Command** appears when `enable_run_command` is on (see below).
 - Items sit two per row by default. A category can change this with `columns`.
   If a screen has many items, **Prev** and **Next** let you page through them.
 - Buttons with `confirm: true` ask Yes / Cancel before they run.
@@ -169,17 +170,18 @@ than `page_size` items (default 8), it is split into pages and Prev/Next are
 shown until you reach the ends. See
 [Configuration → Root fields](../configuration.md#root-fields).
 
-## Running a button by name
+## Run Command
 
-If you enable `enable_run_command` under `telegram`, you can run a button
-without opening the menu:
+If you set `enable_run_command: true` at the root of your config, a **Run
+Command** button stays on the menu (after Back inside a category, or after
+Home on the first screen). Tap it, then send the shell command you want to
+run. The bot uses the same shell, timeout, working directory, and output
+limits as your other buttons.
 
-```
-/run Restart nginx
-```
-
-This is off by default. See
-[Configuration → telegram](../configuration.md#telegram).
+Home or Back cancels the prompt without running anything. This is off by
+default. Anyone who can use the bot can then run any command on the host, so
+only turn it on if you trust every allowed user. See
+[Configuration → Root fields](../configuration.md#root-fields).
 
 ## What runs when a button is tapped
 

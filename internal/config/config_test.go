@@ -157,3 +157,39 @@ menu:
 	require.Contains(t, strings.ToLower(err.Error()), "buttons_columns")
 	require.Contains(t, strings.ToLower(err.Error()), "not found")
 }
+
+func TestRootEnableRunCommandAccepted(t *testing.T) {
+	yaml := `
+telegram:
+  bot_token: "token"
+  allowed_users: ["1"]
+enable_run_command: true
+menu:
+  - name: Echo
+    type: button
+    function: command
+    command: "echo hi"
+`
+	cfg, err := config.Parse([]byte(yaml))
+	require.NoError(t, err)
+	require.True(t, cfg.EnableRunCommand)
+	require.NoError(t, cfg.Validate().Err())
+}
+
+func TestOldNestedEnableRunCommandRejected(t *testing.T) {
+	yaml := `
+telegram:
+  bot_token: "token"
+  allowed_users: ["1"]
+  enable_run_command: true
+menu:
+  - name: Echo
+    type: button
+    function: command
+    command: "echo hi"
+`
+	_, err := config.Parse([]byte(yaml))
+	require.Error(t, err)
+	require.Contains(t, strings.ToLower(err.Error()), "enable_run_command")
+	require.Contains(t, strings.ToLower(err.Error()), "not found")
+}

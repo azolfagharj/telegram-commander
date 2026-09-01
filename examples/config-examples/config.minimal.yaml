@@ -3,6 +3,9 @@ telegram:
   allowed_users:
     - "YOUR_USER_ID"
 
+# Show a Run Command button that runs the next message as a shell command.
+enable_run_command: true
+
 menu:
   - name: System
     type: category

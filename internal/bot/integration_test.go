@@ -100,6 +100,19 @@ func startCommandUpdate(userID int64, username, text string) *models.Update {
 	}
 }
 
+func textUpdate(userID int64, username, text string) *models.Update {
+	return &models.Update{
+		ID: 2,
+		Message: &models.Message{
+			ID:   2,
+			Date: int(time.Now().Unix()),
+			Chat: models.Chat{ID: 10, Type: models.ChatTypePrivate},
+			From: &models.User{ID: userID, FirstName: "U", Username: username},
+			Text: text,
+		},
+	}
+}
+
 func callbackUpdate(userID int64, data string) *models.Update {
 	return &models.Update{
 		ID: 3,
@@ -395,4 +408,194 @@ func TestTypedStartAfterTapSendsNewMessage(t *testing.T) {
 	last := srv.messages[len(srv.messages)-1]
 	require.Equal(t, "send", last["kind"], "the menu after a typed command must be a new message, not an edit of an older one")
 	require.Equal(t, "Menu", last["text"])
+}
+
+func TestRunCommandPromptAndExecutesNextText(t *testing.T) {
+	srv := &apiServer{}
+	ts := httptest.NewServer(srv)
+	defer ts.Close()
+
+	var gotCommand string
+	fake := &executor.FakeExecutor{
+		Fn: func(_ context.Context, spec executor.Spec) (executor.Result, error) {
+			gotCommand = spec.Command
+			return executor.Result{ExitCode: 0, Stdout: "ok"}, nil
+		},
+	}
+
+	cfg := &config.Config{
+		Telegram: config.TelegramConfig{
+			API:          ts.URL,
+			BotToken:     "123:ABC",
+			AllowedUsers: []string{"42"},
+		},
+		EnableRunCommand: true,
+		Menu: []config.ButtonNode{
+			{Name: "Echo", Type: "button", Function: "command", Command: "echo hi"},
+		},
+	}
+	cfg.ApplyDefaults()
+
+	app := bot.NewApp(cfg, function.NewRegistry(), fake, nil)
+	b, err := app.NewBotWithOptions(
+		tgbot.WithHTTPClient(5*time.Second, ts.Client()),
+		tgbot.WithServerURL(ts.URL),
+		tgbot.WithSkipGetMe(),
+		tgbot.WithNotAsyncHandlers(),
+	)
+	require.NoError(t, err)
+
+	ctx := context.Background()
+	b.ProcessUpdate(ctx, startCommandUpdate(42, "admin", "/start"))
+	b.ProcessUpdate(ctx, textUpdate(42, "admin", "⌨️ Run Command"))
+
+	srv.mu.Lock()
+	require.Contains(t, visibleTexts(srv), "Type your command and send it.")
+	rm := fmt.Sprintf("%v", srv.messages[len(srv.messages)-1]["reply_markup"])
+	require.Contains(t, rm, "Run Command")
+	require.NotContains(t, rm, "Echo")
+	srv.mu.Unlock()
+
+	b.ProcessUpdate(ctx, textUpdate(42, "admin", "echo hello-raw"))
+
+	require.Equal(t, "echo hello-raw", gotCommand)
+	srv.mu.Lock()
+	defer srv.mu.Unlock()
+	joined := strings.Join(visibleTexts(srv), "\n")
+	require.Contains(t, joined, "Button: Run Command")
+}
+
+func TestRunCommandHomeCancelsAwaiting(t *testing.T) {
+	srv := &apiServer{}
+	ts := httptest.NewServer(srv)
+	defer ts.Close()
+
+	ran := false
+	fake := &executor.FakeExecutor{
+		Fn: func(_ context.Context, _ executor.Spec) (executor.Result, error) {
+			ran = true
+			return executor.Result{ExitCode: 0}, nil
+		},
+	}
+
+	cfg := &config.Config{
+		Telegram: config.TelegramConfig{
+			API:          ts.URL,
+			BotToken:     "123:ABC",
+			AllowedUsers: []string{"42"},
+		},
+		EnableRunCommand: true,
+		Menu: []config.ButtonNode{
+			{Name: "Echo", Type: "button", Function: "command", Command: "echo hi"},
+		},
+	}
+	cfg.ApplyDefaults()
+
+	app := bot.NewApp(cfg, function.NewRegistry(), fake, nil)
+	b, err := app.NewBotWithOptions(
+		tgbot.WithHTTPClient(5*time.Second, ts.Client()),
+		tgbot.WithServerURL(ts.URL),
+		tgbot.WithSkipGetMe(),
+		tgbot.WithNotAsyncHandlers(),
+	)
+	require.NoError(t, err)
+
+	ctx := context.Background()
+	b.ProcessUpdate(ctx, startCommandUpdate(42, "admin", "/start"))
+	b.ProcessUpdate(ctx, textUpdate(42, "admin", "⌨️ Run Command"))
+	b.ProcessUpdate(ctx, textUpdate(42, "admin", "🏠 Home"))
+	b.ProcessUpdate(ctx, textUpdate(42, "admin", "echo hello-raw"))
+
+	require.False(t, ran)
+	srv.mu.Lock()
+	defer srv.mu.Unlock()
+	require.Contains(t, visibleTexts(srv)[len(visibleTexts(srv))-1], "Unknown option")
+}
+
+func TestRunCommandBackCancelsAwaiting(t *testing.T) {
+	srv := &apiServer{}
+	ts := httptest.NewServer(srv)
+	defer ts.Close()
+
+	ran := false
+	fake := &executor.FakeExecutor{
+		Fn: func(_ context.Context, _ executor.Spec) (executor.Result, error) {
+			ran = true
+			return executor.Result{ExitCode: 0}, nil
+		},
+	}
+
+	cfg := &config.Config{
+		Telegram: config.TelegramConfig{
+			API:          ts.URL,
+			BotToken:     "123:ABC",
+			AllowedUsers: []string{"42"},
+		},
+		EnableRunCommand: true,
+		Menu: []config.ButtonNode{
+			{
+				Name: "Cat",
+				Type: "category",
+				Items: []config.ButtonNode{
+					{Name: "Echo", Type: "button", Function: "command", Command: "echo hi"},
+				},
+			},
+		},
+	}
+	cfg.ApplyDefaults()
+
+	app := bot.NewApp(cfg, function.NewRegistry(), fake, nil)
+	b, err := app.NewBotWithOptions(
+		tgbot.WithHTTPClient(5*time.Second, ts.Client()),
+		tgbot.WithServerURL(ts.URL),
+		tgbot.WithSkipGetMe(),
+		tgbot.WithNotAsyncHandlers(),
+	)
+	require.NoError(t, err)
+
+	ctx := context.Background()
+	b.ProcessUpdate(ctx, startCommandUpdate(42, "admin", "/start"))
+	b.ProcessUpdate(ctx, callbackUpdate(42, "o:"+app.Index.Roots[0]))
+	b.ProcessUpdate(ctx, textUpdate(42, "admin", "⌨️ Run Command"))
+	b.ProcessUpdate(ctx, textUpdate(42, "admin", "🔙 Back"))
+	b.ProcessUpdate(ctx, textUpdate(42, "admin", "echo hello-raw"))
+
+	require.False(t, ran)
+	srv.mu.Lock()
+	defer srv.mu.Unlock()
+	require.Contains(t, visibleTexts(srv)[len(visibleTexts(srv))-1], "Unknown option")
+}
+
+func TestRunCommandButtonAbsentWhenDisabled(t *testing.T) {
+	srv := &apiServer{}
+	ts := httptest.NewServer(srv)
+	defer ts.Close()
+
+	cfg := &config.Config{
+		Telegram: config.TelegramConfig{
+			API:          ts.URL,
+			BotToken:     "123:ABC",
+			AllowedUsers: []string{"42"},
+		},
+		Menu: []config.ButtonNode{
+			{Name: "Echo", Type: "button", Function: "command", Command: "echo hi"},
+		},
+	}
+	cfg.ApplyDefaults()
+
+	app := bot.NewApp(cfg, function.NewRegistry(), &executor.FakeExecutor{}, nil)
+	b, err := app.NewBotWithOptions(
+		tgbot.WithHTTPClient(5*time.Second, ts.Client()),
+		tgbot.WithServerURL(ts.URL),
+		tgbot.WithSkipGetMe(),
+		tgbot.WithNotAsyncHandlers(),
+	)
+	require.NoError(t, err)
+
+	b.ProcessUpdate(context.Background(), startCommandUpdate(42, "admin", "/start"))
+
+	srv.mu.Lock()
+	defer srv.mu.Unlock()
+	rm := fmt.Sprintf("%v", srv.messages[0]["reply_markup"])
+	require.NotContains(t, rm, "Run Command")
 }

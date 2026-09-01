@@ -15,6 +15,7 @@ type Config struct {
 	MenuColumns       int               `yaml:"menu_columns"`
 	PageSize          int               `yaml:"page_size"`
 	ConfirmTTL        Duration          `yaml:"confirm_ttl"`
+	EnableRunCommand  bool              `yaml:"enable_run_command"`
 	Logging           LoggingConfig     `yaml:"logging"`
 	Menu              []ButtonNode      `yaml:"menu"`
 
@@ -24,12 +25,11 @@ type Config struct {
 
 // TelegramConfig holds Telegram Bot API settings.
 type TelegramConfig struct {
-	API              string      `yaml:"api"`
-	BotToken         string      `yaml:"bot_token"`
-	AllowedUsers     []string    `yaml:"allowed_users"`
-	Proxy            ProxyConfig `yaml:"proxy"`
-	Insecure         bool        `yaml:"insecure"`
-	EnableRunCommand bool        `yaml:"enable_run_command"`
+	API          string      `yaml:"api"`
+	BotToken     string      `yaml:"bot_token"`
+	AllowedUsers []string    `yaml:"allowed_users"`
+	Proxy        ProxyConfig `yaml:"proxy"`
+	Insecure     bool        `yaml:"insecure"`
 }
 
 // ProxyConfig configures an optional HTTP/SOCKS proxy for Telegram API calls.

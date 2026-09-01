@@ -3,6 +3,7 @@ package bot_test
 import (
 	"testing"
 
+	"github.com/go-telegram/bot/models"
 	"github.com/stretchr/testify/require"
 
 	"github.com/azolfagharj/telegram-commander/internal/bot"
@@ -57,13 +58,6 @@ func TestBuildIndexAndKeyboard(t *testing.T) {
 	require.Contains(t, inline2, "🏠 Home")
 	require.Contains(t, inline2, "🔙 Back")
 	require.Contains(t, inline2, "Echo")
-}
-
-func TestFindByName(t *testing.T) {
-	idx := bot.BuildIndex(sampleButtons(), 2, 8)
-	n := idx.FindByName("echo")
-	require.NotNil(t, n)
-	require.Equal(t, "Echo", n.Name)
 }
 
 func TestChildByLabel(t *testing.T) {
@@ -126,12 +120,46 @@ func TestLabelStripsVariationSelectors(t *testing.T) {
 }
 
 func TestConfirmReplyKeyboard(t *testing.T) {
-	kb := bot.ConfirmReplyKeyboard(true)
+	kb := bot.ConfirmReplyKeyboard(true, false)
 	require.Equal(t, "🏠 Home", kb.Keyboard[0][0].Text)
 	require.Equal(t, "🔙 Back", kb.Keyboard[0][1].Text)
 	require.Equal(t, "✅ Yes", kb.Keyboard[1][0].Text)
 	require.Equal(t, "❌ Cancel", kb.Keyboard[1][1].Text)
 
-	root := bot.ConfirmReplyKeyboard(false)
+	root := bot.ConfirmReplyKeyboard(false, false)
 	require.Len(t, root.Keyboard[0], 1)
+
+	withRun := bot.ConfirmReplyKeyboard(true, true)
+	require.Equal(t, "⌨️ Run Command", withRun.Keyboard[0][2].Text)
+}
+
+func TestRunCommandNavOrder(t *testing.T) {
+	idx := bot.BuildIndex(sampleButtons(), 2, 8)
+
+	off, err := idx.BuildMenu("", 0)
+	require.NoError(t, err)
+	require.NotContains(t, collectInline(off), "⌨️ Run Command")
+
+	idx.EnableRunCommand = true
+	root, err := idx.BuildMenu("", 0)
+	require.NoError(t, err)
+	rootNav := root.Reply.Keyboard[0]
+	require.Equal(t, []string{"🏠 Home", "⌨️ Run Command"}, buttonTexts(rootNav))
+
+	catID := idx.Roots[0]
+	nested, err := idx.BuildMenu(catID, 0)
+	require.NoError(t, err)
+	nestedNav := nested.Reply.Keyboard[0]
+	require.Equal(t, []string{"🏠 Home", "🔙 Back", "⌨️ Run Command"}, buttonTexts(nestedNav))
+
+	result := bot.ResultReplyKeyboard(true, true)
+	require.Equal(t, []string{"🏠 Home", "🔙 Back", "⌨️ Run Command"}, buttonTexts(result.Keyboard[0]))
+}
+
+func buttonTexts(row []models.KeyboardButton) []string {
+	out := make([]string, len(row))
+	for i, b := range row {
+		out[i] = b.Text
+	}
+	return out
 }

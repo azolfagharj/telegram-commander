@@ -7,12 +7,13 @@ import (
 )
 
 const (
-	btnHome   = "🏠 Home"
-	btnBack   = "🔙 Back"
-	btnPrev   = "⏪ Prev"
-	btnNext   = "Next ⏩"
-	btnYes    = "✅ Yes"
-	btnCancel = "❌ Cancel"
+	btnHome       = "🏠 Home"
+	btnBack       = "🔙 Back"
+	btnRunCommand = "⌨️ Run Command"
+	btnPrev       = "⏪ Prev"
+	btnNext       = "Next ⏩"
+	btnYes        = "✅ Yes"
+	btnCancel     = "❌ Cancel"
 
 	cbHome   = "h"
 	cbBack   = "b"
@@ -74,17 +75,20 @@ func replyKeyboard(rows [][]models.KeyboardButton) *models.ReplyKeyboardMarkup {
 	}
 }
 
-func navRow(hasBack bool) []models.KeyboardButton {
+func navRow(hasBack, showRun bool) []models.KeyboardButton {
 	nav := []models.KeyboardButton{{Text: btnHome}}
 	if hasBack {
 		nav = append(nav, models.KeyboardButton{Text: btnBack})
+	}
+	if showRun {
+		nav = append(nav, models.KeyboardButton{Text: btnRunCommand})
 	}
 	return nav
 }
 
 func menuReplyKeyboard(idx *Index, ids []string, columns int, hasBack, hasPrev, hasNext bool) *models.ReplyKeyboardMarkup {
 	var rows [][]models.KeyboardButton
-	rows = append(rows, navRow(hasBack))
+	rows = append(rows, navRow(hasBack, idx.EnableRunCommand))
 	rows = append(rows, chunkItems(idx, ids, columns)...)
 	var pager []models.KeyboardButton
 	if hasPrev {
@@ -177,9 +181,10 @@ func (idx *Index) clampPage(nodeID string, page int) int {
 }
 
 // ConfirmReplyKeyboard is Yes/Cancel plus Home (and Back when nested).
-func ConfirmReplyKeyboard(hasBack bool) *models.ReplyKeyboardMarkup {
+// Run Command is included when showRun is true.
+func ConfirmReplyKeyboard(hasBack, showRun bool) *models.ReplyKeyboardMarkup {
 	return replyKeyboard([][]models.KeyboardButton{
-		navRow(hasBack),
+		navRow(hasBack, showRun),
 		{
 			{Text: btnYes},
 			{Text: btnCancel},
@@ -187,9 +192,10 @@ func ConfirmReplyKeyboard(hasBack bool) *models.ReplyKeyboardMarkup {
 	})
 }
 
-// ResultReplyKeyboard is Home (and Back when nested) under a command result.
-func ResultReplyKeyboard(hasBack bool) *models.ReplyKeyboardMarkup {
-	return replyKeyboard([][]models.KeyboardButton{navRow(hasBack)})
+// ResultReplyKeyboard is Home (and Back when nested) under a command result
+// or the Run Command prompt. Run Command is included when showRun is true.
+func ResultReplyKeyboard(hasBack, showRun bool) *models.ReplyKeyboardMarkup {
+	return replyKeyboard([][]models.KeyboardButton{navRow(hasBack, showRun)})
 }
 
 // ChildByLabel finds a direct child of nodeID (empty = root) by display label.

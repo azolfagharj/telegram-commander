@@ -51,6 +51,7 @@ example.
 | `menu_columns` | int | no | `2` | Item buttons per row under the message box |
 | `page_size` | int | no | `8` | Items per page before pagination |
 | `confirm_ttl` | duration | no | `5m` | How long a [confirmation](concepts/confirmation.md) prompt stays valid |
+| `enable_run_command` | bool | no | `false` | Show a **Run Command** button that runs the next message as a shell command. Off by default. Anyone who can use the bot can then run any command on the host, so only turn this on if you trust every allowed user. Putting this key under `telegram` is invalid. |
 | `logging` | object | no | built-in default logger | Named loggers (see below) |
 
 ### What if I omit `shell`?
@@ -76,7 +77,6 @@ You can omit it. The bot uses `/bin/bash`. Same for `timeout`, `page_size`, and 
 | `proxy.enabled` | bool | no | `false` | Use proxy for Telegram API |
 | `proxy.url` | string | conditional | — | Required when `proxy.enabled` is `true` |
 | `insecure` | bool | no | `false` | Skip TLS verify (not recommended) |
-| `enable_run_command` | bool | no | `false` | Enable `/run <button name>` |
 
 Unauthorized users receive a message with their `user_id` and `username` so they can ask an admin for access. This is also how you find your own id the first time — see [Run in CLI → Step 5](installation/download-and-run.md#step-5-find-your-user-id-if-needed).
 
@@ -91,7 +91,12 @@ telegram:
   proxy:
     enabled: true
     url: "socks5://127.0.0.1:10808"
-  enable_run_command: true
+```
+
+To let allowed users type a shell command from Telegram, set this at the **root** of the file (not under `telegram`):
+
+```yaml
+enable_run_command: true
 ```
 
 ## Menu

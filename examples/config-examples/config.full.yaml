@@ -8,7 +8,6 @@ telegram:
     enabled: false
     url: "socks5://127.0.0.1:10808"
   insecure: false
-  enable_run_command: false
 
 function_directory: "examples/functions"
 
@@ -18,6 +17,7 @@ max_output_bytes: 524288
 menu_columns: 2
 page_size: 8
 confirm_ttl: "5m"
+enable_run_command: true
 
 logging:
   logs:
