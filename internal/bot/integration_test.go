@@ -320,6 +320,54 @@ func TestMenuAlwaysSendsFreshMessageAndCleansUpOld(t *testing.T) {
 	require.Equal(t, 2, srv.deletes, "old menu messages should be cleaned up")
 }
 
+func TestCommandRunKeepsRunningAndResultAfterHome(t *testing.T) {
+	srv := &apiServer{}
+	ts := httptest.NewServer(srv)
+	defer ts.Close()
+
+	fake := &executor.FakeExecutor{
+		Fn: func(_ context.Context, _ executor.Spec) (executor.Result, error) {
+			return executor.Result{ExitCode: 0, Stdout: "hello-out"}, nil
+		},
+	}
+
+	cfg := &config.Config{
+		Telegram: config.TelegramConfig{
+			API:          ts.URL,
+			BotToken:     "123:ABC",
+			AllowedUsers: []string{"42"},
+		},
+		Menu: []config.ButtonNode{
+			{Name: "Echo", Type: "button", Function: "command", Command: "echo hi"},
+		},
+	}
+	cfg.ApplyDefaults()
+
+	app := bot.NewApp(cfg, function.NewRegistry(), fake, nil)
+	b, err := app.NewBotWithOptions(
+		tgbot.WithHTTPClient(5*time.Second, ts.Client()),
+		tgbot.WithServerURL(ts.URL),
+		tgbot.WithSkipGetMe(),
+		tgbot.WithNotAsyncHandlers(),
+	)
+	require.NoError(t, err)
+
+	ctx := context.Background()
+	b.ProcessUpdate(ctx, startCommandUpdate(42, "admin", "/start"))
+	b.ProcessUpdate(ctx, textUpdate(42, "admin", "Echo"))
+	b.ProcessUpdate(ctx, textUpdate(42, "admin", "🏠 Home"))
+
+	srv.mu.Lock()
+	defer srv.mu.Unlock()
+	texts := visibleTexts(srv)
+	require.Contains(t, strings.Join(texts, "\n"), "Running: Echo")
+	require.Contains(t, strings.Join(texts, "\n"), "Button: Echo")
+	require.Contains(t, strings.Join(texts, "\n"), "hello-out")
+	require.Equal(t, "Menu", texts[len(texts)-1])
+	// Start menu is removed when the command starts; Home does not remove Running or the result.
+	require.Equal(t, 1, srv.deletes)
+}
+
 func TestMenuMessageCarriesHomeReplyKeyboard(t *testing.T) {
 	srv := &apiServer{}
 	ts := httptest.NewServer(srv)
@@ -646,8 +694,6 @@ func TestLongCommandResultIsSplitAndReplied(t *testing.T) {
 	b.ProcessUpdate(ctx, textUpdate(42, "admin", "Echo"))
 
 	srv.mu.Lock()
-	defer srv.mu.Unlock()
-
 	var result []map[string]any
 	for _, m := range srv.messages {
 		text, _ := m["text"].(string)
@@ -669,4 +715,20 @@ func TestLongCommandResultIsSplitAndReplied(t *testing.T) {
 	require.NotContains(t, firstRM, "Home")
 	reply := fmt.Sprintf("%v", result[1]["reply_parameters"])
 	require.Contains(t, reply, "message_id")
+	firstChunk, _ := result[0]["text"].(string)
+	srv.mu.Unlock()
+
+	b.ProcessUpdate(ctx, textUpdate(42, "admin", "🏠 Home"))
+
+	srv.mu.Lock()
+	defer srv.mu.Unlock()
+	var still []string
+	for _, m := range srv.messages {
+		text, _ := m["text"].(string)
+		if strings.Contains(text, "<pre>") {
+			still = append(still, text)
+		}
+	}
+	require.Greater(t, len(still), 1)
+	require.Equal(t, firstChunk, still[0], "first output chunk should still be in the chat after Home")
 }

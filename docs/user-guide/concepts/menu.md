@@ -114,9 +114,10 @@ different emoji for it.
 All buttons appear under the message box (the keyboard that shows and hides
 with the small button at the right end of the message box). This keyboard
 always spans the full width of the chat, so button text is never squeezed or
-cut off. Every screen (the menu, a confirmation, a command result) is its own
-message, and the bot deletes the previous screen right after sending the new
-one, so the chat stays tidy and the current screen is always the last message.
+cut off. Menu titles (Home, a category, a page) replace the previous menu
+title so the chat does not fill with empty screens. A **Running** line and
+the command output stay in the chat, so you can still see what ran after you
+open the menu again.
 
 - **Home** is always the first button on every screen. Tap it to go back to
   the first screen.

@@ -36,8 +36,10 @@ type App struct {
 }
 
 type userMenu struct {
-	nodeID    string
-	page      int
+	nodeID string
+	page   int
+	// messageID is the last navigation screen (menu, confirm, or run prompt).
+	// Running and command results are not stored here, so they stay in the chat.
 	messageID int
 	chatID    int64
 	awaiting  bool
@@ -377,7 +379,7 @@ func (a *App) sendMenu(ctx context.Context, b *bot.Bot, chatID, userID int64, no
 	page = view.Page
 	a.setAwaiting(userID, false)
 	a.setLocation(userID, nodeID, page)
-	a.sendInline(ctx, b, chatID, userID, view.Title, view.Reply, "")
+	a.sendNav(ctx, b, chatID, userID, view.Title, view.Reply, "")
 }
 
 func (a *App) showStatus(ctx context.Context, b *bot.Bot, chatID, userID int64, text string) {
@@ -386,20 +388,30 @@ func (a *App) showStatus(ctx context.Context, b *bot.Bot, chatID, userID int64, 
 	if err != nil {
 		view, err = a.Index.BuildMenu("", 0)
 		if err != nil {
-			a.sendInline(ctx, b, chatID, userID, text, nil, "")
+			a.sendKeep(ctx, b, chatID, text, nil, "")
 			return
 		}
 	}
-	a.sendInline(ctx, b, chatID, userID, text, view.Reply, "")
+	a.sendKeep(ctx, b, chatID, text, view.Reply, "")
 }
 
-// sendInline shows one screen. It always sends a brand new message with the
-// screen's reply keyboard (so the menu is guaranteed to be the last message
-// in the chat). A reply keyboard always spans the full chat width, so button
-// text is never squeezed the way it can be inside a narrow inline keyboard.
-// The previous menu message, if any, is then deleted so the chat does not
-// fill up with old screens.
-func (a *App) sendInline(ctx context.Context, b *bot.Bot, chatID, userID int64, text string, reply *models.ReplyKeyboardMarkup, parseMode models.ParseMode) {
+// sendNav shows a navigation screen (menu, confirm, or run prompt) and
+// deletes the previous navigation screen so those titles do not pile up.
+func (a *App) sendNav(ctx context.Context, b *bot.Bot, chatID, userID int64, text string, reply *models.ReplyKeyboardMarkup, parseMode models.ParseMode) {
+	msg := a.sendKeep(ctx, b, chatID, text, reply, parseMode)
+	if msg == nil {
+		return
+	}
+	old := a.getNav(userID)
+	a.setMessageID(userID, chatID, msg.ID)
+	if old.messageID != 0 && old.chatID == chatID {
+		a.deleteMessage(ctx, b, old.chatID, old.messageID)
+	}
+}
+
+// sendKeep sends a message with a reply keyboard and leaves older messages
+// in the chat (used for Running and command results).
+func (a *App) sendKeep(ctx context.Context, b *bot.Bot, chatID int64, text string, reply *models.ReplyKeyboardMarkup, parseMode models.ParseMode) *models.Message {
 	params := &bot.SendMessageParams{
 		ChatID:    chatID,
 		Text:      text,
@@ -411,16 +423,28 @@ func (a *App) sendInline(ctx context.Context, b *bot.Bot, chatID, userID int64, 
 	msg, err := b.SendMessage(ctx, params)
 	if err != nil || msg == nil {
 		a.Log.Error("send menu", "err", err)
+		return nil
+	}
+	return msg
+}
+
+func (a *App) deleteMessage(ctx context.Context, b *bot.Bot, chatID int64, messageID int) {
+	if messageID == 0 {
 		return
 	}
-	old := a.getNav(userID)
-	a.setMessageID(userID, chatID, msg.ID)
-	if old.messageID != 0 && old.chatID == chatID {
-		_, _ = b.DeleteMessage(ctx, &bot.DeleteMessageParams{
-			ChatID:    old.chatID,
-			MessageID: old.messageID,
-		})
+	_, _ = b.DeleteMessage(ctx, &bot.DeleteMessageParams{
+		ChatID:    chatID,
+		MessageID: messageID,
+	})
+}
+
+func (a *App) deleteNavMessage(ctx context.Context, b *bot.Bot, chatID, userID int64) {
+	st := a.getNav(userID)
+	if st.messageID == 0 || st.chatID != chatID {
+		return
 	}
+	a.deleteMessage(ctx, b, st.chatID, st.messageID)
+	a.setMessageID(userID, chatID, 0)
 }
 
 func (a *App) getNav(userID int64) userMenu {
@@ -462,7 +486,7 @@ func (a *App) isAwaiting(userID int64) bool {
 func (a *App) promptRunCommand(ctx context.Context, b *bot.Bot, chatID, userID int64) {
 	a.setAwaiting(userID, true)
 	st := a.getNav(userID)
-	a.sendInline(ctx, b, chatID, userID, "Type your command and send it.", ResultReplyKeyboard(st.nodeID != "", true), "")
+	a.sendNav(ctx, b, chatID, userID, "Type your command and send it.", ResultReplyKeyboard(st.nodeID != "", true), "")
 }
 
 func (a *App) showConfirm(ctx context.Context, b *bot.Bot, chatID, userID int64, node *Node) {
@@ -475,7 +499,7 @@ func (a *App) showConfirm(ctx context.Context, b *bot.Bot, chatID, userID int64,
 
 	st := a.getNav(userID)
 	hasBack := st.nodeID != ""
-	a.sendInline(ctx, b, chatID, userID, fmt.Sprintf("Confirm: %s ?", node.Label()), ConfirmReplyKeyboard(hasBack, a.Cfg.EnableRunCommand), "")
+	a.sendNav(ctx, b, chatID, userID, fmt.Sprintf("Confirm: %s ?", node.Label()), ConfirmReplyKeyboard(hasBack, a.Cfg.EnableRunCommand), "")
 }
 
 func (a *App) consumeConfirm(userID int64) (string, bool) {
@@ -524,6 +548,7 @@ func (a *App) executeButton(ctx context.Context, b *bot.Bot, chatID int64, user 
 		env[k] = v
 	}
 
+	a.deleteNavMessage(ctx, b, chatID, user.ID)
 	a.showStatus(ctx, b, chatID, user.ID, fmt.Sprintf("Running: %s …", node.Label()))
 
 	res, err := a.Exec.Run(ctx, executor.Spec{
@@ -548,6 +573,7 @@ func (a *App) executeRawCommand(ctx context.Context, b *bot.Bot, chatID int64, u
 		env[k] = v
 	}
 
+	a.deleteNavMessage(ctx, b, chatID, user.ID)
 	a.showStatus(ctx, b, chatID, user.ID, "Running: Run Command …")
 
 	res, err := a.Exec.Run(ctx, executor.Spec{
@@ -573,7 +599,6 @@ func (a *App) deliverResult(ctx context.Context, b *bot.Bot, chatID, userID int6
 	st := a.getNav(userID)
 	hasBack := st.nodeID != ""
 	kb := ResultReplyKeyboard(hasBack, a.Cfg.EnableRunCommand)
-	old := st
 
 	var lastID int
 	for i, chunk := range chunks {
@@ -594,15 +619,5 @@ func (a *App) deliverResult(ctx context.Context, b *bot.Bot, chatID, userID int6
 			break
 		}
 		lastID = msg.ID
-	}
-	if lastID == 0 {
-		return
-	}
-	a.setMessageID(userID, chatID, lastID)
-	if old.messageID != 0 && old.chatID == chatID {
-		_, _ = b.DeleteMessage(ctx, &bot.DeleteMessageParams{
-			ChatID:    old.chatID,
-			MessageID: old.messageID,
-		})
 	}
 }
