@@ -34,7 +34,7 @@ For custom functions, use `params` for any parameter name. See
 ## Configuration
 
 For button fields `command`, `path`, `args`, and `params`, see
-[Configuration → Buttons](../configuration.md#buttons).
+[Configuration → Menu](../configuration.md#menu).
 
 ## Related
 

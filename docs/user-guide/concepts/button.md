@@ -25,12 +25,12 @@ before the name in Telegram and is purely cosmetic.
       command: "systemctl restart nginx"
     ```
 
-[Buttons](../buttons.md) and [categories](category.md) together form the menu
-tree under the top-level `buttons` key in your [config file](config-file.md).
+[Buttons](button.md) and [categories](category.md) together form the [menu](menu.md)
+tree under the top-level `menu` key in your [config file](config-file.md).
 
 ## Configuration
 
-For every field of a button, see [Configuration → Buttons](../configuration.md#buttons).
+For every field of a button, see [Configuration → Menu](../configuration.md#menu).
 
 ## Related
 
@@ -38,4 +38,4 @@ For every field of a button, see [Configuration → Buttons](../configuration.md
 - [Function](function.md) — what runs when a button is tapped
 - [Parameter](parameter.md) — values a function needs from the button
 - [Confirmation](confirmation.md) — optional "Are you sure?" step
-- [Buttons and menus](../buttons.md) — build and organize your menu
+- [Menu](menu.md) — build and organize your menu

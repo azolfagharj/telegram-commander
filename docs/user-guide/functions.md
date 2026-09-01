@@ -5,7 +5,7 @@ custom), the ready-made custom functions that ship in the release, and how to
 write your own. It is meant to be read top to bottom the first time.
 
 If you have not yet seen how buttons reference functions, read
-[Buttons and menus](buttons.md) first, and check [Concepts](concepts/function.md) for the
+[Menu](concepts/menu.md) first, and check [Concepts](concepts/function.md) for the
 vocabulary.
 
 ## What is a function?
@@ -358,7 +358,7 @@ A button using it:
 
 ## Related pages
 
-- [Buttons and menus](buttons.md) — how buttons reference functions
+- [Menu](concepts/menu.md) — how buttons reference functions
 - [Function](concepts/function.md) — what a function is
 - [Parameter](concepts/parameter.md) — values a function needs
 - [Configuration](configuration.md) — `function_directory` and button fields

@@ -64,10 +64,10 @@ func (c *Config) Validate() ValidationErrors {
 			Message: "max_output_bytes must be positive",
 		})
 	}
-	if c.ButtonsColumns < 1 {
+	if c.MenuColumns < 1 {
 		errs = append(errs, ValidationError{
-			Path:    "buttons_columns",
-			Message: "buttons_columns must be >= 1",
+			Path:    "menu_columns",
+			Message: "menu_columns must be >= 1",
 		})
 	}
 	if c.PageSize < 1 {
@@ -76,14 +76,14 @@ func (c *Config) Validate() ValidationErrors {
 			Message: "page_size must be >= 1",
 		})
 	}
-	if len(c.Buttons) == 0 {
+	if len(c.Menu) == 0 {
 		errs = append(errs, ValidationError{
-			Path:    "buttons",
+			Path:    "menu",
 			Message: "at least one button or category is required",
 		})
 	}
 
-	errs = append(errs, validateButtons(c.Buttons, "buttons")...)
+	errs = append(errs, validateButtons(c.Menu, "menu")...)
 	errs = append(errs, c.validateFunctionDirectory()...)
 	errs = append(errs, c.validateLogging()...)
 

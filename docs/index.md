@@ -26,7 +26,7 @@ telegram:
   allowed_users:
     - "YOUR_USER_ID"
 
-buttons:
+menu:
   - name: Uptime
     type: button
     function: command
@@ -45,7 +45,7 @@ Anything you can run in a shell, for example:
 - **Run your own scripts** — deploys, backups, cleanups, health checks
 - **Reach out** — curl a health endpoint, ping a host
 
-You define these as [buttons](user-guide/buttons.md), group them into [categories](user-guide/concepts/category.md), ask for
+You define these as [buttons](user-guide/concepts/button.md), group them into [categories](user-guide/concepts/category.md), ask for
 [confirmation](user-guide/concepts/confirmation.md) before dangerous actions,
 [restrict who can use the bot](user-guide/configuration.md#telegram), and run through a
 [proxy](user-guide/configuration.md#telegram) if Telegram is blocked on your network.
@@ -57,7 +57,7 @@ New here? Follow the pages in order:
 1. [Run in CLI](user-guide/installation/download-and-run.md) — install, set your token, run the bot
 2. [Concepts](user-guide/concepts/config-file.md) — the words used in this documentation
 3. [Configuration](user-guide/configuration.md) — every setting, with defaults and examples
-4. [Buttons and menus](user-guide/buttons.md) — how to build your menu tree
+4. [Menu](user-guide/concepts/menu.md) — how to build your menu tree
 5. [Functions](user-guide/functions.md) — what runs when a button is tapped
 6. [CLI](user-guide/cli.md) — the command line commands
 7. [Run as a service](user-guide/installation/run-as-a-service.md) — run it as a systemd service

@@ -12,11 +12,11 @@ type Config struct {
 	MaxOutputBytes    int               `yaml:"max_output_bytes"`
 	WorkDir           string            `yaml:"workdir"`
 	Env               map[string]string `yaml:"env"`
-	ButtonsColumns    int               `yaml:"buttons_columns"`
+	MenuColumns       int               `yaml:"menu_columns"`
 	PageSize          int               `yaml:"page_size"`
 	ConfirmTTL        Duration          `yaml:"confirm_ttl"`
 	Logging           LoggingConfig     `yaml:"logging"`
-	Buttons           []ButtonNode      `yaml:"buttons"`
+	Menu              []ButtonNode      `yaml:"menu"`
 
 	// functionDirectorySet is true when the key was present in YAML (even if empty).
 	functionDirectorySet bool
@@ -116,7 +116,7 @@ const (
 	DefaultShell          = "/bin/bash"
 	DefaultTimeout        = 60 * time.Second
 	DefaultMaxOutputBytes = 512 * 1024
-	DefaultButtonsColumns = 2
+	DefaultMenuColumns    = 2
 	DefaultPageSize       = 8
 	DefaultConfirmTTL     = 5 * time.Minute
 )
@@ -135,8 +135,8 @@ func (c *Config) ApplyDefaults() {
 	if c.MaxOutputBytes == 0 {
 		c.MaxOutputBytes = DefaultMaxOutputBytes
 	}
-	if c.ButtonsColumns == 0 {
-		c.ButtonsColumns = DefaultButtonsColumns
+	if c.MenuColumns == 0 {
+		c.MenuColumns = DefaultMenuColumns
 	}
 	if c.PageSize == 0 {
 		c.PageSize = DefaultPageSize

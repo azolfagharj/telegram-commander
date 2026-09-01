@@ -231,7 +231,7 @@ func (r *Registry) ValidateButtonParams(node config.ButtonNode, path string) con
 func (r *Registry) ValidateTree(buttons []config.ButtonNode) config.ValidationErrors {
 	var errs config.ValidationErrors
 	for i, n := range buttons {
-		errs = append(errs, r.ValidateButtonParams(n, fmt.Sprintf("buttons[%d]", i))...)
+		errs = append(errs, r.ValidateButtonParams(n, fmt.Sprintf("menu[%d]", i))...)
 	}
 	return errs
 }

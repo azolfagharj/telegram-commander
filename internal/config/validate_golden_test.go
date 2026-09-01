@@ -15,7 +15,7 @@ func TestValidationErrorsGolden(t *testing.T) {
 telegram:
   bot_token: ""
   allowed_users: []
-buttons: []
+menu: []
 `
 	cfg, err := config.Parse([]byte(yaml))
 	require.NoError(t, err)
@@ -33,5 +33,5 @@ buttons: []
 	// Stable subset checks (order of map-like fields may vary; our validator is sequential).
 	require.True(t, strings.Contains(got, "telegram.bot_token: bot_token is required"))
 	require.True(t, strings.Contains(got, "telegram.allowed_users: at least one allowed user is required"))
-	require.True(t, strings.Contains(got, "buttons: at least one button or category is required"))
+	require.True(t, strings.Contains(got, "menu: at least one button or category is required"))
 }

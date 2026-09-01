@@ -121,6 +121,6 @@ See [Run as a service](run-as-a-service.md).
 
 ## What next
 
-- Add more [buttons](../concepts/button.md) and [categories](../concepts/category.md): [Buttons and menus](../buttons.md)
+- Add more [buttons](../concepts/button.md) and [categories](../concepts/category.md): [Menu](../concepts/menu.md)
 - Understand what actually runs: [Functions](../functions.md)
 - See every command line option: [CLI](../cli.md)

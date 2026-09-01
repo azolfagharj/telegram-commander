@@ -18,7 +18,7 @@ for the vocabulary used below.
 ## A minimal config
 
 Only `telegram` (with a token and one [allowed user](concepts/allowed-users.md))
-and `buttons` are required. Everything else has a default:
+and `menu` are required. Everything else has a default:
 
 ```yaml
 telegram:
@@ -26,7 +26,7 @@ telegram:
   allowed_users:
     - "123456789"
 
-buttons:
+menu:
   - name: Uptime
     type: button
     function: command
@@ -41,14 +41,14 @@ example.
 | Field | Type | Required | Default | Description |
 |-------|------|----------|---------|-------------|
 | `telegram` | object | yes | — | Telegram settings (see below) |
-| `buttons` | list | yes | — | Menu tree; at least one node |
+| `menu` | list | yes | — | Menu tree; at least one node |
 | `function_directory` | string | no | unset | Custom function YAML directory (see rules below) |
 | `shell` | string | no | `/bin/bash` | [Shell](concepts/shell.md) used as `shell -c "<command>"` |
 | `timeout` | duration | no | `60s` | Default command timeout |
 | `max_output_bytes` | int | no | `524288` | Max captured stdout/stderr bytes |
 | `workdir` | string | no | process cwd | Default working directory for commands |
 | `env` | map | no | empty | Extra environment variables for commands |
-| `buttons_columns` | int | no | `2` | Item buttons per row under the message box |
+| `menu_columns` | int | no | `2` | Item buttons per row under the message box |
 | `page_size` | int | no | `8` | Items per page before pagination |
 | `confirm_ttl` | duration | no | `5m` | How long a [confirmation](concepts/confirmation.md) prompt stays valid |
 | `logging` | object | no | built-in default logger | Named loggers (see below) |
@@ -94,10 +94,10 @@ telegram:
   enable_run_command: true
 ```
 
-## Buttons
+## Menu
 
 This section is the field reference. For a guided explanation with examples, see
-[Buttons and menus](buttons.md). Each [button](concepts/button.md) or
+[Menu](concepts/menu.md). Each [button](concepts/button.md) or
 [category](concepts/category.md) node:
 
 | Field | Type | Required | Description |
@@ -152,6 +152,6 @@ exit code, duration). See [Audit log](concepts/audit-log.md).
 ## Related pages
 
 - [Run in CLI](installation/download-and-run.md) — build and run a first config
-- [Buttons and menus](buttons.md) — the menu tree in depth
+- [Menu](concepts/menu.md) — the menu tree in depth
 - [Functions](functions.md) — what `function`, `command`, and `params` mean
 - [CLI](cli.md) — validate and run with your config

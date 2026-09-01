@@ -134,7 +134,7 @@ Handy entry points:
 - [Run in CLI](https://azolfagharj.github.io/telegram-commander/user-guide/installation/download-and-run/) — from download to first run
 - [Concepts](https://azolfagharj.github.io/telegram-commander/user-guide/concepts/config-file/) — the vocabulary
 - [Configuration](https://azolfagharj.github.io/telegram-commander/user-guide/configuration/) — every setting
-- [Buttons and menus](https://azolfagharj.github.io/telegram-commander/user-guide/buttons/) — build your menu
+- [Menu](https://azolfagharj.github.io/telegram-commander/user-guide/concepts/menu/) — build your menu
 - [Functions](https://azolfagharj.github.io/telegram-commander/user-guide/functions/) — built-in and custom functions
 - [CLI](https://azolfagharj.github.io/telegram-commander/user-guide/cli/) — command line reference
 - [Run as a service](https://azolfagharj.github.io/telegram-commander/user-guide/installation/run-as-a-service/) — systemd setup

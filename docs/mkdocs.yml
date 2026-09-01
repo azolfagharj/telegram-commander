@@ -62,6 +62,7 @@ nav:
       - Run as a service: user-guide/installation/run-as-a-service.md
     - Concepts:
       - Config file: user-guide/concepts/config-file.md
+      - Menu: user-guide/concepts/menu.md
       - Button: user-guide/concepts/button.md
       - Category: user-guide/concepts/category.md
       - Function: user-guide/concepts/function.md
@@ -72,7 +73,6 @@ nav:
       - How the bot connects: user-guide/concepts/long-polling.md
       - Audit log: user-guide/concepts/audit-log.md
     - Guides:
-      - Buttons and menus: user-guide/buttons.md
       - Functions: user-guide/functions.md
     - Reference:
       - Configuration: user-guide/configuration.md
@@ -107,7 +107,9 @@ plugins:
         getting-started.md: user-guide/installation/download-and-run.md
         concepts.md: user-guide/concepts/config-file.md
         config-reference.md: user-guide/configuration.md
-        buttons.md: user-guide/buttons.md
+        buttons.md: user-guide/concepts/menu.md
+        user-guide/buttons.md: user-guide/concepts/menu.md
+        user-guide/menu.md: user-guide/concepts/menu.md
         functions-reference.md: user-guide/functions.md
         cli-reference.md: user-guide/cli.md
         install.md: user-guide/installation/run-as-a-service.md

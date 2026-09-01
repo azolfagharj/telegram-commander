@@ -15,14 +15,14 @@ A menu node that opens a submenu instead of running something. It has `items`
       command: "uptime"
 ```
 
-Buttons and categories together form a tree. See [Buttons and menus](../buttons.md).
+Buttons and categories together form a tree. See [Menu](menu.md).
 
 ## Configuration
 
 For category fields (`type`, `items`, `columns`, and more), see
-[Configuration → Buttons](../configuration.md#buttons).
+[Configuration → Menu](../configuration.md#menu).
 
 ## Related
 
 - [Button](button.md) — runs a function when tapped
-- [Buttons and menus](../buttons.md) — nesting, layout, and pagination
+- [Menu](menu.md) — nesting, layout, and pagination

@@ -3,7 +3,7 @@ telegram:
   allowed_users:
     - "YOUR_USER_ID"
 
-buttons:
+menu:
   - name: System
     type: category
     items:

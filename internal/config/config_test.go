@@ -14,7 +14,7 @@ func TestParseAndValidateMinimal(t *testing.T) {
 telegram:
   bot_token: "token"
   allowed_users: ["1"]
-buttons:
+menu:
   - name: Echo
     type: button
     function: command
@@ -34,7 +34,7 @@ telegram:
   bot_token: "token"
   allowed_users: ["1"]
   unknown_thing: true
-buttons:
+menu:
   - name: Echo
     type: button
     function: command
@@ -50,7 +50,7 @@ func TestDuplicateButtonNames(t *testing.T) {
 telegram:
   bot_token: "token"
   allowed_users: ["1"]
-buttons:
+menu:
   - name: A
     type: button
     function: command
@@ -72,7 +72,7 @@ func TestMissingCommandForCommandFunction(t *testing.T) {
 telegram:
   bot_token: "token"
   allowed_users: ["1"]
-buttons:
+menu:
   - name: Bad
     type: button
     function: command
@@ -90,7 +90,7 @@ telegram:
   bot_token: "token"
   allowed_users: ["1"]
 function_directory: "/tmp/does-not-exist-telegram-commander-xyz"
-buttons:
+menu:
   - name: Echo
     type: button
     function: command
@@ -110,7 +110,7 @@ telegram:
   bot_token: "token"
   allowed_users: ["1"]
 function_directory: ""
-buttons:
+menu:
   - name: Echo
     type: button
     function: command
@@ -121,4 +121,39 @@ buttons:
 	require.True(t, cfg.FunctionDirectoryWasSet())
 	errs := cfg.Validate()
 	require.NoError(t, errs.Err())
+}
+
+func TestOldButtonsKeyRejected(t *testing.T) {
+	yaml := `
+telegram:
+  bot_token: "token"
+  allowed_users: ["1"]
+buttons:
+  - name: Echo
+    type: button
+    function: command
+    command: "echo hi"
+`
+	_, err := config.Parse([]byte(yaml))
+	require.Error(t, err)
+	require.Contains(t, strings.ToLower(err.Error()), "buttons")
+	require.Contains(t, strings.ToLower(err.Error()), "not found")
+}
+
+func TestOldButtonsColumnsKeyRejected(t *testing.T) {
+	yaml := `
+telegram:
+  bot_token: "token"
+  allowed_users: ["1"]
+buttons_columns: 2
+menu:
+  - name: Echo
+    type: button
+    function: command
+    command: "echo hi"
+`
+	_, err := config.Parse([]byte(yaml))
+	require.Error(t, err)
+	require.Contains(t, strings.ToLower(err.Error()), "buttons_columns")
+	require.Contains(t, strings.ToLower(err.Error()), "not found")
 }

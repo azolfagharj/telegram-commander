@@ -85,7 +85,7 @@ func loadAndValidate(path string) (*config.Config, *function.Registry, error) {
 			})
 		}
 	}
-	errs = append(errs, reg.ValidateTree(cfg.Buttons)...)
+	errs = append(errs, reg.ValidateTree(cfg.Menu)...)
 	if err := errs.Err(); err != nil {
 		return nil, nil, err
 	}

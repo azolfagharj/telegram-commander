@@ -1,20 +1,20 @@
-# Buttons and menus
+# Menu
 
-Your menu is a tree of nodes under the top-level `buttons` key. There are two
+Your menu is a tree of nodes under the top-level `menu` key. There are two
 kinds of node:
 
-- A **[category](concepts/category.md)** opens a submenu. It has `items`.
-- A **[button](concepts/button.md)** runs something. It has a [function](concepts/function.md).
+- A **[category](category.md)** opens a submenu. It has `items`.
+- A **[button](button.md)** runs something. It has a [function](function.md).
 
-If these words are new, read [Concepts](concepts/button.md) first. For the exact list
-of every field, see [Configuration → Buttons](configuration.md#buttons).
+If these words are new, read [Concepts](button.md) first. For the exact list
+of every field, see [Configuration → Menu](../configuration.md#menu).
 
 ## A flat menu
 
 The simplest menu is a list of buttons with no nesting:
 
 ```yaml
-buttons:
+menu:
   - name: Uptime
     type: button
     function: command
@@ -40,7 +40,7 @@ As your menu grows, group related actions into categories. A category shows its
 category.
 
 ```yaml
-buttons:
+menu:
   - name: System
     type: category
     icon: "💻"
@@ -75,7 +75,7 @@ Two nodes under the same parent cannot share a name (comparison ignores case).
 This is fine, because they are in different categories:
 
 ```yaml
-buttons:
+menu:
   - name: Web
     type: category
     items:
@@ -129,7 +129,7 @@ one, so the chat stays tidy and the current screen is always the last message.
 
 Add `confirm: true` to any button to require a second tap ("Are you sure?")
 before it runs. Use it for anything destructive. See
-[Confirmation](concepts/confirmation.md) for the concept.
+[Confirmation](confirmation.md) for the concept.
 
 ```yaml
 - name: Stop nginx
@@ -140,7 +140,7 @@ before it runs. Use it for anything destructive. See
 ```
 
 The confirm prompt expires after a while (default 5 minutes). Change it with
-`confirm_ttl`; see [Configuration → Root fields](configuration.md#root-fields).
+`confirm_ttl`; see [Configuration → Root fields](../configuration.md#root-fields).
 
 ## Per-button overrides
 
@@ -158,15 +158,15 @@ Some global settings can be overridden on a single button:
 ```
 
 See the full field list in
-[Configuration → Buttons](configuration.md#buttons).
+[Configuration → Menu](../configuration.md#menu).
 
 ## Controlling layout
 
-`buttons_columns` sets how many **item** buttons appear per row (default 2).
+`menu_columns` sets how many **item** buttons appear per row (default 2).
 A category can override it with `columns`. When a menu has more
 than `page_size` items (default 8), it is split into pages and Prev/Next are
 shown until you reach the ends. See
-[Configuration → Root fields](configuration.md#root-fields).
+[Configuration → Root fields](../configuration.md#root-fields).
 
 ## Running a button by name
 
@@ -178,17 +178,17 @@ without opening the menu:
 ```
 
 This is off by default. See
-[Configuration → telegram](configuration.md#telegram).
+[Configuration → telegram](../configuration.md#telegram).
 
 ## What runs when a button is tapped
 
 Every button points to a **function** through its `function` field. The button
 in the examples above uses the built-in `command` function. To understand
 functions, built-in versus custom, and how to add your own, read
-[Functions](functions.md).
+[Functions](../functions.md).
 
 ## Related pages
 
-- [Button](concepts/button.md) — what a button is
-- [Category](concepts/category.md) — submenu nodes
-- [Configuration → Buttons](configuration.md#buttons) — every field
+- [Button](button.md) — what a button is
+- [Category](category.md) — submenu nodes
+- [Configuration → Menu](../configuration.md#menu) — every field

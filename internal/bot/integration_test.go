@@ -142,7 +142,7 @@ func TestUnauthorizedUserGetsDenyMessage(t *testing.T) {
 			BotToken:     "123:ABC",
 			AllowedUsers: []string{"999"},
 		},
-		Buttons: []config.ButtonNode{
+		Menu: []config.ButtonNode{
 			{Name: "Echo", Type: "button", Function: "command", Command: "echo hi"},
 		},
 	}
@@ -179,7 +179,7 @@ func TestAllowedStartSendsMenu(t *testing.T) {
 			BotToken:     "123:ABC",
 			AllowedUsers: []string{"42", "admin"},
 		},
-		Buttons: []config.ButtonNode{
+		Menu: []config.ButtonNode{
 			{Name: "Echo", Type: "button", Function: "command", Command: "echo hi"},
 		},
 	}
@@ -212,7 +212,7 @@ func TestInlineMenuNavigation(t *testing.T) {
 			BotToken:     "123:ABC",
 			AllowedUsers: []string{"42"},
 		},
-		Buttons: []config.ButtonNode{
+		Menu: []config.ButtonNode{
 			{
 				Name: "Cat",
 				Type: "category",
@@ -266,7 +266,7 @@ func TestMenuAlwaysSendsFreshMessageAndCleansUpOld(t *testing.T) {
 			BotToken:     "123:ABC",
 			AllowedUsers: []string{"42"},
 		},
-		Buttons: []config.ButtonNode{
+		Menu: []config.ButtonNode{
 			{
 				Name: "Cat",
 				Type: "category",
@@ -316,7 +316,7 @@ func TestMenuMessageCarriesHomeReplyKeyboard(t *testing.T) {
 			BotToken:     "123:ABC",
 			AllowedUsers: []string{"42"},
 		},
-		Buttons: []config.ButtonNode{
+		Menu: []config.ButtonNode{
 			{Name: "Echo", Type: "button", Function: "command", Command: "echo hi"},
 		},
 	}
@@ -363,7 +363,7 @@ func TestTypedStartAfterTapSendsNewMessage(t *testing.T) {
 			BotToken:     "123:ABC",
 			AllowedUsers: []string{"42"},
 		},
-		Buttons: []config.ButtonNode{
+		Menu: []config.ButtonNode{
 			{
 				Name: "Cat",
 				Type: "category",

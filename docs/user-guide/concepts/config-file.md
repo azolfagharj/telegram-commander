@@ -12,7 +12,7 @@ telegram:
   allowed_users:
     - "123456789"
 
-buttons:
+menu:
   - name: Uptime
     type: button
     function: command
@@ -22,5 +22,6 @@ buttons:
 ## Related
 
 - [Configuration](../configuration.md) — every field, default, and validation rule
+- [Menu](menu.md) — the button and category tree
 - [CLI](../cli.md) — pass the file with `--config`
 - [Run in CLI](../installation/download-and-run.md) — create your first config

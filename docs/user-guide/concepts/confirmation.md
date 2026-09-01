@@ -25,4 +25,4 @@ For `confirm` on buttons and global `confirm_ttl`, see
 ## Related
 
 - [Button](button.md) — the node that can require confirmation
-- [Buttons and menus → Confirmation](../buttons.md#confirmation) — examples and behavior
+- [Menu → Confirmation](menu.md#confirmation) — examples and behavior

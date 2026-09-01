@@ -33,4 +33,4 @@ For `function_directory` and button fields that reference functions, see
 
 - [Parameter](parameter.md) — named values a function needs
 - [Functions](../functions.md) — built-in and custom functions in depth
-- [Buttons and menus](../buttons.md) — how buttons reference functions
+- [Menu](menu.md) — how buttons reference functions
