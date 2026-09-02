@@ -68,6 +68,25 @@
 .md-social__link[href*="github.com"] svg { fill: #ffffff }
 .md-social__link[href*="/donate"] svg { fill: #ff5252 }
 
+/* Home page opening: the logo sits beside the two intro paragraphs.
+   On a narrow screen the text drops under the picture. */
+.md-typeset .hero {
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+  flex-wrap: wrap;
+}
+.md-typeset .hero-art p { margin: 0 }
+.md-typeset .hero-art img { display: block; max-width: 100% }
+.md-typeset .hero-text { flex: 1 1 18rem }
+.md-typeset .hero-text > :first-child { margin-top: 0 }
+.md-typeset .hero-text > :last-child { margin-bottom: 0 }
+
+/* The default logo slot is tiny, so the penguin gets more room */
+.md-header__button.md-logo { padding: .2rem; margin: .1rem }
+.md-header__button.md-logo img { width: 2.1rem; height: 2.1rem }
+.md-nav__button.md-logo img { width: 2.6rem; height: 2.6rem }
+
 /* Tighter buttons on the landing page */
 .md-typeset .md-button { padding: .35em .8em; font-size: .72rem }
 

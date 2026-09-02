@@ -12,12 +12,12 @@ is no code to write and no web panel to secure.
 ## Documentation
 
 - Home: https://telecommander.ir/
-- Run in CLI (install and first run): https://telecommander.ir/user-guide/installation/download-and-run/
-- Config file: https://telecommander.ir/user-guide/concepts/config-file/
-- Menu: https://telecommander.ir/user-guide/concepts/menu/
-- Functions: https://telecommander.ir/user-guide/functions/
-- Configuration reference: https://telecommander.ir/user-guide/configuration/
-- CLI reference: https://telecommander.ir/user-guide/cli/
+- Run in CLI (install and first run): https://telecommander.ir/documentation/installation/download-and-run/
+- Config file: https://telecommander.ir/documentation/concepts/config-file/
+- Menu: https://telecommander.ir/documentation/concepts/menu/
+- Functions: https://telecommander.ir/documentation/functions/
+- Configuration reference: https://telecommander.ir/documentation/configuration/
+- CLI reference: https://telecommander.ir/documentation/cli/
 
 ## Source
 

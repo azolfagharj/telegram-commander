@@ -15,7 +15,7 @@ Telegram over an outbound connection and only the users you list can use it.
 
 > **Full documentation:** <https://telecommander.ir/>
 >
-> New here? Start with [Run in CLI](https://telecommander.ir/user-guide/installation/download-and-run/).
+> New here? Start with [Run in CLI](https://telecommander.ir/documentation/installation/download-and-run/).
 
 ## What can I do with it?
 
@@ -131,13 +131,13 @@ The complete, beginner-friendly documentation lives here:
 
 Handy entry points:
 
-- [Run in CLI](https://telecommander.ir/user-guide/installation/download-and-run/) — from download to first run
-- [Concepts](https://telecommander.ir/user-guide/concepts/config-file/) — the vocabulary
-- [Configuration](https://telecommander.ir/user-guide/configuration/) — every setting
-- [Menu](https://telecommander.ir/user-guide/concepts/menu/) — build your menu
-- [Functions](https://telecommander.ir/user-guide/functions/) — built-in and custom functions
-- [CLI](https://telecommander.ir/user-guide/cli/) — command line reference
-- [Run as a service](https://telecommander.ir/user-guide/installation/run-as-a-service/) — systemd setup
+- [Run in CLI](https://telecommander.ir/documentation/installation/download-and-run/) — from download to first run
+- [Concepts](https://telecommander.ir/documentation/concepts/config-file/) — the vocabulary
+- [Configuration](https://telecommander.ir/documentation/configuration/) — every setting
+- [Menu](https://telecommander.ir/documentation/concepts/menu/) — build your menu
+- [Functions](https://telecommander.ir/documentation/functions/) — built-in and custom functions
+- [CLI](https://telecommander.ir/documentation/cli/) — command line reference
+- [Run as a service](https://telecommander.ir/documentation/installation/run-as-a-service/) — systemd setup
 
 The same pages live as Markdown in [`docs/markdown/`](docs/markdown/).
 

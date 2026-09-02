@@ -9,22 +9,29 @@ hide:
 
 # :material-cellphone-link: Control your Linux server from Telegram
 
+<div class="hero" markdown>
+<div class="hero-art" markdown>
+![Telegram Commander](images/logo-large.png){ .off-glb width="230" }
+</div>
+<div class="hero-text" markdown>
 **One tap runs a command on your server and sends the output back to your chat.**
 
-Telegram Commander turns a simple YAML [config file](user-guide/concepts/config-file.md)
-into a Telegram bot with a menu of [buttons](user-guide/concepts/button.md). Put any
+Telegram Commander turns a simple YAML [config file](documentation/concepts/config-file.md)
+into a Telegram bot with a menu of [buttons](documentation/concepts/button.md). Put any
 terminal command behind a button and run it from your phone. You do not write any code.
-
-<div style="text-align: center" markdown="span">
-[Get started :material-arrow-right:](user-guide/installation/download-and-run.md){ .md-button .md-button--primary }
-[See a config :material-file-code-outline:](user-guide/configuration.md#a-minimal-config){ .md-button }
+</div>
 </div>
 
-[Installation](user-guide/installation/download-and-run.md) ·
-[Concepts](user-guide/concepts/config-file.md) ·
-[Functions](user-guide/functions/index.md) ·
-[Configuration](user-guide/configuration.md) ·
-[CLI](user-guide/cli.md)
+<div style="text-align: center" markdown="span">
+[Get started :material-arrow-right:](documentation/installation/download-and-run.md){ .md-button .md-button--primary }
+[See a config :material-file-code-outline:](documentation/configuration.md#a-minimal-config){ .md-button }
+</div>
+
+[Installation](documentation/installation/download-and-run.md) ·
+[Concepts](documentation/concepts/config-file.md) ·
+[Functions](documentation/functions/index.md) ·
+[Configuration](documentation/configuration.md) ·
+[CLI](documentation/cli.md)
 
 ## :material-image-multiple-outline:{ .shots } Screenshots { .split }
 
@@ -66,7 +73,7 @@ by hand. Click any picture to see it full size.
 </div>
 
 <div style="text-align: center" markdown="span">
-[Start now :material-rocket-launch-outline:](user-guide/installation/download-and-run.md){ .md-button .md-button--primary }
+[Start now :material-rocket-launch-outline:](documentation/installation/download-and-run.md){ .md-button .md-button--primary }
 </div>
 
 ## :material-view-grid-outline:{ .grid-icon } Use cases { .split }
@@ -98,7 +105,7 @@ by hand. Click any picture to see it full size.
 
     Describe the menu and commands in one YAML file.
 
-    [:octicons-arrow-right-24: Config file](user-guide/concepts/config-file.md)
+    [:octicons-arrow-right-24: Config file](documentation/concepts/config-file.md)
 
 -   :material-cellphone-link:{ .lg .middle } __From anywhere__
 
@@ -106,7 +113,7 @@ by hand. Click any picture to see it full size.
 
     Open Telegram on your phone and run the server. No VPN into the host.
 
-    [:octicons-arrow-right-24: How the bot connects](user-guide/concepts/long-polling.md)
+    [:octicons-arrow-right-24: How the bot connects](documentation/concepts/long-polling.md)
 
 -   :material-lan-disconnect:{ .lg .middle } __No open ports__
 
@@ -114,7 +121,7 @@ by hand. Click any picture to see it full size.
 
     The bot connects out to Telegram. Nothing is exposed to the internet.
 
-    [:octicons-arrow-right-24: How the bot connects](user-guide/concepts/long-polling.md)
+    [:octicons-arrow-right-24: How the bot connects](documentation/concepts/long-polling.md)
 
 -   :material-message-text-outline:{ .lg .middle } __Output in the chat__
 
@@ -122,7 +129,7 @@ by hand. Click any picture to see it full size.
 
     The result comes back as a message. You do not need an SSH session.
 
-    [:octicons-arrow-right-24: How much output you see](user-guide/configuration.md#how-much-command-output-you-see)
+    [:octicons-arrow-right-24: How much output you see](documentation/configuration.md#how-much-command-output-you-see)
 
 -   :material-shield-lock:{ .lg .middle } __Controlled and recorded__
 
@@ -130,7 +137,7 @@ by hand. Click any picture to see it full size.
 
     Choose who gets the menu, confirm risky actions, and record each run.
 
-    [:octicons-arrow-right-24: Access and confirmation](user-guide/concepts/allowed-users.md)
+    [:octicons-arrow-right-24: Access and confirmation](documentation/concepts/allowed-users.md)
 
 -   :material-folder-outline:{ .lg .middle } __Nested menus__
 
@@ -138,7 +145,7 @@ by hand. Click any picture to see it full size.
 
     Group buttons into categories. Home stays at the top; Back takes you up.
 
-    [:octicons-arrow-right-24: Menu](user-guide/concepts/menu.md)
+    [:octicons-arrow-right-24: Menu](documentation/concepts/menu.md)
 
 -   :material-function-variant:{ .lg .middle } __Reusable functions__
 
@@ -146,7 +153,7 @@ by hand. Click any picture to see it full size.
 
     Write a command once, then fill in different values on each button.
 
-    [:octicons-arrow-right-24: Functions](user-guide/functions/index.md)
+    [:octicons-arrow-right-24: Functions](documentation/functions/index.md)
 
 -   :material-cog-play-outline:{ .lg .middle } __Stays running__
 
@@ -154,7 +161,7 @@ by hand. Click any picture to see it full size.
 
     Install it as a service and the bot starts with the host.
 
-    [:octicons-arrow-right-24: Run as a service](user-guide/installation/run-as-a-service.md)
+    [:octicons-arrow-right-24: Run as a service](documentation/installation/run-as-a-service.md)
 
 </div>
 
@@ -194,8 +201,8 @@ That is a complete, working configuration. Everything else is optional.
 ## :material-hand-pointing-right: Ready to try it? { .split }
 
 <div style="text-align: center" markdown>
-[Start now :material-rocket-launch-outline:](user-guide/installation/download-and-run.md){ .md-button .md-button--primary }
-[Concepts :material-book-open-variant:](user-guide/concepts/config-file.md){ .md-button }
+[Start now :material-rocket-launch-outline:](documentation/installation/download-and-run.md){ .md-button .md-button--primary }
+[Concepts :material-book-open-variant:](documentation/concepts/config-file.md){ .md-button }
 [Latest release :material-download:](https://github.com/azolfagharj/telegram-commander/releases/latest){ .md-button .md-button--primary }
 
 [Browse the source :fontawesome-brands-github:](https://github.com/azolfagharj/telegram-commander){ .md-button }

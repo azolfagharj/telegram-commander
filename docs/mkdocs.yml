@@ -24,8 +24,10 @@ theme:
   # Only used to add structured data for search engines on the home page.
   custom_dir: overrides
   language: en
+  logo: images/logo.png
+  favicon: images/favicon.png
   icon:
-    logo: simple/linux
+    alternate: fontawesome/solid/globe
     repo: fontawesome/brands/github
     admonition:
       note: material/note-text-outline
@@ -53,8 +55,6 @@ theme:
     #- navigation.sections
     - navigation.indexes
     - navigation.path
-    - navigation.instant
-    - navigation.instant.progress
     - navigation.top
     - navigation.footer
     - content.code.copy
@@ -68,6 +68,9 @@ theme:
 extra_css:
   - css/extra.css
 
+hooks:
+  - hooks/language_sitemaps.py
+
 extra:
   social:
     - icon: fontawesome/brands/github
@@ -79,43 +82,43 @@ extra:
 
 nav:
   - Home: index.md
-  - Getting Started:
+  - Documentation:
     - Installation:
-        - Run in CLI: user-guide/installation/download-and-run.md
-        - Run as a service: user-guide/installation/run-as-a-service.md  
+        - Run in CLI: documentation/installation/download-and-run.md
+        - Run as a service: documentation/installation/run-as-a-service.md
     - Concepts:
-        - Config file: user-guide/concepts/config-file.md
-        - Menu: user-guide/concepts/menu.md
-        - Button: user-guide/concepts/button.md
-        - Category: user-guide/concepts/category.md
-        - Function: user-guide/concepts/function.md
-        - Parameter: user-guide/concepts/parameter.md
-        - Shell: user-guide/concepts/shell.md
-        - Allowed users: user-guide/concepts/allowed-users.md
-        - Confirmation: user-guide/concepts/confirmation.md
-        - How the bot connects: user-guide/concepts/long-polling.md
-        - Audit log: user-guide/concepts/audit-log.md
+        - Config file: documentation/concepts/config-file.md
+        - Menu: documentation/concepts/menu.md
+        - Button: documentation/concepts/button.md
+        - Category: documentation/concepts/category.md
+        - Function: documentation/concepts/function.md
+        - Parameter: documentation/concepts/parameter.md
+        - Shell: documentation/concepts/shell.md
+        - Allowed users: documentation/concepts/allowed-users.md
+        - Confirmation: documentation/concepts/confirmation.md
+        - How the bot connects: documentation/concepts/long-polling.md
+        - Audit log: documentation/concepts/audit-log.md
     # The first entry is the section's own page, so "Functions" is clickable.
     # Groups below it are plain labels: no index page and no icon.
     - Functions:
-        - user-guide/functions/index.md
+        - documentation/functions/index.md
         - Built-in:
-            - command: user-guide/functions/built-in/command.md
-            - script: user-guide/functions/built-in/script.md
+            - command: documentation/functions/built-in/command.md
+            - script: documentation/functions/built-in/script.md
         - Release pack:
-            - Echo Script: user-guide/functions/release-pack/echo-script.md
-            - Disk path: user-guide/functions/release-pack/disk-path.md
-            - Curl URL: user-guide/functions/release-pack/curl-url.md
-            - Ping Host: user-guide/functions/release-pack/ping-host.md
-            - Journal Unit: user-guide/functions/release-pack/journal-unit.md
+            - Echo Script: documentation/functions/release-pack/echo-script.md
+            - Disk path: documentation/functions/release-pack/disk-path.md
+            - Curl URL: documentation/functions/release-pack/curl-url.md
+            - Ping Host: documentation/functions/release-pack/ping-host.md
+            - Journal Unit: documentation/functions/release-pack/journal-unit.md
         - Write your own:
-            - File structure: user-guide/functions/write-your-own/file-structure.md
-            - Rules: user-guide/functions/write-your-own/rules.md
-            - Placeholders: user-guide/functions/write-your-own/placeholders.md
-            - Step by step guide: user-guide/functions/write-your-own/step-by-step.md
+            - File structure: documentation/functions/write-your-own/file-structure.md
+            - Rules: documentation/functions/write-your-own/rules.md
+            - Placeholders: documentation/functions/write-your-own/placeholders.md
+            - Step by step guide: documentation/functions/write-your-own/step-by-step.md
     - Reference:
-        - Configuration: user-guide/configuration.md
-        - CLI: user-guide/cli.md
+        - Configuration: documentation/configuration.md
+        - CLI: documentation/cli.md
 
 markdown_extensions:
   - attr_list
@@ -142,20 +145,61 @@ markdown_extensions:
 # site_url enables sitemap.xml and canonical URLs
 plugins:
   - search
+  - i18n:
+      docs_structure: suffix
+      fallback_to_default: false
+      reconfigure_material: true
+      reconfigure_search: true
+      languages:
+        - locale: en
+          name: English
+          default: true
+          build: true
+        - locale: de
+          name: Deutsch
+          build: true
+          site_description: >-
+            Telegram Commander ist ein kostenloser Linux-Bot, der aus einer
+            YAML-Datei ein Schaltflächenmenü in Telegram erstellt. Tippen Sie
+            auf eine Schaltfläche, um einen Shell-Befehl auf Ihrem Server
+            auszuführen und die Ausgabe im Chat zu lesen. Ohne Programmierung
+            und ohne offene Ports.
+          nav_translations:
+            Home: Startseite
+            Documentation: Dokumentation
+            Installation: Installation
+            Run in CLI: In der CLI ausführen
+            Run as a service: Als Dienst ausführen
+            Concepts: Grundlagen
+            Config file: Konfigurationsdatei
+            Menu: Menü
+            Button: Schaltfläche
+            Category: Kategorie
+            Function: Funktion
+            Parameter: Parameter
+            Shell: Shell
+            Allowed users: Zugelassene Benutzer
+            Confirmation: Bestätigung
+            How the bot connects: Verbindung des Bots
+            Audit log: Audit-Protokoll
+            Functions: Funktionen
+            Built-in: Integriert
+            command: command
+            script: script
+            Release pack: Mitgelieferte Funktionen
+            Echo Script: Echo-Skript
+            Disk path: Datenträgerpfad
+            Curl URL: Curl-URL
+            Ping Host: Host anpingen
+            Journal Unit: Journal-Unit
+            Write your own: Eigene Funktionen
+            File structure: Dateistruktur
+            Rules: Regeln
+            Placeholders: Platzhalter
+            Step by step guide: Schritt-für-Schritt-Anleitung
+            Reference: Referenz
+            Configuration: Konfiguration
+            CLI: CLI
   # auto_caption shows each image's alt text under the enlarged picture.
   - glightbox:
       auto_caption: true
-  - redirects:
-      redirect_maps:
-        getting-started.md: user-guide/installation/download-and-run.md
-        concepts.md: user-guide/concepts/config-file.md
-        config-reference.md: user-guide/configuration.md
-        buttons.md: user-guide/concepts/menu.md
-        user-guide/buttons.md: user-guide/concepts/menu.md
-        user-guide/menu.md: user-guide/concepts/menu.md
-        # The old user-guide/functions.md page kept the URL /user-guide/functions/,
-        # which the new user-guide/functions/index.md page now serves. No redirect
-        # entry is added for it: a redirect there would replace the real page.
-        functions-reference.md: user-guide/functions/index.md
-        cli-reference.md: user-guide/cli.md
-        install.md: user-guide/installation/run-as-a-service.md

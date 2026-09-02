@@ -13,8 +13,8 @@
             "@id": "{{ config.site_url }}#website",
             "url": "{{ config.site_url }}",
             "name": "Telegram Commander",
-            "description": "Documentation for Telegram Commander, a Telegram bot that runs shell commands on a Linux server from a button menu described in one YAML file.",
-            "inLanguage": "en",
+            "description": {{ config.site_description | tojson }},
+            "inLanguage": "{{ config.theme.language }}",
             "publisher": {
               "@id": "{{ config.site_url }}#author"
             }
@@ -24,16 +24,16 @@
             "@id": "{{ config.site_url }}#software",
             "name": "Telegram Commander",
             "url": "{{ config.site_url }}",
-            "description": "Free and open source Telegram bot for Linux. Describe a menu of buttons in one YAML file, tap a button in Telegram, and the bot runs the command on your server and sends the output back to the chat.",
+            "description": {{ page.meta.description | default(config.site_description) | tojson }},
             "applicationCategory": "DeveloperApplication",
             "operatingSystem": "Linux",
-            "inLanguage": "en",
+            "inLanguage": "{{ config.theme.language }}",
             "isAccessibleForFree": true,
             "codeRepository": "{{ config.repo_url }}",
             "downloadUrl": "{{ config.repo_url }}/releases/latest",
             "softwareHelp": {
               "@type": "WebPage",
-              "url": "{{ config.site_url }}user-guide/installation/download-and-run/"
+              "url": "{{ config.site_url }}documentation/installation/download-and-run/"
             },
             "offers": {
               "@type": "Offer",
