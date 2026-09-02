@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://azolfagharj.github.io/telegram-commander/sitemap.xml
+Sitemap: https://telecommander.ir/sitemap.xml

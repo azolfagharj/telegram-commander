@@ -1,6 +1,6 @@
 # Telegram Commander
 
-[![CI](https://github.com/azolfagharj/telegram-commander/actions/workflows/ci.yml/badge.svg)](https://github.com/azolfagharj/telegram-commander/actions) [![Documentation](https://img.shields.io/badge/Documentation-Site-blue?logo=github)](https://azolfagharj.github.io/telegram-commander/) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE) [![Donate](https://img.shields.io/badge/Donate-to%20Keep%20This%20Project%20Alive-orange)](https://azolfagharj.github.io/donate/)
+[![CI](https://github.com/azolfagharj/telegram-commander/actions/workflows/ci.yml/badge.svg)](https://github.com/azolfagharj/telegram-commander/actions) [![Documentation](https://img.shields.io/badge/Documentation-Site-blue?logo=github)](https://telecommander.ir/) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE) [![Donate](https://img.shields.io/badge/Donate-to%20Keep%20This%20Project%20Alive-orange)](https://azolfagharj.github.io/donate/)
 
 **Control your Linux server from Telegram, one tap at a time.**
 
@@ -13,9 +13,9 @@ If you can type it in a terminal, you can put it behind a button. No app to
 build, no web panel to secure, no inbound port to open: the bot talks to
 Telegram over an outbound connection and only the users you list can use it.
 
-> **Full documentation:** <https://azolfagharj.github.io/telegram-commander/>
+> **Full documentation:** <https://telecommander.ir/>
 >
-> New here? Start with [Run in CLI](https://azolfagharj.github.io/telegram-commander/user-guide/installation/download-and-run/).
+> New here? Start with [Run in CLI](https://telecommander.ir/user-guide/installation/download-and-run/).
 
 ## What can I do with it?
 
@@ -125,19 +125,19 @@ sudo systemctl enable --now telegram-commander
 
 ## Documentation
 
-The complete, beginner-friendly documentation lives on GitHub Pages:
+The complete, beginner-friendly documentation lives here:
 
-**<https://azolfagharj.github.io/telegram-commander/>**
+**<https://telecommander.ir/>**
 
 Handy entry points:
 
-- [Run in CLI](https://azolfagharj.github.io/telegram-commander/user-guide/installation/download-and-run/) — from download to first run
-- [Concepts](https://azolfagharj.github.io/telegram-commander/user-guide/concepts/config-file/) — the vocabulary
-- [Configuration](https://azolfagharj.github.io/telegram-commander/user-guide/configuration/) — every setting
-- [Menu](https://azolfagharj.github.io/telegram-commander/user-guide/concepts/menu/) — build your menu
-- [Functions](https://azolfagharj.github.io/telegram-commander/user-guide/functions/) — built-in and custom functions
-- [CLI](https://azolfagharj.github.io/telegram-commander/user-guide/cli/) — command line reference
-- [Run as a service](https://azolfagharj.github.io/telegram-commander/user-guide/installation/run-as-a-service/) — systemd setup
+- [Run in CLI](https://telecommander.ir/user-guide/installation/download-and-run/) — from download to first run
+- [Concepts](https://telecommander.ir/user-guide/concepts/config-file/) — the vocabulary
+- [Configuration](https://telecommander.ir/user-guide/configuration/) — every setting
+- [Menu](https://telecommander.ir/user-guide/concepts/menu/) — build your menu
+- [Functions](https://telecommander.ir/user-guide/functions/) — built-in and custom functions
+- [CLI](https://telecommander.ir/user-guide/cli/) — command line reference
+- [Run as a service](https://telecommander.ir/user-guide/installation/run-as-a-service/) — systemd setup
 
 The same pages live as Markdown in [`docs/markdown/`](docs/markdown/).
 

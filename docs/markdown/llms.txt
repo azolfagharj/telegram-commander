@@ -11,13 +11,13 @@ is no code to write and no web panel to secure.
 
 ## Documentation
 
-- Home: https://azolfagharj.github.io/telegram-commander/
-- Run in CLI (install and first run): https://azolfagharj.github.io/telegram-commander/user-guide/installation/download-and-run/
-- Config file: https://azolfagharj.github.io/telegram-commander/user-guide/concepts/config-file/
-- Menu: https://azolfagharj.github.io/telegram-commander/user-guide/concepts/menu/
-- Functions: https://azolfagharj.github.io/telegram-commander/user-guide/functions/
-- Configuration reference: https://azolfagharj.github.io/telegram-commander/user-guide/configuration/
-- CLI reference: https://azolfagharj.github.io/telegram-commander/user-guide/cli/
+- Home: https://telecommander.ir/
+- Run in CLI (install and first run): https://telecommander.ir/user-guide/installation/download-and-run/
+- Config file: https://telecommander.ir/user-guide/concepts/config-file/
+- Menu: https://telecommander.ir/user-guide/concepts/menu/
+- Functions: https://telecommander.ir/user-guide/functions/
+- Configuration reference: https://telecommander.ir/user-guide/configuration/
+- CLI reference: https://telecommander.ir/user-guide/cli/
 
 ## Source
 

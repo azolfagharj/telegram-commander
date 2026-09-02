@@ -43,3 +43,4 @@ jobs:
           publish_dir: ./statics
           publish_branch: gh-pages
           force_orphan: true
+          cname: telecommander.ir

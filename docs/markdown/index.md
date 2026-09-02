@@ -15,8 +15,10 @@ Telegram Commander turns a simple YAML [config file](user-guide/concepts/config-
 into a Telegram bot with a menu of [buttons](user-guide/concepts/button.md). Put any
 terminal command behind a button and run it from your phone. You do not write any code.
 
+<div style="text-align: center" markdown="span">
 [Get started :material-arrow-right:](user-guide/installation/download-and-run.md){ .md-button .md-button--primary }
 [See a config :material-file-code-outline:](user-guide/configuration.md#a-minimal-config){ .md-button }
+</div>
 
 [Installation](user-guide/installation/download-and-run.md) ·
 [Concepts](user-guide/concepts/config-file.md) ·
@@ -24,11 +26,73 @@ terminal command behind a button and run it from your phone. You do not write an
 [Configuration](user-guide/configuration.md) ·
 [CLI](user-guide/cli.md)
 
-## :material-star-outline: Why use it
+## :material-image-multiple-outline:{ .shots } Screenshots { .split }
 
-<div class="grid cards cols-3" markdown>
+Your menu, a command running, the output that comes back, and typing a command
+by hand. Click any picture to see it full size.
 
--   :material-file-document-outline:{ .middle } __No coding__
+<div style="text-align: center" markdown="span">
+  ![Command output with the System menu open](images/01.jpeg){ width="140" loading=lazy }
+  ![Resource and process buttons](images/02.jpeg){ width="140" loading=lazy }
+  ![Storage and package buttons](images/03.jpeg){ width="140" loading=lazy }
+  ![Network tools and typing a command by hand](images/04.jpeg){ width="140" loading=lazy }
+  ![Command output sent back to the chat](images/05.jpeg){ width="140" loading=lazy }
+</div>
+
+## :material-lightning-bolt:{ .bolt } Quick and easy { .split }
+
+<div class="grid cards cols-3 center-title step-cards" markdown>
+
+-   :material-file-document-outline:{ .middle } __Write your menu__
+
+    ---
+
+    :material-numeric-1-circle:{ .step } List the buttons and their commands.
+
+-   :material-rocket-launch:{ .middle } __Start the bot__
+
+    ---
+
+    :material-numeric-2-circle:{ .step } Run it now, or keep it up as a
+    service.
+
+-   :material-gesture-tap-button:{ .middle } __Tap and read__
+
+    ---
+
+    :material-numeric-3-circle:{ .step } Tap a button and read the output in
+    the chat.
+
+</div>
+
+<div style="text-align: center" markdown="span">
+[Start now :material-rocket-launch-outline:](user-guide/installation/download-and-run.md){ .md-button .md-button--primary }
+</div>
+
+## :material-view-grid-outline:{ .grid-icon } Use cases { .split }
+
+<div class="grid cards cols-4 icon-left" markdown>
+
+-   :material-restart:{ .lg } Restart or stop a service
+-   :material-docker:{ .lg } Start and stop containers
+-   :material-package-down:{ .lg } Update system packages
+-   :material-text-box-search-outline:{ .lg } Read logs and journals
+-   :material-harddisk:{ .lg } Check disk space
+-   :material-memory:{ .lg } Watch CPU and memory
+-   :material-access-point-network:{ .lg } Ping hosts and test URLs
+-   :material-backup-restore:{ .lg } Take and restore backups
+-   :material-script-text:{ .lg } Run your own scripts
+-   :material-power:{ .lg } Reboot or shut down the host
+-   :material-console:{ .lg } Type any command by hand
+-   :material-all-inclusive:{ .lg } And almost anything else
+
+</div>
+
+## :material-thumb-up-outline:{ .thumb } Why use it { .split }
+
+<div class="grid cards cols-4 center-title" markdown>
+
+-   :material-clock-fast:{ .lg .middle } __No coding__
 
     ---
 
@@ -36,7 +100,15 @@ terminal command behind a button and run it from your phone. You do not write an
 
     [:octicons-arrow-right-24: Config file](user-guide/concepts/config-file.md)
 
--   :material-lan-disconnect:{ .middle } __No open ports__
+-   :material-cellphone-link:{ .lg .middle } __From anywhere__
+
+    ---
+
+    Open Telegram on your phone and run the server. No VPN into the host.
+
+    [:octicons-arrow-right-24: How the bot connects](user-guide/concepts/long-polling.md)
+
+-   :material-lan-disconnect:{ .lg .middle } __No open ports__
 
     ---
 
@@ -44,7 +116,15 @@ terminal command behind a button and run it from your phone. You do not write an
 
     [:octicons-arrow-right-24: How the bot connects](user-guide/concepts/long-polling.md)
 
--   :material-shield-lock:{ .middle } __Controlled and recorded__
+-   :material-message-text-outline:{ .lg .middle } __Output in the chat__
+
+    ---
+
+    The result comes back as a message. You do not need an SSH session.
+
+    [:octicons-arrow-right-24: How much output you see](user-guide/configuration.md#how-much-command-output-you-see)
+
+-   :material-shield-lock:{ .lg .middle } __Controlled and recorded__
 
     ---
 
@@ -52,44 +132,33 @@ terminal command behind a button and run it from your phone. You do not write an
 
     [:octicons-arrow-right-24: Access and confirmation](user-guide/concepts/allowed-users.md)
 
-</div>
-
-## :material-image-multiple-outline: Screenshots
-
-Your menu, a command running, the output that comes back, and typing a command
-by hand. Click any picture to see it full size.
-
-![Command output with the System menu open](images/01.jpeg){ width="140" loading=lazy }
-![Resource and process buttons](images/02.jpeg){ width="140" loading=lazy }
-![Storage and package buttons](images/03.jpeg){ width="140" loading=lazy }
-![Network tools and typing a command by hand](images/04.jpeg){ width="140" loading=lazy }
-![Command output sent back to the chat](images/05.jpeg){ width="140" loading=lazy }
-
-## :material-arrow-decision-outline: How it works
-
-<div class="grid cards cols-3" markdown>
-
--   :material-file-document-outline:{ .middle } __1. Write your menu__
+-   :material-folder-outline:{ .lg .middle } __Nested menus__
 
     ---
 
-    List your buttons and the command each one runs.
+    Group buttons into categories. Home stays at the top; Back takes you up.
 
--   :material-rocket-launch:{ .middle } __2. Start the bot__
+    [:octicons-arrow-right-24: Menu](user-guide/concepts/menu.md)
 
-    ---
-
-    Run it now, or keep it up as a service.
-
--   :material-gesture-tap-button:{ .middle } __3. Tap and read__
+-   :material-function-variant:{ .lg .middle } __Reusable functions__
 
     ---
 
-    Tap a button and read the output in the chat.
+    Write a command once, then fill in different values on each button.
+
+    [:octicons-arrow-right-24: Functions](user-guide/functions/index.md)
+
+-   :material-cog-play-outline:{ .lg .middle } __Stays running__
+
+    ---
+
+    Install it as a service and the bot starts with the host.
+
+    [:octicons-arrow-right-24: Run as a service](user-guide/installation/run-as-a-service.md)
 
 </div>
 
-## :material-file-code-outline: A tiny example
+## :material-file-code-outline:{ .code-icon } A tiny example { .split }
 
 This config makes a bot with one button called "Uptime". Tapping it runs the
 `uptime` command on the server.
@@ -116,42 +185,21 @@ This config makes a bot with one button called "Uptime". Tapping it runs the
 
 That is a complete, working configuration. Everything else is optional.
 
-## :material-view-grid-outline: What you can do with it
-
-<div class="grid cards cols-3" markdown>
-
--   :material-restart:{ .middle } __Manage__
-
-    ---
-
-    Control services and packages.
-
--   :material-chart-line:{ .middle } __Observe__
-
-    ---
-
-    Check resources, logs, networks, and health.
-
--   :material-script-text:{ .middle } __Automate__
-
-    ---
-
-    Run deploys, backups, cleanups, and scripts.
-
-    [:octicons-arrow-right-24: Functions](user-guide/functions/index.md)
-
-</div>
-
 !!! tip "Built for a small, trusted group"
 
     Nothing listens for incoming connections, and only the accounts in
     `allowed_users` get a menu. Everyone who can use the bot can run the
     buttons you defined, so keep that list short.
 
-## :material-hand-pointing-right: Ready to try it?
+## :material-hand-pointing-right: Ready to try it? { .split }
 
+<div style="text-align: center" markdown>
+[Start now :material-rocket-launch-outline:](user-guide/installation/download-and-run.md){ .md-button .md-button--primary }
+[Concepts :material-book-open-variant:](user-guide/concepts/config-file.md){ .md-button }
 [Latest release :material-download:](https://github.com/azolfagharj/telegram-commander/releases/latest){ .md-button .md-button--primary }
+
 [Browse the source :fontawesome-brands-github:](https://github.com/azolfagharj/telegram-commander){ .md-button }
+</div>
 
 Telegram Commander is free and open source. If it saves you time,
 [consider supporting its development](https://azolfagharj.github.io/donate/) —

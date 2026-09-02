@@ -6,11 +6,67 @@
 .md-typeset .grid.cards > ul > li > hr { margin: .45em 0 }
 .md-typeset .grid.cards p { margin: .35em 0 }
 
+/* A big step number, with the text running beside it */
+.md-typeset .step {
+  --md-icon-size: 1.5rem;
+  float: left;
+  margin: 0 .35rem .1rem 0;
+  color: var(--md-typeset-a-color);
+}
+
+/* Card titles sit in the middle, the text below stays on the left */
+.md-typeset .grid.cards.center-title > ul > li > p:first-child { text-align: center }
+
+/* Step cards: the number and its text sit on one centred row */
+.md-typeset .grid.cards.step-cards > ul > li > p:last-child {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  min-height: 2.8rem;
+  font-size: .8rem;
+}
+.md-typeset .grid.cards.step-cards .step { margin: 0 }
+
+/* The icon sits beside the whole text, not only beside its first line */
+.md-typeset .grid.cards.icon-left > ul > li .twemoji {
+  float: left;
+  margin: .1rem .35rem .1rem 0;
+}
+
 /* Exactly this many columns on wide screens */
 @media screen and (min-width: 76.25em) {
   .md-typeset .grid.cols-2 { grid-template-columns: repeat(2, 1fr) }
   .md-typeset .grid.cols-3 { grid-template-columns: repeat(3, 1fr) }
+  .md-typeset .grid.cols-4 { grid-template-columns: repeat(4, 1fr) }
 }
+
+/* A short fading line above a section, instead of a full width rule */
+.md-typeset h2.split { font-weight: 700 }
+
+.md-typeset h2.split::before {
+  content: "";
+  display: block;
+  width: 9rem;
+  height: 1px;
+  margin: 1.3rem auto .9rem;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--md-default-fg-color--light),
+    transparent
+  );
+}
+
+/* Each home page section keeps its own icon colour */
+.md-typeset .bolt { color: #f5a524 }
+.md-typeset .shots { color: #00acc1 }
+.md-typeset .grid-icon { color: #4051b5 }
+.md-typeset .thumb { color: #00c853 }
+.md-typeset .code-icon { color: #7c4dff }
+
+/* The two footer icons keep their own colour instead of plain grey */
+.md-social__link[href*="github.com"] svg { fill: #ffffff }
+.md-social__link[href*="/donate"] svg { fill: #ff5252 }
 
 /* Tighter buttons on the landing page */
 .md-typeset .md-button { padding: .35em .8em; font-size: .72rem }

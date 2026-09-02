@@ -4,7 +4,7 @@ site_description: >-
   menu in Telegram. Tap a button to run a shell command on your server and read
   the output in the chat. No coding and no open ports.
 site_author: azolfagharj
-site_url: https://azolfagharj.github.io/telegram-commander/
+site_url: https://telecommander.ir/
 
 repo_url: https://github.com/azolfagharj/telegram-commander
 repo_name: GitHub
@@ -35,18 +35,18 @@ theme:
       warning: material/alert-outline
       example: material/code-braces
   palette:
-    - scheme: slate
-      primary: black
-      accent: indigo
-      toggle:
-        icon: material/brightness-4
-        name: Switch to light mode
     - scheme: default
       primary: indigo
       accent: indigo
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
+    - scheme: slate
+      primary: black
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
   features:
     - navigation.tabs
     - navigation.tabs.sticky
@@ -142,7 +142,9 @@ markdown_extensions:
 # site_url enables sitemap.xml and canonical URLs
 plugins:
   - search
-  - glightbox
+  # auto_caption shows each image's alt text under the enlarged picture.
+  - glightbox:
+      auto_caption: true
   - redirects:
       redirect_maps:
         getting-started.md: user-guide/installation/download-and-run.md
