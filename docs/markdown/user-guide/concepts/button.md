@@ -1,6 +1,6 @@
 ---
 title: Button
-description: A tappable menu item that runs a function. On the button you can set only command, path, and args; other values come from the function defaults.
+description: A tappable menu item that runs a function. Write each function value directly on the button with the parameter name the function declares.
 icon: material/gesture-tap-button
 ---
 
@@ -153,6 +153,26 @@ one job behaves differently from the rest:
 
 `timeout` gives this one command longer to finish, `workdir` chooses the
 directory it runs in, and `env` adds environment variables just for it.
+
+## Values for the function
+
+Write function values directly on the button. `command`, `path`, and `args`
+are shortcut fields for parameters with those names. Custom names such as
+`url`, `host`, `unit`, and `lines` work in the same way.
+
+!!! example "Pass custom values"
+
+    ```yaml title="Recent Nginx logs"
+    - name: Nginx logs
+      type: button
+      function: journal-unit
+      unit: "nginx.service"
+      lines: 100
+    ```
+
+Do not put these values inside `params:`. Every key must match a parameter
+declared by the selected function. [`validate`](../cli.md#validate) reports
+unknown names, missing required values, and invalid `int` or `bool` values.
 
 ## Configuration
 

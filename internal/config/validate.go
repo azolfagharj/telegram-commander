@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 )
 
@@ -186,6 +187,17 @@ func validateButtons(nodes []ButtonNode, path string) ValidationErrors {
 
 		switch strings.ToLower(n.Type) {
 		case "category":
+			if len(n.Params) > 0 {
+				keys := make([]string, 0, len(n.Params))
+				for key := range n.Params {
+					keys = append(keys, key)
+				}
+				sort.Strings(keys)
+				errs = append(errs, ValidationError{
+					Path:    p,
+					Message: fmt.Sprintf("category has unsupported parameter keys: %s", strings.Join(keys, ", ")),
+				})
+			}
 			if len(n.Items) == 0 {
 				errs = append(errs, ValidationError{
 					Path:    p + ".items",

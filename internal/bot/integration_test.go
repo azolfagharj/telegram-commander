@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"path/filepath"
 	"strings"
 	"sync"
 	"testing"
@@ -797,4 +798,109 @@ func TestLongCommandResultIsSplitAndReplied(t *testing.T) {
 	}
 	require.Greater(t, len(still), 1)
 	require.Equal(t, firstChunk, still[0], "first output chunk should still be in the chat after Home")
+}
+
+func newParamIntegrationBot(t *testing.T, cfg *config.Config) (*bot.App, *tgbot.Bot, *string) {
+	t.Helper()
+	srv := &apiServer{}
+	ts := httptest.NewServer(srv)
+	t.Cleanup(ts.Close)
+
+	cfg.Telegram.API = ts.URL
+	cfg.Telegram.BotToken = "123:ABC"
+	cfg.Telegram.AllowedUsers = []string{"42"}
+	cfg.ApplyDefaults()
+
+	reg := function.NewRegistry()
+	require.NoError(t, reg.LoadDirectory(filepath.Join("..", "..", "examples", "functions")))
+
+	var gotCommand string
+	fake := &executor.FakeExecutor{
+		Fn: func(_ context.Context, spec executor.Spec) (executor.Result, error) {
+			gotCommand = spec.Command
+			return executor.Result{ExitCode: 0, Stdout: "ok"}, nil
+		},
+	}
+	app := bot.NewApp(cfg, reg, fake, nil)
+	b, err := app.NewBotWithOptions(
+		tgbot.WithHTTPClient(5*time.Second, ts.Client()),
+		tgbot.WithServerURL(ts.URL),
+		tgbot.WithSkipGetMe(),
+		tgbot.WithNotAsyncHandlers(),
+	)
+	require.NoError(t, err)
+	return app, b, &gotCommand
+}
+
+func TestInlineParamsCurlURLIntegration(t *testing.T) {
+	cfg := &config.Config{Menu: []config.ButtonNode{{
+		Name: "Check API", Type: "button", Function: "curl-url",
+		Params: map[string]string{"url": "https://example.com/health"},
+	}}}
+	_, b, command := newParamIntegrationBot(t, cfg)
+	ctx := context.Background()
+	b.ProcessUpdate(ctx, startCommandUpdate(42, "admin", "/start"))
+	b.ProcessUpdate(ctx, textUpdate(42, "admin", "Check API"))
+	require.Equal(t, "curl -fsSL --max-time 30 https://example.com/health", *command)
+}
+
+func TestInlineParamsJournalUnitIntegration(t *testing.T) {
+	cfg, err := config.Parse([]byte(`
+telegram:
+  bot_token: token
+  allowed_users: ["42"]
+menu:
+  - name: Logs
+    type: button
+    function: journal-unit
+    unit: nginx.service
+    lines: 100
+`))
+	require.NoError(t, err)
+	_, b, command := newParamIntegrationBot(t, cfg)
+	ctx := context.Background()
+	b.ProcessUpdate(ctx, startCommandUpdate(42, "admin", "/start"))
+	b.ProcessUpdate(ctx, textUpdate(42, "admin", "Logs"))
+	require.Equal(t, "journalctl -u nginx.service -n 100 --no-pager", *command)
+}
+
+func TestInlineParamsPingHostDefaultIntegration(t *testing.T) {
+	cfg := &config.Config{Menu: []config.ButtonNode{{
+		Name: "Ping", Type: "button", Function: "ping-host",
+		Params: map[string]string{"host": "example.com"},
+	}}}
+	_, b, command := newParamIntegrationBot(t, cfg)
+	ctx := context.Background()
+	b.ProcessUpdate(ctx, startCommandUpdate(42, "admin", "/start"))
+	b.ProcessUpdate(ctx, textUpdate(42, "admin", "Ping"))
+	require.Equal(t, "ping -c 4 example.com", *command)
+}
+
+func TestInlineParamsNestedCategoryIntegration(t *testing.T) {
+	cfg := &config.Config{Menu: []config.ButtonNode{{
+		Name: "Network", Type: "category", Items: []config.ButtonNode{{
+			Name: "Ping", Type: "button", Function: "ping-host",
+			Params: map[string]string{"host": "localhost", "count": "2"},
+		}},
+	}}}
+	app, b, command := newParamIntegrationBot(t, cfg)
+	ctx := context.Background()
+	b.ProcessUpdate(ctx, startCommandUpdate(42, "admin", "/start"))
+	b.ProcessUpdate(ctx, callbackUpdate(42, "o:"+app.Index.Roots[0]))
+	b.ProcessUpdate(ctx, textUpdate(42, "admin", "Ping"))
+	require.Equal(t, "ping -c 2 localhost", *command)
+}
+
+func TestInlineParamsConfirmIntegration(t *testing.T) {
+	cfg := &config.Config{Menu: []config.ButtonNode{{
+		Name: "Check API", Type: "button", Function: "curl-url", Confirm: true,
+		Params: map[string]string{"url": "https://example.com/private?x=1&y=2"},
+	}}}
+	_, b, command := newParamIntegrationBot(t, cfg)
+	ctx := context.Background()
+	b.ProcessUpdate(ctx, startCommandUpdate(42, "admin", "/start"))
+	b.ProcessUpdate(ctx, textUpdate(42, "admin", "Check API"))
+	require.Empty(t, *command)
+	b.ProcessUpdate(ctx, textUpdate(42, "admin", "✅ Yes"))
+	require.Equal(t, "curl -fsSL --max-time 30 https://example.com/private?x=1&y=2", *command)
 }

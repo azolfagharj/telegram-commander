@@ -1,7 +1,7 @@
 ---
 icon: material/file-cog-outline
 title: Configuration
-description: Every Telegram Commander setting with its type, default, and meaning: telegram, menu, function_directory, timeouts, output limits, and logging.
+description: Every Telegram Commander setting with its type, default, and meaning — telegram, menu, function_directory, timeouts, output limits, and logging.
 ---
 
 # :material-file-cog-outline: Configuration
@@ -171,15 +171,21 @@ This section is the field reference. For a guided explanation with examples, see
 | `env` | map | no | Extra env for this button |
 | `columns` | int | no | Override columns for this category |
 | `args` | string | no | Optional args for `script` |
+| Any declared parameter name | scalar | as declared by the function | Value passed to the selected function, for example `url`, `host`, `unit`, or `lines` |
 
-These are all the fields a node accepts. **Any other key is an error**, so the
-config will not load if you add one.
+On a **button**, any other scalar key is treated as a function parameter.
+Its name must match a parameter declared by the selected function. Unknown
+parameter names fail [`validate`](cli.md#validate). Values declared as `int` or
+`bool` are also checked. Strings, numbers, and booleans can be written directly
+as YAML values; numbers do not need quotes.
 
-`command`, `path`, and `args` are also the only [parameter](concepts/parameter.md)
-values a button can pass to a function: each field fills the function parameter
-with the same name. A function whose required parameter has some other name
-cannot be used from a button. See
-[Functions → Passing values from a button](functions.md#passing-values-from-a-button).
+On a **category**, any key outside the category fields above is an error.
+Categories do not run functions, so they cannot have parameter keys.
+
+`command`, `path`, and `args` are shortcut fields that fill parameters with the
+same names. Other [parameter](concepts/parameter.md) names are written directly
+on the button. Do not place button values inside a nested `params:` map. See
+[Functions → Passing values from a button](functions/index.md#passing-values-from-a-button).
 
 ## :material-math-log: `logging`
 
@@ -214,5 +220,5 @@ exit code, duration). See [Audit log](concepts/audit-log.md).
 
 - [Run in CLI](installation/download-and-run.md) — build and run a first config
 - [Menu](concepts/menu.md) — the menu tree in depth
-- [Functions](functions.md) — what `function`, `command`, `path`, and `args` mean
+- [Functions](functions/index.md) — what `function`, `command`, `path`, and `args` mean
 - [CLI](cli.md) — validate and run with your config

@@ -20,7 +20,7 @@ terminal command behind a button and run it from your phone. You do not write an
 
 [Installation](user-guide/installation/download-and-run.md) ·
 [Concepts](user-guide/concepts/config-file.md) ·
-[Functions](user-guide/functions.md) ·
+[Functions](user-guide/functions/index.md) ·
 [Configuration](user-guide/configuration.md) ·
 [CLI](user-guide/cli.md)
 
@@ -138,7 +138,7 @@ That is a complete, working configuration. Everything else is optional.
 
     Run deploys, backups, cleanups, and scripts.
 
-    [:octicons-arrow-right-24: Functions](user-guide/functions.md)
+    [:octicons-arrow-right-24: Functions](user-guide/functions/index.md)
 
 </div>
 

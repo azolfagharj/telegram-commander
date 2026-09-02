@@ -1,7 +1,12 @@
 // Package config defines the application configuration schema and loading helpers.
 package config
 
-import "time"
+import (
+	"fmt"
+	"time"
+
+	"gopkg.in/yaml.v3"
+)
 
 // Config is the root configuration loaded from a YAML file.
 type Config struct {
@@ -60,6 +65,50 @@ type ButtonNode struct {
 	Command string `yaml:"command"`
 	Path    string `yaml:"path"`
 	Args    string `yaml:"args"`
+}
+
+type rawButtonNode ButtonNode
+
+var buttonNodeFields = map[string]struct{}{
+	"name": {}, "type": {}, "icon": {}, "id": {}, "function": {},
+	"confirm": {}, "timeout": {}, "workdir": {}, "env": {},
+	"columns": {}, "items": {}, "command": {}, "path": {}, "args": {},
+}
+
+// UnmarshalYAML decodes standard button fields and collects function parameters.
+func (b *ButtonNode) UnmarshalYAML(value *yaml.Node) error {
+	if value.Kind != yaml.MappingNode {
+		return fmt.Errorf("menu node must be a mapping")
+	}
+
+	var raw rawButtonNode
+	if err := value.Decode(&raw); err != nil {
+		return err
+	}
+	*b = ButtonNode(raw)
+
+	for i := 0; i+1 < len(value.Content); i += 2 {
+		key := value.Content[i].Value
+		if _, known := buttonNodeFields[key]; known {
+			continue
+		}
+		param := value.Content[i+1]
+		if param.Kind != yaml.ScalarNode {
+			return fmt.Errorf("button parameter %q must be a scalar value", key)
+		}
+		switch param.Tag {
+		case "!!str", "!!int", "!!bool", "!!float":
+		case "!!null":
+			return fmt.Errorf("button parameter %q must not be null", key)
+		default:
+			return fmt.Errorf("button parameter %q has unsupported scalar type %q", key, param.Tag)
+		}
+		if b.Params == nil {
+			b.Params = make(map[string]string)
+		}
+		b.Params[key] = param.Value
+	}
+	return nil
 }
 
 // LoggingConfig holds named loggers similar to Caddy's logging block.

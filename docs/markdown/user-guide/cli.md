@@ -74,7 +74,7 @@ Print process environment variables (useful for debugging service units).
 ### `list-functions`
 
 List built-in and loaded custom functions. Use it to confirm your custom
-function files were found. See [Functions](functions.md).
+function files were found. See [Functions](functions/index.md).
 
 !!! info "Show every available function"
 
@@ -102,5 +102,5 @@ Write a man page to stdout.
 ## Related pages
 
 - [Configuration](configuration.md) — the file passed to `--config`
-- [Functions](functions.md) — what `list-functions` shows
+- [Custom functions](functions/index.md#custom-functions) — what `list-functions` shows
 - [Run as a service](installation/run-as-a-service.md) — run `run` under systemd

@@ -235,7 +235,7 @@ Your commands run one after another, not side by side.
 Every button points to a **function** through its `function` field. The button
 in the examples above uses the built-in `command` function. To understand
 functions, built-in versus custom, and how to add your own, read
-[Functions](../functions.md).
+[Functions](../functions/index.md).
 
 ## :material-link-variant: Related pages
 

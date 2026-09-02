@@ -110,10 +110,26 @@ menu:
         icon: "🏷️"
         function: command
         command: "hostnamectl"
+      - name: "Nginx logs"
+        type: button
+        icon: "📜"
+        function: journal-unit
+        unit: "nginx.service"
+        lines: 100
   - name: "Network"
     type: category
     icon: "🌐"
     items:
+      - name: "Check API"
+        type: button
+        icon: "🩺"
+        function: curl-url
+        url: "https://example.com/health"
+      - name: "Ping example.com"
+        type: button
+        icon: "📡"
+        function: ping-host
+        host: "example.com"
       - name: "Public IP"
         type: button
         icon: "📍"

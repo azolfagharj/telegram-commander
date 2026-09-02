@@ -36,5 +36,5 @@ For `function_directory` and button fields that reference functions, see
 ## Related
 
 - [Parameter](parameter.md) — named values a function needs
-- [Functions](../functions.md) — built-in and custom functions in depth
+- [Functions](../functions/index.md#two-kinds-of-function) — built-in and custom functions in depth
 - [Menu](menu.md) — how buttons reference functions

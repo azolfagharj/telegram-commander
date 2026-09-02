@@ -15,10 +15,5 @@
 /* Tighter buttons on the landing page */
 .md-typeset .md-button { padding: .35em .8em; font-size: .72rem }
 
-/* The site name is already in the top bar, so drop it from the sidebar */
-@media screen and (min-width: 76.25em) {
-  .md-nav--primary > .md-nav__title { display: none }
-}
-
 /* Page icons belong in the sidebar; keep the top tabs plain text */
 .md-tabs__link svg { display: none }

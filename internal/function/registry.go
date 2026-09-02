@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"sort"
+	"strconv"
 	"strings"
 
 	"gopkg.in/yaml.v3"
@@ -20,6 +21,12 @@ var namePattern = regexp.MustCompile(`^[A-Za-z0-9._-]+$`)
 var ReservedNames = map[string]struct{}{
 	"command": {},
 	"script":  {},
+}
+
+var reservedParamNames = map[string]struct{}{
+	"name": {}, "type": {}, "icon": {}, "id": {}, "function": {},
+	"confirm": {}, "timeout": {}, "workdir": {}, "env": {},
+	"columns": {}, "items": {},
 }
 
 // ParamSpec describes a single function parameter.
@@ -183,6 +190,9 @@ func loadFile(path string) (*Definition, error) {
 		if !namePattern.MatchString(p.Name) {
 			return nil, fmt.Errorf("params[%d].name %q is invalid", i, p.Name)
 		}
+		if _, reserved := reservedParamNames[strings.ToLower(p.Name)]; reserved {
+			return nil, fmt.Errorf("params[%d].name %q conflicts with a button field", i, p.Name)
+		}
 		switch strings.ToLower(p.Type) {
 		case "", "string", "int", "bool":
 			if p.Type == "" {
@@ -190,6 +200,11 @@ func loadFile(path string) (*Definition, error) {
 			}
 		default:
 			return nil, fmt.Errorf("params[%d].type %q is unsupported", i, p.Type)
+		}
+		if p.Default != "" {
+			if err := validateParamType(def.Params[i], p.Default); err != nil {
+				return nil, fmt.Errorf("params[%d].default: %w", i, err)
+			}
 		}
 	}
 	def.Source = path
@@ -215,6 +230,23 @@ func (r *Registry) ValidateButtonParams(node config.ButtonNode, path string) con
 		return errs
 	}
 	values := buttonParams(node)
+	declared := make(map[string]ParamSpec, len(def.Params))
+	for _, p := range def.Params {
+		declared[p.Name] = p
+	}
+	keys := make([]string, 0, len(values))
+	for name := range values {
+		keys = append(keys, name)
+	}
+	sort.Strings(keys)
+	for _, name := range keys {
+		if _, ok := declared[name]; !ok {
+			errs = append(errs, config.ValidationError{
+				Path:    path + "." + name,
+				Message: fmt.Sprintf("unknown parameter %q for function %q", name, def.Name),
+			})
+		}
+	}
 	for _, p := range def.Params {
 		v, has := values[p.Name]
 		if p.Required && (!has || strings.TrimSpace(v) == "") {
@@ -222,9 +254,34 @@ func (r *Registry) ValidateButtonParams(node config.ButtonNode, path string) con
 				Path:    path + "." + p.Name,
 				Message: fmt.Sprintf("required parameter %q for function %q is missing", p.Name, def.Name),
 			})
+			continue
+		}
+		if has && v != "" {
+			if err := validateParamType(p, v); err != nil {
+				errs = append(errs, config.ValidationError{
+					Path:    path + "." + p.Name,
+					Message: fmt.Sprintf("invalid parameter %q for function %q: %v", p.Name, def.Name, err),
+				})
+			}
 		}
 	}
 	return errs
+}
+
+func validateParamType(param ParamSpec, value string) error {
+	switch strings.ToLower(param.Type) {
+	case "", "string":
+		return nil
+	case "int":
+		if _, err := strconv.Atoi(value); err != nil {
+			return fmt.Errorf("value %q must be an int", value)
+		}
+	case "bool":
+		if _, err := strconv.ParseBool(value); err != nil {
+			return fmt.Errorf("value %q must be a bool", value)
+		}
+	}
+	return nil
 }
 
 // ValidateTree validates function references for the whole button tree.

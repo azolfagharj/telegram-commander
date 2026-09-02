@@ -37,7 +37,7 @@ Inside the folder you will find:
 
 - `telegram-commander-linux-amd64` and `telegram-commander-linux-arm64` — the program, one per CPU type
 - `config-examples/` — ready-made [config files](../concepts/config-file.md) (see [Configuration](../configuration.md))
-- `functions/` — example custom [functions](../concepts/function.md) (see [Functions](../functions.md))
+- `functions/` — example custom [functions](../concepts/function.md) (see [Custom functions](../functions/index.md#custom-functions))
 
 ## :material-chip: Step 2: pick your binary
 
@@ -139,5 +139,5 @@ See [Run as a service](run-as-a-service.md).
 ## :material-map-marker-path: What next
 
 - Add more [buttons](../concepts/button.md) and [categories](../concepts/category.md): [Menu](../concepts/menu.md)
-- Understand what actually runs: [Functions](../functions.md)
+- Understand what actually runs: [Functions](../functions/index.md)
 - See every command line option: [CLI](../cli.md)

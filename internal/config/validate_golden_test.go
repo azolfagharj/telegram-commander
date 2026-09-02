@@ -35,3 +35,23 @@ menu: []
 	require.True(t, strings.Contains(got, "telegram.allowed_users: at least one allowed user is required"))
 	require.True(t, strings.Contains(got, "menu: at least one button or category is required"))
 }
+
+func TestCategoryParameterErrorsGolden(t *testing.T) {
+	cfg, err := config.Parse([]byte(`
+telegram:
+  bot_token: token
+  allowed_users: ["1"]
+menu:
+  - name: Tools
+    type: category
+    zeta: last
+    alpha: first
+    items:
+      - name: Echo
+        type: button
+        function: command
+        command: echo hi
+`))
+	require.NoError(t, err)
+	require.EqualError(t, cfg.Validate().Err(), "menu[0]: category has unsupported parameter keys: alpha, zeta")
+}
