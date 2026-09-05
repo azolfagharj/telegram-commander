@@ -1,38 +1,57 @@
 ---
-name: Bug report
-about: Create a report to help us improve
-title: ''
-labels: ''
-assignees: ''
 
----
+name: 🐛 Bug Report
+about: Report a reproducible bug in Telegram Commander
+title: "[Bug]: "
+labels: bug
+assignees: ""
+-------------
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+## 🐛 Bug description
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+Describe the bug clearly and briefly.
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+## 🔄 Steps to reproduce
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+Please provide the steps needed to reproduce the problem.
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
+1.
+2.
+3.
 
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
+## ✅ Expected behavior
 
-**Additional context**
-Add any other context about the problem here.
+What did you expect to happen?
+
+## ❌ Actual behavior
+
+What actually happened?
+
+## 🖥️ Environment
+
+* **Telegram Commander version:**
+* **Operating system:**
+* **Architecture:** <!-- e.g. amd64, arm64 -->
+* **Installation method:** <!-- e.g. binary, source -->
+
+## 📋 Configuration
+
+If relevant, share the configuration related to the problem.
+
+> **⚠️ Do not include your Telegram bot token, passwords, private keys, or other secrets.**
+
+```yaml
+# Relevant configuration
+```
+
+## 📜 Logs / error messages
+
+If applicable, include relevant logs or error messages.
+
+```text
+Paste logs or error messages here.
+```
+
+## ➕ Additional context
+
+Add any other information, screenshots, or details that may help us understand and reproduce the problem.
