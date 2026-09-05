@@ -1,11 +1,10 @@
 ---
-
 name: 🐛 Bug Report
 about: Report a reproducible bug in Telegram Commander
 title: "[Bug]: "
 labels: bug
 assignees: ""
--------------
+---
 
 ## 🐛 Bug description
 
