@@ -4,14 +4,40 @@
 
 **Control your Linux server from Telegram, one tap at a time.**
 
+<p align="center">
+  <a href="docs/markdown/images/03.jpeg"><img src="docs/markdown/images/03.jpeg" alt="Telegram Commander showing a menu of server buttons in a Telegram chat" width="330"></a>
+</p>
+
 Telegram Commander turns a simple YAML file into a Telegram bot with a menu of
 buttons. Each button can run *any* command on the server — restart a service,
 check disk space, tail logs, deploy, run a backup script, ping a host — and the
 output comes straight back to your chat.
 
 If you can type it in a terminal, you can put it behind a button. No app to
-build, no web panel to secure, no inbound port to open: the bot talks to
+build, no web panel to manage, no inbound port to open: the bot talks to
 Telegram over an outbound connection and only the users you list can use it.
+
+The routine work you keep opening an SSH session for — checking a service,
+reading a log, seeing how much disk is left — becomes a tap on your phone. SSH
+is still there for everything else.
+
+You describe the menu in YAML:
+
+```yaml
+menu:
+  - name: System
+    type: category
+    icon: "🖥️"
+    items:
+      - name: Uptime & Load
+        type: button
+        icon: "🕒"
+        function: command
+        command: "uptime && uptime -p"
+```
+
+That button shows up in your chat. Tap it, the command runs on the server, and
+the output comes back as a message.
 
 ## Full documentation
 
@@ -56,7 +82,7 @@ Anything you can run in a shell. A few common examples:
 ## Why use it?
 
 - **No coding.** Describe the menu and commands in one YAML file.
-- **From anywhere.** Open Telegram on your phone and run the server. No VPN
+- **From anywhere.** Open Telegram on your phone and manage the server. No VPN
   into the host.
 - **No open ports.** The bot connects out to Telegram. Nothing is exposed to
   the internet.
@@ -104,7 +130,10 @@ cp config-examples/config.minimal.yaml ./config.yaml
 
 Edit `config.yaml` and replace `YOUR_BOT_TOKEN` and `YOUR_USER_ID`.
 
-If you do not know your user id, run once with only the token set; unauthorized users get a message that includes their `user_id`.
+If you do not know your user id, leave any number in `allowed_users` for now
+and start the bot, then send it a message. Because you are not on the list yet,
+the bot replies with your own `user_id`. Copy that id into `allowed_users`,
+stop the bot, and start it again.
 
 ### 4. Validate and run
 
