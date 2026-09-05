@@ -120,6 +120,7 @@ nav:
     - Reference:
         - Configuration: documentation/configuration.md
         - CLI: documentation/cli.md
+  - Contribute: contribute.md
 
 markdown_extensions:
   - attr_list
@@ -168,6 +169,7 @@ plugins:
           nav_translations:
             Home: Startseite
             Documentation: Dokumentation
+            Contribute: Mitmachen
             Installation: Installation
             Run in CLI: In der CLI ausführen
             Run as a service: Als Dienst ausführen
@@ -213,6 +215,7 @@ plugins:
           nav_translations:
             Home: Accueil
             Documentation: Documentation
+            Contribute: Contribuer
             Installation: Installation
             Run in CLI: Exécuter dans la CLI
             Run as a service: Exécuter comme service
@@ -257,6 +260,7 @@ plugins:
           nav_translations:
             Home: Inicio
             Documentation: Documentación
+            Contribute: Contribuir
             Installation: Instalación
             Run in CLI: Ejecutar en la CLI
             Run as a service: Ejecutar como servicio
@@ -301,6 +305,7 @@ plugins:
           nav_translations:
             Home: Главная
             Documentation: Документация
+            Contribute: Участие
             Installation: Установка
             Run in CLI: Запуск в CLI
             Run as a service: Запуск как служба
@@ -343,6 +348,7 @@ plugins:
           nav_translations:
             Home: 首页
             Documentation: 文档
+            Contribute: 参与贡献
             Installation: 安装
             Run in CLI: 在 CLI 中运行
             Run as a service: 作为服务运行
@@ -387,6 +393,7 @@ plugins:
           nav_translations:
             Home: خانه
             Documentation: مستندات
+            Contribute: مشارکت
             Installation: نصب
             Run in CLI: اجرا در CLI
             Run as a service: اجرا به‌صورت سرویس

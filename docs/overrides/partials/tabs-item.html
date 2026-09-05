@@ -7,6 +7,8 @@
 {% macro tab_icon(url) %}
   {% if "documentation/" in url %}
     {% include ".icons/octicons/book-24.svg" %}
+  {% elif "contribute" in url %}
+    {% include ".icons/material/handshake-outline.svg" %}
   {% else %}
     {% include ".icons/material/home.svg" %}
   {% endif %}
