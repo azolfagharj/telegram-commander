@@ -5,7 +5,11 @@
 **Control your Linux server from Telegram, one tap at a time.**
 
 <p align="center">
-  <a href="docs/markdown/images/03.jpeg"><img src="docs/markdown/images/03.jpeg" alt="Telegram Commander showing a menu of server buttons in a Telegram chat" width="330"></a>
+  <a href="docs/markdown/images/01.jpeg"><img src="docs/markdown/images/01.jpeg" alt="Command output with the System menu open" width="150"></a>
+  <a href="docs/markdown/images/02.jpeg"><img src="docs/markdown/images/02.jpeg" alt="Resource and process buttons" width="150"></a>
+  <a href="docs/markdown/images/03.jpeg"><img src="docs/markdown/images/03.jpeg" alt="Storage and package buttons" width="150"></a>
+  <a href="docs/markdown/images/04.jpeg"><img src="docs/markdown/images/04.jpeg" alt="Network tools and typing a command by hand" width="150"></a>
+  <a href="docs/markdown/images/05.jpeg"><img src="docs/markdown/images/05.jpeg" alt="Command output sent back to the chat" width="150"></a>
 </p>
 
 Telegram Commander turns a simple YAML file into a Telegram bot with a menu of
