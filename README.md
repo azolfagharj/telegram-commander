@@ -15,6 +15,10 @@ Telegram over an outbound connection and only the users you list can use it.
 
 ## Full documentation
 
+<p align="center">
+  <a href="https://telecommander.ir/"><img src="docs/markdown/images/visit-website.svg" alt="Visit the website" width="300" height="56"></a>
+</p>
+
 The complete guide is written in plain language and is available in several
 languages. Open the one you read:
 
