@@ -1,0 +1,216 @@
+/* Smaller, finer cards */
+.md-typeset .grid { grid-gap: .5rem; margin: .9em 0 }
+.md-typeset .grid.cards > ul > li,
+.md-typeset .grid.cards > ol > li,
+.md-typeset .grid > .card { padding: .55rem .7rem; border-radius: .25rem; font-size: .72rem; line-height: 1.55 }
+.md-typeset .grid.cards > ul > li > hr { margin: .45em 0 }
+.md-typeset .grid.cards p { margin: .35em 0 }
+
+/* A big step number, with the text running beside it */
+.md-typeset .step {
+  --md-icon-size: 1.5rem;
+  float: left;
+  margin: 0 .35rem .1rem 0;
+  color: var(--md-typeset-a-color);
+}
+
+/* Card titles sit in the middle, the text below stays on the left */
+.md-typeset .grid.cards.center-title > ul > li > p:first-child { text-align: center }
+
+/* Step cards: the number and its text sit on one centred row */
+.md-typeset .grid.cards.step-cards > ul > li > p:last-child {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  min-height: 2.8rem;
+  font-size: .8rem;
+}
+.md-typeset .grid.cards.step-cards .step { margin: 0 }
+
+/* The icon sits beside the whole text, not only beside its first line */
+.md-typeset .grid.cards.icon-left > ul > li .twemoji {
+  float: left;
+  margin: .1rem .35rem .1rem 0;
+}
+
+/* Exactly this many columns on wide screens */
+@media screen and (min-width: 76.25em) {
+  .md-typeset .grid.cols-2 { grid-template-columns: repeat(2, 1fr) }
+  .md-typeset .grid.cols-3 { grid-template-columns: repeat(3, 1fr) }
+  .md-typeset .grid.cols-4 { grid-template-columns: repeat(4, 1fr) }
+}
+
+/* A short fading line above a section, instead of a full width rule */
+.md-typeset h2.split { font-weight: 700 }
+
+.md-typeset h2.split::before {
+  content: "";
+  display: block;
+  width: 9rem;
+  height: 1px;
+  margin: 1.3rem auto .9rem;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--md-default-fg-color--light),
+    transparent
+  );
+}
+
+/* Each home page section keeps its own icon colour */
+.md-typeset .bolt { color: #f5a524 }
+.md-typeset .shots { color: #00acc1 }
+.md-typeset .grid-icon { color: #4051b5 }
+.md-typeset .thumb { color: #00c853 }
+.md-typeset .code-icon { color: #7c4dff }
+
+/* The two footer icons keep their own colour instead of plain grey */
+.md-social__link[href*="github.com"] svg { fill: #ffffff }
+.md-social__link[href*="/donate"] svg { fill: #ff5252 }
+
+/* Home page opening: the logo sits beside the two intro paragraphs.
+   On a narrow screen the text drops under the picture. */
+.md-typeset .hero {
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+  flex-wrap: wrap;
+}
+.md-typeset .hero-art p { margin: 0 }
+.md-typeset .hero-art img { display: block; max-width: 100% }
+.md-typeset .hero-text { flex: 1 1 18rem }
+.md-typeset .hero-text > :first-child { margin-top: 0 }
+.md-typeset .hero-text > :last-child { margin-bottom: 0 }
+
+/* The default logo slot is tiny, so the penguin gets more room */
+.md-header__button.md-logo { padding: .2rem; margin: .1rem }
+.md-header__button.md-logo img { width: 2.1rem; height: 2.1rem }
+.md-nav__button.md-logo img { width: 2.6rem; height: 2.6rem }
+
+/* Tighter buttons on the landing page */
+.md-typeset .md-button { padding: .35em .8em; font-size: .72rem }
+
+/* Right to left pages: anything that points forward has to point the other
+   way. The theme already turns its own arrows, but not these. */
+
+/* The small arrow between the breadcrumb names */
+[dir="rtl"] .md-path__item:not(:first-child)::before { transform: scaleX(-1) }
+
+/* Icons next to text sit on the middle of the line instead of hanging from
+   the top. The theme hangs them from the top of the font, which only looks
+   right for Latin fonts; Persian and other right to left fonts keep much
+   more room under the line, so the icon ends up too high. Lining the icon
+   up with the middle of the text works whatever font the page uses. */
+[dir="rtl"] .md-typeset .twemoji,
+[dir="rtl"] .md-typeset .emojione,
+[dir="rtl"] .md-typeset .gemoji { vertical-align: middle }
+
+/* The step number sits at the start of the line, not on the left */
+[dir="rtl"] .md-typeset .step {
+  float: right;
+  margin: 0 0 .1rem .35rem;
+}
+
+/* Same for the icon that runs beside a whole card text */
+[dir="rtl"] .md-typeset .grid.cards.icon-left > ul > li .twemoji {
+  float: right;
+  margin: .1rem 0 .1rem .35rem;
+}
+
+/* The language menu shows two names per row, so the whole list fits
+   in one look instead of scrolling. A small flag sits before each name. */
+.md-select__list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(7rem, 1fr));
+}
+
+/* An odd last name takes the whole row instead of leaving a gap */
+.md-select__item:last-child:nth-child(odd) { grid-column: span 2 }
+
+.md-select__link {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+}
+
+/* The same flags serve the menu at the top, the home page line and the footer */
+.md-select__link::before,
+.md-footer-lang__link::before,
+.md-typeset .hero-lang__link::before {
+  content: "";
+  flex: 0 0 auto;
+  width: .96rem;
+  height: .72rem;
+  border-radius: .05rem;
+  background: center / contain no-repeat;
+  box-shadow: 0 0 0 1px var(--md-default-fg-color--lightest);
+}
+
+:is(.md-select__link, .md-footer-lang__link, .hero-lang__link)[hreflang="en"]::before { background-image: url("../images/flags/gb.svg") }
+:is(.md-select__link, .md-footer-lang__link, .hero-lang__link)[hreflang="de"]::before { background-image: url("../images/flags/de.svg") }
+:is(.md-select__link, .md-footer-lang__link, .hero-lang__link)[hreflang="fr"]::before { background-image: url("../images/flags/fr.svg") }
+:is(.md-select__link, .md-footer-lang__link, .hero-lang__link)[hreflang="es"]::before { background-image: url("../images/flags/es.svg") }
+:is(.md-select__link, .md-footer-lang__link, .hero-lang__link)[hreflang="ru"]::before { background-image: url("../images/flags/ru.svg") }
+:is(.md-select__link, .md-footer-lang__link, .hero-lang__link)[hreflang="zh"]::before { background-image: url("../images/flags/cn.svg") }
+:is(.md-select__link, .md-footer-lang__link, .hero-lang__link)[hreflang="fa"]::before { background-image: url("../images/flags/ir.svg") }
+
+/* On a phone the menu goes back to one name per row */
+@media screen and (max-width: 44.9375em) {
+  .md-select__list { grid-template-columns: 1fr }
+}
+
+/* A small line under the opening text, pointing to the other languages */
+.md-typeset .hero-lang {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .1rem .5rem;
+  margin: .7rem 0 0;
+  color: var(--md-default-fg-color--light);
+  font-size: .58rem;
+}
+
+.md-typeset .hero-lang__link {
+  display: inline-flex;
+  align-items: center;
+  gap: .25rem;
+}
+
+/* The flags here match the small ones in the footer */
+.md-typeset .hero-lang__link::before {
+  width: .7rem;
+  height: .53rem;
+  box-shadow: 0 0 0 1px var(--md-default-fg-color--lightest);
+}
+
+/* A thin language row in the footer, on its own line above the copyright */
+.md-footer-lang {
+  flex: 1 0 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .1rem .55rem;
+  margin: 0 .6rem;
+  padding: .4rem 0 .2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, .12);
+  color: var(--md-footer-fg-color--lighter);
+  font-size: .56rem;
+}
+
+.md-footer-lang__title {
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.md-footer-lang__link {
+  display: inline-flex;
+  align-items: center;
+  gap: .25rem;
+}
+
+/* The footer flags stay smaller than the ones in the menu */
+.md-footer-lang__link::before {
+  width: .7rem;
+  height: .53rem;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .18);
+}
