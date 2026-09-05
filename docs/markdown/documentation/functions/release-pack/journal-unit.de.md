@@ -1,10 +1,10 @@
 ---
-title: Journal Unit
+title: Journal-Unit
 description: Die mitgelieferte Funktion journal-unit zeigt aktuelle journalctl-Protokolle einer systemd-Unit. Geben Sie die Unit und optional die Zeilenanzahl direkt auf der Schaltfläche an.
 icon: material/text-box-search-outline
 ---
 
-# :material-text-box-search-outline: Journal Unit
+# :material-text-box-search-outline: Journal-Unit
 
 `journal-unit` zeigt die neuesten `journalctl`-Protokolle einer systemd-Unit.
 Die Funktion gehört zu den
@@ -37,7 +37,7 @@ von einer Schaltfläche aus verwenden können.
 !!! example "Aktuelle Protokolle eines Dienstes lesen"
 
     ```yaml title="Schaltfläche für nginx-Protokolle"
-    - name: nginx-Protokolle
+    - name: Nginx logs
       type: button
       function: journal-unit
       unit: "nginx.service"
@@ -50,7 +50,7 @@ das Feld weg, um den Standardwert `50` zu verwenden.
 !!! example "Die standardmäßige Zeilenanzahl verwenden"
 
     ```yaml title="Schaltfläche für SSH-Protokolle"
-    - name: SSH-Protokolle
+    - name: SSH logs
       type: button
       function: journal-unit
       unit: "ssh.service"

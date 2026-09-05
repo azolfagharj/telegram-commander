@@ -1,10 +1,10 @@
 ---
-title: Ping Host
+title: Host anpingen
 description: Die mitgelieferte Funktion ping-host pingt einen Host mehrmals. Geben Sie den Host und optional die Anzahl direkt auf der Schaltfläche an.
 icon: material/access-point-network
 ---
 
-# :material-access-point-network: Ping Host
+# :material-access-point-network: Host anpingen
 
 `ping-host` pingt einen Host mehrmals und sendet das Ergebnis zurück. Die
 Funktion gehört zu den
@@ -37,7 +37,7 @@ von einer Schaltfläche aus verwenden können.
 !!! example "Einen festen Host dreimal pingen"
 
     ```yaml title="Schaltfläche zum Pingen des Gateways"
-    - name: Gateway pingen
+    - name: Ping gateway
       type: button
       function: ping-host
       host: "192.168.1.1"
@@ -50,7 +50,7 @@ das Feld auch weglassen, um den Standardwert `4` zu verwenden:
 !!! example "Den Standardwert für die Anzahl verwenden"
 
     ```yaml title="Schaltfläche zum Pingen von DNS"
-    - name: DNS pingen
+    - name: Ping DNS
       type: button
       function: ping-host
       host: "1.1.1.1"

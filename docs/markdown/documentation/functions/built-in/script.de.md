@@ -17,7 +17,7 @@ führt eine Skriptdatei mit optionalen Argumenten aus.
 !!! example "Ein Skript mit Argumenten ausführen"
 
     ```yaml title="Schaltfläche für den nächtlichen Bericht"
-    - name: Nächtlicher Bericht
+    - name: Nightly report
       type: button
       function: script
       path: "/usr/local/bin/report.sh"
@@ -39,11 +39,11 @@ Der Pfad wird direkt ausgeführt. Daher benötigt die Datei das Ausführungsbit:
 
 Wenn Sie die Datei nicht ändern können, führen Sie sie stattdessen über einen
 Interpreter aus. Das Beispiel [`echo-script`](../release-pack/echo-script.md)
-im Release-Paket tut genau dies, indem es zuerst `bash` aufruft.
+der mitgelieferten Funktionen tut genau dies, indem es zuerst `bash` aufruft.
 
 ## Verwandte Themen
 
 - [`command`](command.md) — einen Inline-Befehl statt einer Datei ausführen
-- [Echo Script](../release-pack/echo-script.md) — ein Skript über Bash ausführen
+- [Echo-Skript](../release-pack/echo-script.md) — ein Skript über Bash ausführen
 - [Integrierte Funktionen](../index.md#built-in-functions) — beide integrierten Funktionen
 - [Shell](../../concepts/shell.md) — wie Befehle ausgeführt werden

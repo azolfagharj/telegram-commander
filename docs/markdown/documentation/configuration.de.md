@@ -41,7 +41,7 @@ erforderlich. Alles andere besitzt einen Standardwert:
         - "123456789"
 
     menu:
-      - name: Laufzeit
+      - name: Uptime
         type: button
         function: command
         command: "uptime"
@@ -60,11 +60,11 @@ vollständiges Beispiel.
 | `shell` | Zeichenfolge | nein | `/bin/bash` | Als `shell -c "<command>"` verwendete [Shell](concepts/shell.md) |
 | `timeout` | Dauer | nein | `60s` | Standardmäßige Befehlszeitüberschreitung |
 | `max_output_bytes` | Ganzzahl | nein | `524288` | Maximal aufbewahrte Ausgabe pro Befehl (siehe [Umfang der angezeigten Befehlsausgabe](#how-much-command-output-you-see)) |
-| `workdir` | Zeichenfolge | nein | Prozess-cwd | Standardarbeitsverzeichnis für Befehle |
+| `workdir` | Zeichenfolge | nein | Arbeitsverzeichnis des Prozesses | Standardarbeitsverzeichnis für Befehle |
 | `env` | Zuordnung | nein | leer | Zusätzliche Umgebungsvariablen für Befehle |
-| `menu_columns` | Ganzzahl | nein | `2` | Eintragsschaltflächen pro Zeile unter dem Nachrichtenfeld |
+| `menu_columns` | Ganzzahl | nein | `2` | Menüeinträge pro Zeile unter dem Nachrichtenfeld |
 | `page_size` | Ganzzahl | nein | `8` | Einträge pro Seite vor der Seitennavigation |
-| `confirm_ttl` | Dauer | nein | `5m` | Gültigkeitsdauer einer [Bestätigungs](concepts/confirmation.md)-aufforderung |
+| `confirm_ttl` | Dauer | nein | `5m` | Gültigkeitsdauer einer Aufforderung zur [Bestätigung](concepts/confirmation.md) |
 | `enable_run_command` | bool | nein | `false` | Zeigt eine Schaltfläche **`$ >_ Run Command`**, die die nächste Nachricht als Shell-Befehl ausführt. Standardmäßig aus. Jeder Bot-Benutzer kann damit jeden Befehl auf dem Host ausführen. Aktivieren Sie dies nur, wenn Sie allen zugelassenen Benutzern vertrauen. Unter `telegram` ist dieser Schlüssel ungültig. |
 | `logging` | Objekt | nein | integrierter Standard-Logger | Benannte Logger (siehe unten) |
 
@@ -125,8 +125,8 @@ vollständige Ausgabe in eine Datei auf dem Server.
 |-------|------|----------|---------|-------------|
 | `bot_token` | Zeichenfolge | ja | — | Bot-Token von BotFather |
 | `allowed_users` | Liste von Zeichenfolgen | ja | — | [Zugelassene Benutzer](concepts/allowed-users.md) |
-| `api` | Zeichenfolge | nein | `https://api.telegram.org` | Basis-URL der Bot API |
-| `proxy.enabled` | bool | nein | `false` | Proxy für die Telegram API verwenden |
+| `api` | Zeichenfolge | nein | `https://api.telegram.org` | Basis-URL der Bot-API |
+| `proxy.enabled` | bool | nein | `false` | Proxy für die Telegram-API verwenden |
 | `proxy.url` | Zeichenfolge | bedingt | — | Erforderlich, wenn `proxy.enabled` auf `true` steht |
 | `insecure` | bool | nein | `false` | TLS-Prüfung überspringen (nicht empfohlen) |
 
@@ -141,8 +141,8 @@ Mal auch Ihre eigene ID — siehe
     telegram:
       bot_token: "123456789:AAExampleTokenValue"
       allowed_users:
-        - "123456789"        # numeric user id
-        - "@alice"           # or a username
+        - "123456789"        # numerische Benutzer-ID
+        - "@alice"           # oder ein Benutzername
       proxy:
         enabled: true
         url: "socks5://127.0.0.1:10808"
@@ -160,8 +160,8 @@ legen Sie Folgendes auf der **obersten Ebene** fest (nicht unter `telegram`):
 ## :material-menu: Menü { #menu }
 
 Dieser Abschnitt ist die Feldreferenz. Eine geführte Erläuterung mit Beispielen
-finden Sie unter [Menü](concepts/menu.md). Jeder
-[Schaltflächen](concepts/button.md)- oder [Kategorie](concepts/category.md)-Knoten:
+finden Sie unter [Menü](concepts/menu.md). Jeder Knoten vom Typ
+[Schaltfläche](concepts/button.md) oder [Kategorie](concepts/category.md):
 
 | Feld | Typ | Erforderlich | Beschreibung |
 |-------|------|----------|-------------|
@@ -210,7 +210,7 @@ Benannte Logger:
       logs:
         default:
           level: info
-          format: console   # or json
+          format: console   # oder JSON
           output:
             - output: stderr
         audit:

@@ -16,7 +16,7 @@ Ein Menüknoten, der ein Untermenü öffnet, statt etwas auszuführen. Er besitz
     - name: System
       type: category
       items:
-        - name: Laufzeit
+        - name: Uptime
           type: button
           function: command
           command: "uptime"

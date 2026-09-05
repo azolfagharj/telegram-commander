@@ -1,0 +1,42 @@
+{#-
+  Copy of the theme copyright partial with one addition: a small language row
+  sits above the copyright line on every page. The row is built from the same
+  language list as the button at the top, so both always agree.
+-#}
+{% if config.extra.alternate %}
+  {% set labels = {
+    "en": "Language",
+    "de": "Sprache",
+    "fr": "Langue",
+    "es": "Idioma",
+    "ru": "Язык",
+    "zh": "语言",
+    "fa": "زبان"
+  } %}
+  {% set label = labels.get(config.theme.language, "Language") %}
+  <nav class="md-footer-lang" aria-label="{{ label }}">
+    <span class="md-footer-lang__title">{{ label }}</span>
+    {% for alt in config.extra.alternate %}
+      <a
+        href="{{ alt.link | url }}"
+        hreflang="{{ alt.lang }}"
+        class="md-footer-lang__link"
+      >
+        {{ alt.name }}
+      </a>
+    {% endfor %}
+  </nav>
+{% endif %}
+<div class="md-copyright">
+  {% if config.copyright %}
+    <div class="md-copyright__highlight">
+      {{ config.copyright }}
+    </div>
+  {% endif %}
+  {% if not config.extra.generator == false %}
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  {% endif %}
+</div>

@@ -12,8 +12,8 @@ und die Ausführungsdauer. Er wird unter `logging` in Ihrer
 [Konfigurationsdatei](config-file.md) eingerichtet.
 
 In diesem Protokoll können Sie später nachsehen, wer um drei Uhr morgens einen
-Dienst neu gestartet hat oder ob die Schaltfläche für die Sicherung in der
-letzten Nacht tatsächlich erfolgreich war. Da es sich um einen eigenen
+Dienst neu gestartet hat oder ob die Sicherung der letzten Nacht tatsächlich
+abgeschlossen wurde. Da es sich um einen eigenen
 Protokollstrom handelt, können Sie ihn aufbewahren, nachdem das normale
 Anwendungsprotokoll bereits rotiert wurde.
 

@@ -27,7 +27,7 @@ Siehe [Menü → Darstellung des Telegram-Menüs](menu.md#how-the-telegram-menu-
 !!! example "Jede Zeile steuert einen Bestandteil der Schaltfläche"
 
     ```yaml title="Eine vollständig beschriftete Schaltfläche"
-    - name: nginx neu starten # (1)!
+    - name: Restart nginx # (1)!
       type: button # (2)!
       icon: "🔄" # (3)!
       function: command # (4)!
@@ -63,7 +63,7 @@ Siehe [Menü → Darstellung des Telegram-Menüs](menu.md#how-the-telegram-menu-
 === "Etwas prüfen"
 
     ```yaml title="Laufzeit-Schaltfläche"
-    - name: Laufzeit
+    - name: Uptime
       type: button
       function: command
       command: "uptime"
@@ -72,7 +72,7 @@ Siehe [Menü → Darstellung des Telegram-Menüs](menu.md#how-the-telegram-menu-
 === "Einen Dienst verwalten"
 
     ```yaml title="Schaltfläche zum Neustarten von nginx"
-    - name: nginx neu starten
+    - name: Restart nginx
       type: button
       icon: "🔄"
       function: command
@@ -82,7 +82,7 @@ Siehe [Menü → Darstellung des Telegram-Menüs](menu.md#how-the-telegram-menu-
 === "Ein Protokoll lesen"
 
     ```yaml title="Schaltfläche für das nginx-Protokoll"
-    - name: nginx-Protokoll
+    - name: Nginx log
       type: button
       function: command
       command: "journalctl -u nginx -n 50 --no-pager"
@@ -91,7 +91,7 @@ Siehe [Menü → Darstellung des Telegram-Menüs](menu.md#how-the-telegram-menu-
 === "Ein Skript ausführen"
 
     ```yaml title="Schaltfläche für die nächtliche Sicherung"
-    - name: Nächtliche Sicherung
+    - name: Nightly backup
       type: button
       function: script
       path: "/usr/local/bin/backup.sh"
@@ -100,7 +100,7 @@ Siehe [Menü → Darstellung des Telegram-Menüs](menu.md#how-the-telegram-menu-
 === "Eine destruktive Aktion"
 
     ```yaml title="Schaltfläche zum Stoppen von nginx"
-    - name: nginx stoppen
+    - name: Stop nginx
       type: button
       icon: "🛑"
       function: command
@@ -116,12 +116,12 @@ geändert oder entfernt werden, ohne den ausgeführten Befehl zu verändern.
 !!! example "Ein Symbol ändert nur die Beschriftung"
 
     ```yaml title="Dieselbe Schaltfläche mit und ohne Symbol"
-    - name: Datenträgerbelegung
+    - name: Disk usage
       type: button
       function: command
       command: "df -h"
 
-    - name: Datenträgerbelegung
+    - name: Disk usage
       type: button
       icon: "💾"
       function: command
@@ -146,7 +146,7 @@ Die meisten globalen Einstellungen lassen sich für eine einzelne Schaltfläche
 !!! example "Einstellungen für einen langsamen Auftrag überschreiben"
 
     ```yaml title="Ein langsamer Auftrag in einem anderen Verzeichnis"
-    - name: Lange Sicherung
+    - name: Long backup
       type: button
       function: command
       command: "/usr/local/bin/backup.sh"
@@ -168,7 +168,7 @@ Schreiben Sie Funktionswerte direkt auf die Schaltfläche. `command`, `path` und
 !!! example "Eigene Werte übergeben"
 
     ```yaml title="Aktuelle nginx-Protokolle"
-    - name: nginx-Protokolle
+    - name: Nginx logs
       type: button
       function: journal-unit
       unit: "nginx.service"

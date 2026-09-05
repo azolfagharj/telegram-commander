@@ -21,7 +21,7 @@ Konfigurationsdatei.
         - "123456789"
 
     menu:
-      - name: Laufzeit
+      - name: Uptime
         type: button
         function: command
         command: "uptime"

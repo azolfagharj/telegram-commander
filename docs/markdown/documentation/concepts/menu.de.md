@@ -24,17 +24,17 @@ Das einfachste Menü ist eine Liste von Schaltflächen ohne Verschachtelung:
 
     ```yaml title="Drei Schaltflächen ohne Kategorien"
     menu:
-      - name: Laufzeit
+      - name: Uptime
         type: button
         function: command
         command: "uptime"
 
-      - name: Freier Speicher
+      - name: Free memory
         type: button
         function: command
         command: "free -h"
 
-      - name: Datenträgerbelegung
+      - name: Disk usage
         type: button
         function: command
         command: "df -h"
@@ -56,21 +56,21 @@ vorhanden. Back erscheint nur innerhalb einer Kategorie.
         type: category
         icon: "💻"
         items:
-          - name: Laufzeit
+          - name: Uptime
             type: button
             function: command
             command: "uptime"
 
-          - name: Freier Speicher
+          - name: Free memory
             type: button
             function: command
             command: "free -h"
 
-      - name: Dienste
+      - name: Services
         type: category
         icon: "🔧"
         items:
-          - name: nginx neu starten
+          - name: Restart nginx
             type: button
             function: command
             command: "systemctl restart nginx"
@@ -93,14 +93,14 @@ Knoten in verschiedenen Kategorien liegen:
       - name: Web
         type: category
         items:
-          - name: Neustart          # ok
+          - name: Restart # zulässig
             type: button
             function: command
             command: "systemctl restart nginx"
-      - name: Datenbank
+      - name: Database
         type: category
         items:
-          - name: Neustart          # ok, different parent
+          - name: Restart # zulässig, anderer übergeordneter Knoten
             type: button
             function: command
             command: "systemctl restart postgresql"
@@ -113,7 +113,7 @@ Knoten in verschiedenen Kategorien liegen:
 !!! warning "Diese Schaltfläche startet den Rechner neu"
 
     ```yaml title="Eine Schaltfläche mit Emoji-Symbol"
-    - name: Neustart
+    - name: Reboot
       type: button
       icon: "🔁"
       function: command
@@ -166,7 +166,7 @@ destruktive Aktionen. Siehe [Bestätigung](confirmation.md).
 !!! warning "Diese Schaltfläche stoppt einen Dienst"
 
     ```yaml title="Eine Schaltfläche, die zuerst nachfragt"
-    - name: nginx stoppen
+    - name: Stop nginx
       type: button
       function: command
       command: "systemctl stop nginx"
@@ -185,14 +185,14 @@ Einige globale Einstellungen lassen sich für eine einzelne Schaltfläche
 !!! example "Einer Schaltfläche eigene Einstellungen geben"
 
     ```yaml title="Eine Schaltfläche mit eigener Zeitüberschreitung, eigenem Ordner und eigenen Variablen"
-    - name: Lange Sicherung
+    - name: Long backup
       type: button
       function: command
       command: "/usr/local/bin/backup.sh"
-      timeout: "10m"          # this one may take longer than the global timeout
-      workdir: "/var/backups" # run it here
+      timeout: "10m"          # dies kann länger als das globale Zeitlimit dauern
+      workdir: "/var/backups" # hier ausführen
       env:
-        BACKUP_MODE: "full"   # extra environment variable for this command
+        BACKUP_MODE: "full"   # zusätzliche Umgebungsvariable für diesen Befehl
     ```
 
 Die vollständige Feldliste finden Sie unter

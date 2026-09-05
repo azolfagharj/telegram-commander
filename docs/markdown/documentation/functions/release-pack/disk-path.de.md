@@ -1,10 +1,10 @@
 ---
-title: Disk path
+title: Datenträgerpfad
 description: Die mitgelieferte Funktion disk-path zeigt mit df -h die Datenträgerbelegung. Ihr einziger Parameter ist path; wenn Sie ihn auslassen, wird das Wurzeldateisystem verwendet.
 icon: material/harddisk
 ---
 
-# :material-harddisk: Disk path
+# :material-harddisk: Datenträgerpfad
 
 `disk-path` zeigt mit `df -h` die Datenträgerbelegung für einen Pfad. Die
 Funktion gehört zu den
@@ -33,10 +33,10 @@ das Feld auslassen und funktioniert dennoch.
 !!! example "Den Standardpfad verwenden oder einen Pfad auswählen"
 
     ```yaml title="Schaltflächen für die Datenträgerbelegung"
-    - name: Datenträger (root)
+    - name: Disk (root)
       type: button
-      function: disk-path        # no path field: uses the default "/"
-    - name: Datenträger (var)
+      function: disk-path        # kein Feld path: verwendet den Standardwert "/"
+    - name: Disk (var)
       type: button
       function: disk-path
       path: "/var"

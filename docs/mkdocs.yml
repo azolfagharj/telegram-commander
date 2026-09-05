@@ -27,7 +27,7 @@ theme:
   logo: images/logo.png
   favicon: images/favicon.png
   icon:
-    alternate: fontawesome/solid/globe
+    alternate: material/translate
     repo: fontawesome/brands/github
     admonition:
       note: material/note-text-outline
@@ -67,6 +67,7 @@ theme:
 
 extra_css:
   - css/extra.css
+  - css/persian.css
 
 hooks:
   - hooks/language_sitemaps.py
@@ -199,6 +200,225 @@ plugins:
             Step by step guide: Schritt-für-Schritt-Anleitung
             Reference: Referenz
             Configuration: Konfiguration
+            CLI: CLI
+        - locale: fr
+          name: Français
+          build: true
+          site_description: >-
+            Telegram Commander est un bot Linux gratuit qui transforme un
+            fichier YAML en menu de boutons dans Telegram. Appuyez sur un
+            bouton pour exécuter une commande shell sur votre serveur et lire
+            la sortie dans la conversation. Sans programmation ni ports
+            ouverts.
+          nav_translations:
+            Home: Accueil
+            Documentation: Documentation
+            Installation: Installation
+            Run in CLI: Exécuter dans la CLI
+            Run as a service: Exécuter comme service
+            Concepts: Concepts
+            Config file: Fichier de configuration
+            Menu: Menu
+            Button: Bouton
+            Category: Catégorie
+            Function: Fonction
+            Parameter: Paramètre
+            Shell: Shell
+            Allowed users: Utilisateurs autorisés
+            Confirmation: Confirmation
+            How the bot connects: Connexion du bot
+            Audit log: Journal d’audit
+            Functions: Fonctions
+            Built-in: Intégrées
+            command: command
+            script: script
+            Release pack: Fonctions fournies
+            Echo Script: Script d’écho
+            Disk path: Chemin du disque
+            Curl URL: URL Curl
+            Ping Host: Ping d’un hôte
+            Journal Unit: Unité du journal
+            Write your own: Créer vos fonctions
+            File structure: Structure des fichiers
+            Rules: Règles
+            Placeholders: Variables de remplacement
+            Step by step guide: Guide pas à pas
+            Reference: Référence
+            Configuration: Configuration
+            CLI: CLI
+        - locale: es
+          name: Español
+          build: true
+          site_description: >-
+            Telegram Commander es un bot de Linux gratuito que convierte un
+            archivo YAML en un menú de botones en Telegram. Pulse un botón
+            para ejecutar un comando de shell en su servidor y leer la salida
+            en el chat. Sin programación y sin puertos abiertos.
+          nav_translations:
+            Home: Inicio
+            Documentation: Documentación
+            Installation: Instalación
+            Run in CLI: Ejecutar en la CLI
+            Run as a service: Ejecutar como servicio
+            Concepts: Conceptos
+            Config file: Archivo de configuración
+            Menu: Menú
+            Button: Botón
+            Category: Categoría
+            Function: Función
+            Parameter: Parámetro
+            Shell: Shell
+            Allowed users: Usuarios permitidos
+            Confirmation: Confirmación
+            How the bot connects: Cómo se conecta el bot
+            Audit log: Registro de auditoría
+            Functions: Funciones
+            Built-in: Integradas
+            command: command
+            script: script
+            Release pack: Funciones incluidas
+            Echo Script: Script de eco
+            Disk path: Ruta de disco
+            Curl URL: URL Curl
+            Ping Host: Ping a un host
+            Journal Unit: Unidad de journal
+            Write your own: Cree las suyas
+            File structure: Estructura de archivos
+            Rules: Reglas
+            Placeholders: Variables de reemplazo
+            Step by step guide: Guía paso a paso
+            Reference: Referencia
+            Configuration: Configuración
+            CLI: CLI
+        - locale: ru
+          name: Русский
+          build: true
+          site_description: >-
+            Telegram Commander — бесплатный Linux-бот, который превращает один
+            YAML-файл в меню кнопок в Telegram. Нажмите кнопку, чтобы выполнить
+            команду оболочки на сервере и прочитать вывод в чате. Без
+            программирования и без открытых портов.
+          nav_translations:
+            Home: Главная
+            Documentation: Документация
+            Installation: Установка
+            Run in CLI: Запуск в CLI
+            Run as a service: Запуск как служба
+            Concepts: Основные понятия
+            Config file: Файл конфигурации
+            Menu: Меню
+            Button: Кнопка
+            Category: Категория
+            Function: Функция
+            Parameter: Параметр
+            Shell: Shell
+            Allowed users: Разрешённые пользователи
+            Confirmation: Подтверждение
+            How the bot connects: Как бот подключается
+            Audit log: Журнал аудита
+            Functions: Функции
+            Built-in: Встроенные
+            command: command
+            script: script
+            Release pack: Поставляемые функции
+            Echo Script: Скрипт эха
+            Disk path: Путь на диске
+            Curl URL: URL Curl
+            Ping Host: Ping узла
+            Journal Unit: Юнит журнала
+            Write your own: Свои функции
+            File structure: Структура файлов
+            Rules: Правила
+            Placeholders: Подстановки
+            Step by step guide: Пошаговое руководство
+            Reference: Справочник
+            Configuration: Конфигурация
+            CLI: CLI
+        - locale: zh
+          name: 简体中文
+          build: true
+          site_description: >-
+            Telegram Commander 是一款免费的 Linux 机器人，可将一个 YAML 文件变成
+            Telegram 中的按钮菜单。点按按钮即可在服务器上运行 shell 命令，并在聊天中查看输出。无需编程，也无需开放端口。
+          nav_translations:
+            Home: 首页
+            Documentation: 文档
+            Installation: 安装
+            Run in CLI: 在 CLI 中运行
+            Run as a service: 作为服务运行
+            Concepts: 概念
+            Config file: 配置文件
+            Menu: 菜单
+            Button: 按钮
+            Category: 分类
+            Function: 函数
+            Parameter: 参数
+            Shell: Shell
+            Allowed users: 允许的用户
+            Confirmation: 确认
+            How the bot connects: 机器人如何连接
+            Audit log: 审计日志
+            Functions: 函数
+            Built-in: 内置
+            command: command
+            script: script
+            Release pack: 随附功能
+            Echo Script: 回显脚本
+            Disk path: 磁盘路径
+            Curl URL: URL Curl
+            Ping Host: Ping 主机
+            Journal Unit: Journal 单元
+            Write your own: 编写自己的函数
+            File structure: 文件结构
+            Rules: 规则
+            Placeholders: 占位符
+            Step by step guide: 分步指南
+            Reference: 参考
+            Configuration: 配置
+            CLI: CLI
+        - locale: fa
+          name: فارسی
+          build: true
+          site_description: >-
+            Telegram Commander یک ربات رایگان لینوکس است که از یک فایل YAML
+            منوی دکمه در تلگرام می‌سازد. یک دکمه را بزنید تا فرمان شِل روی
+            سرور اجرا شود و خروجی در گفتگو بیاید. بدون برنامه‌نویسی و بدون
+            پورت باز.
+          nav_translations:
+            Home: خانه
+            Documentation: مستندات
+            Installation: نصب
+            Run in CLI: اجرا در CLI
+            Run as a service: اجرا به‌صورت سرویس
+            Concepts: مفاهیم
+            Config file: فایل پیکربندی
+            Menu: منو
+            Button: دکمه
+            Category: دسته
+            Function: تابع
+            Parameter: پارامتر
+            Shell: Shell
+            Allowed users: کاربران مجاز
+            Confirmation: تأیید
+            How the bot connects: نحوهٔ اتصال ربات
+            Audit log: گزارش حسابرسی
+            Functions: توابع
+            Built-in: توکار
+            command: command
+            script: script
+            Release pack: توابع همراه بسته
+            Echo Script: اسکریپت اکو
+            Disk path: مسیر دیسک
+            Curl URL: URL با curl
+            Ping Host: پینگ میزبان
+            Journal Unit: واحد journal
+            Write your own: نوشتن تابع خودتان
+            File structure: ساختار فایل
+            Rules: قواعد
+            Placeholders: جایگزین‌ها
+            Step by step guide: راهنمای گام‌به‌گام
+            Reference: مرجع
+            Configuration: پیکربندی
             CLI: CLI
   # auto_caption shows each image's alt text under the enlarged picture.
   - glightbox:

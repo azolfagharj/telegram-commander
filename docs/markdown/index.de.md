@@ -20,6 +20,15 @@ Telegram Commander verwandelt eine einfache YAML-[Konfigurationsdatei](documenta
 in einen Telegram-Bot mit einem Menü aus [Schaltflächen](documentation/concepts/button.md).
 Legen Sie einen beliebigen Terminalbefehl hinter eine Schaltfläche und führen
 Sie ihn von Ihrem Smartphone aus. Sie müssen keinen Code schreiben.
+
+<p class="hero-lang">Diese Seite in einer anderen Sprache lesen:
+<a href="/" hreflang="en" class="hero-lang__link">English</a>
+<a href="/fr/" hreflang="fr" class="hero-lang__link">Français</a>
+<a href="/es/" hreflang="es" class="hero-lang__link">Español</a>
+<a href="/ru/" hreflang="ru" class="hero-lang__link">Русский</a>
+<a href="/zh/" hreflang="zh" class="hero-lang__link">简体中文</a>
+<a href="/fa/" hreflang="fa" class="hero-lang__link">فارسی</a>
+</p>
 </div>
 </div>
 
@@ -178,7 +187,7 @@ Beim Antippen wird der Befehl `uptime` auf dem Server ausgeführt.
         - "YOUR_USER_ID" # (2)!
 
     menu:
-      - name: Laufzeit
+      - name: Uptime
         type: button
         function: command
         command: "uptime" # (3)!

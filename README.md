@@ -13,45 +13,58 @@ If you can type it in a terminal, you can put it behind a button. No app to
 build, no web panel to secure, no inbound port to open: the bot talks to
 Telegram over an outbound connection and only the users you list can use it.
 
-> **Full documentation:** <https://telecommander.ir/>
->
-> New here? Start with [Run in CLI](https://telecommander.ir/documentation/installation/download-and-run/).
+## Full documentation
+
+The complete guide is written in plain language and is available in several
+languages. Open the one you read:
+
+<a href="https://telecommander.ir/"><img src="docs/markdown/images/flags/gb.svg" alt="" width="20" height="15"> English</a>
+·
+<a href="https://telecommander.ir/de/"><img src="docs/markdown/images/flags/de.svg" alt="" width="20" height="15"> Deutsch</a>
+·
+<a href="https://telecommander.ir/fr/"><img src="docs/markdown/images/flags/fr.svg" alt="" width="20" height="15"> Français</a>
+·
+<a href="https://telecommander.ir/es/"><img src="docs/markdown/images/flags/es.svg" alt="" width="20" height="15"> Español</a>
+·
+<a href="https://telecommander.ir/ru/"><img src="docs/markdown/images/flags/ru.svg" alt="" width="20" height="15"> Русский</a>
+·
+<a href="https://telecommander.ir/zh/"><img src="docs/markdown/images/flags/cn.svg" alt="" width="20" height="15"> 简体中文</a>
+·
+<a href="https://telecommander.ir/fa/"><img src="docs/markdown/images/flags/ir.svg" alt="" width="20" height="15"> فارسی</a>
 
 ## What can I do with it?
 
 Anything you can run in a shell. A few common examples:
 
-- **Manage services** — `systemctl restart nginx`, start/stop/status of anything
-- **Check the server** — disk usage, memory, uptime, running processes
-- **Read logs** — tail files or pull recent `journalctl` output for a unit
-- **Run your own scripts** — deploys, backups, cleanups, health checks
-- **Reach out** — curl a health endpoint, ping a host
-
-You define these as **buttons**, group them into **categories**, and optionally
-require a confirmation tap before the risky ones run. Values you reuse can live
-in small **custom functions** so buttons stay short and consistent.
+- Restart or stop a service
+- Start and stop containers
+- Update system packages
+- Read logs and journals
+- Check disk space
+- Watch CPU and memory
+- Ping hosts and test URLs
+- Take and restore backups
+- Run your own scripts
+- Reboot or shut down the host
+- Type any command by hand
+- And almost anything else
 
 ## Why use it?
 
-- **Zero coding.** Describe the menu and commands in YAML; no plugins to write.
-- **Works from anywhere.** Manage the box from your phone, wherever you are.
-- **Safe by default.** Only listed users get in; unknown users are told to
-  contact the admin. Add `confirm: true` to guard destructive actions.
-- **No open ports.** The bot connects out to Telegram; nothing to expose to the internet.
-- **Auditable.** A separate audit log records who ran what, the exit code, and duration.
-
-## Features
-
-- YAML config with strict unknown-field rejection (typos become errors)
-- Nested category / button menu in Telegram
-- Run any shell command via the built-in `command` and `script` functions
-- Reusable custom functions, one YAML file each under `function_directory`
-- Confirmation prompts, pagination, and a per-user command queue (serial per user)
-- Access control by numeric user id or `@username`
-- Optional SOCKS5/HTTP proxy for the Telegram API
-- Structured logging plus a separate audit logger
-- Offline `validate` (with optional `--online` token check)
-- CLI: `run`, `validate`, `fmt`, `list-functions`, `version`, and more
+- **No coding.** Describe the menu and commands in one YAML file.
+- **From anywhere.** Open Telegram on your phone and run the server. No VPN
+  into the host.
+- **No open ports.** The bot connects out to Telegram. Nothing is exposed to
+  the internet.
+- **Output in the chat.** The result comes back as a message. You do not need
+  an SSH session.
+- **Controlled and recorded.** Choose who gets the menu, confirm risky actions,
+  and record each run.
+- **Nested menus.** Group buttons into categories. Home stays at the top; Back
+  takes you up.
+- **Reusable functions.** Write a command once, then fill in different values
+  on each button.
+- **Stays running.** Install it as a service and the bot starts with the host.
 
 ## Quick start
 

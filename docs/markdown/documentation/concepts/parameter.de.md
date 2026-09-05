@@ -22,7 +22,7 @@ Parameternamen funktionieren genauso.
 !!! example "Eigene Parameternamen angeben"
 
     ```yaml title="Aktuelle Dienstprotokolle"
-    - name: nginx-Protokolle
+    - name: Nginx logs
       type: button
       function: journal-unit
       unit: "nginx.service"

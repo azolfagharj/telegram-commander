@@ -42,7 +42,7 @@ Schaltfläche ihn ausfüllen kann:
 !!! example "Eine Schaltfläche für die neue Funktion"
 
     ```yaml title="Schaltfläche zum Begrüßen"
-    - name: Hallo sagen
+    - name: Say hello
       type: button
       function: greet
       args: "world"
@@ -83,11 +83,11 @@ Schaltfläche mit einem anderen Wert hinzu. Die Funktion bleibt unverändert:
 !!! example "Zwei Schaltflächen, eine Funktion"
 
     ```yaml title="Begrüßungsschaltflächen"
-    - name: Welt begrüßen
+    - name: Greet world
       type: button
       function: greet
       args: "world"
-    - name: Team begrüßen
+    - name: Greet team
       type: button
       function: greet
       args: "team"

@@ -90,5 +90,127 @@
 /* Tighter buttons on the landing page */
 .md-typeset .md-button { padding: .35em .8em; font-size: .72rem }
 
-/* Page icons belong in the sidebar; keep the top tabs plain text */
-.md-tabs__link svg { display: none }
+/* Right to left pages: anything that points forward has to point the other
+   way. The theme already turns its own arrows, but not these. */
+
+/* The small arrow between the breadcrumb names */
+[dir="rtl"] .md-path__item:not(:first-child)::before { transform: scaleX(-1) }
+
+/* Icons next to text sit on the middle of the line instead of hanging from
+   the top. The theme hangs them from the top of the font, which only looks
+   right for Latin fonts; Persian and other right to left fonts keep much
+   more room under the line, so the icon ends up too high. Lining the icon
+   up with the middle of the text works whatever font the page uses. */
+[dir="rtl"] .md-typeset .twemoji,
+[dir="rtl"] .md-typeset .emojione,
+[dir="rtl"] .md-typeset .gemoji { vertical-align: middle }
+
+/* The step number sits at the start of the line, not on the left */
+[dir="rtl"] .md-typeset .step {
+  float: right;
+  margin: 0 0 .1rem .35rem;
+}
+
+/* Same for the icon that runs beside a whole card text */
+[dir="rtl"] .md-typeset .grid.cards.icon-left > ul > li .twemoji {
+  float: right;
+  margin: .1rem 0 .1rem .35rem;
+}
+
+/* The language menu shows two names per row, so the whole list fits
+   in one look instead of scrolling. A small flag sits before each name. */
+.md-select__list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(7rem, 1fr));
+}
+
+/* An odd last name takes the whole row instead of leaving a gap */
+.md-select__item:last-child:nth-child(odd) { grid-column: span 2 }
+
+.md-select__link {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+}
+
+/* The same flags serve the menu at the top, the home page line and the footer */
+.md-select__link::before,
+.md-footer-lang__link::before,
+.md-typeset .hero-lang__link::before {
+  content: "";
+  flex: 0 0 auto;
+  width: .96rem;
+  height: .72rem;
+  border-radius: .05rem;
+  background: center / contain no-repeat;
+  box-shadow: 0 0 0 1px var(--md-default-fg-color--lightest);
+}
+
+:is(.md-select__link, .md-footer-lang__link, .hero-lang__link)[hreflang="en"]::before { background-image: url("../images/flags/gb.svg") }
+:is(.md-select__link, .md-footer-lang__link, .hero-lang__link)[hreflang="de"]::before { background-image: url("../images/flags/de.svg") }
+:is(.md-select__link, .md-footer-lang__link, .hero-lang__link)[hreflang="fr"]::before { background-image: url("../images/flags/fr.svg") }
+:is(.md-select__link, .md-footer-lang__link, .hero-lang__link)[hreflang="es"]::before { background-image: url("../images/flags/es.svg") }
+:is(.md-select__link, .md-footer-lang__link, .hero-lang__link)[hreflang="ru"]::before { background-image: url("../images/flags/ru.svg") }
+:is(.md-select__link, .md-footer-lang__link, .hero-lang__link)[hreflang="zh"]::before { background-image: url("../images/flags/cn.svg") }
+:is(.md-select__link, .md-footer-lang__link, .hero-lang__link)[hreflang="fa"]::before { background-image: url("../images/flags/ir.svg") }
+
+/* On a phone the menu goes back to one name per row */
+@media screen and (max-width: 44.9375em) {
+  .md-select__list { grid-template-columns: 1fr }
+}
+
+/* A small line under the opening text, pointing to the other languages */
+.md-typeset .hero-lang {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .1rem .5rem;
+  margin: .7rem 0 0;
+  color: var(--md-default-fg-color--light);
+  font-size: .58rem;
+}
+
+.md-typeset .hero-lang__link {
+  display: inline-flex;
+  align-items: center;
+  gap: .25rem;
+}
+
+/* The flags here match the small ones in the footer */
+.md-typeset .hero-lang__link::before {
+  width: .7rem;
+  height: .53rem;
+  box-shadow: 0 0 0 1px var(--md-default-fg-color--lightest);
+}
+
+/* A thin language row in the footer, on its own line above the copyright */
+.md-footer-lang {
+  flex: 1 0 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .1rem .55rem;
+  margin: 0 .6rem;
+  padding: .4rem 0 .2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, .12);
+  color: var(--md-footer-fg-color--lighter);
+  font-size: .56rem;
+}
+
+.md-footer-lang__title {
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.md-footer-lang__link {
+  display: inline-flex;
+  align-items: center;
+  gap: .25rem;
+}
+
+/* The footer flags stay smaller than the ones in the menu */
+.md-footer-lang__link::before {
+  width: .7rem;
+  height: .53rem;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .18);
+}

@@ -16,14 +16,14 @@ Der Dateiname selbst ist unerheblich: Der Funktionsname stammt aus dem Feld
 !!! example "Eine eigene Funktion pro Datei definieren"
 
     ```yaml title="Datei einer eigenen Funktion"
-    name: my-function          # required, must be unique and not reserved
-    run: "echo {{.args}}"      # required, the command to run
-    params:                    # optional list of parameters
-      - name: args             # required for each parameter
-        type: string           # optional: string (default), int, or bool
-        required: true         # optional, default false
-        default: ""            # optional value used when not provided
-        description: Ein Text  # optional note for yourself
+    name: my-function          # erforderlich, muss eindeutig und nicht reserviert sein
+    run: "echo {{.args}}"      # erforderlich, der auszuführende Befehl
+    params:                    # optionale Parameterliste
+      - name: args             # für jeden Parameter erforderlich
+        type: string           # optional: string (Standard), int oder bool
+        required: true         # optional, Standardwert false
+        default: ""            # optionaler Wert, falls nicht angegeben
+        description: Ein Text  # optionale Notiz für Sie selbst
     ```
 
 ## Felder auf oberster Ebene

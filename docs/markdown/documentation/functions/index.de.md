@@ -33,7 +33,7 @@ des Felds `command` einer Schaltfläche aus.
 !!! example "Die integrierte Funktion command verwenden"
 
     ```yaml title="Laufzeit-Schaltfläche"
-    - name: Laufzeit
+    - name: Uptime
       type: button
       function: command
       command: "uptime"
@@ -55,7 +55,7 @@ Möglichkeiten:
 !!! example "Eine URL über ihren Parameternamen übergeben"
 
     ```yaml title="Schaltfläche zum Prüfen der API"
-    - name: API prüfen
+    - name: Check API
       type: button
       function: curl-url
       url: "https://example.com/health"
@@ -71,7 +71,7 @@ Regel gilt für Namen wie `host`, `unit` und `lines`.
     Wert direkt:
 
     ```yaml title="Werte gehören direkt auf die Schaltfläche"
-    - name: nginx-Protokolle
+    - name: Nginx logs
       type: button
       function: journal-unit
       unit: "nginx.service"
@@ -140,11 +140,11 @@ Beispielen, die Sie unverändert verwenden können:
 
 | Funktion | Aufgabe | Schaltflächenwerte |
 |----------|--------------|---------------|
-| [Echo Script](release-pack/echo-script.md) | Führt ein Skript über Bash aus | `path`, optional `args` |
-| [Disk path](release-pack/disk-path.md) | Zeigt die Datenträgerbelegung | optional `path` |
-| [Curl URL](release-pack/curl-url.md) | Ruft eine URL ab | `url` |
-| [Ping Host](release-pack/ping-host.md) | Pingt einen Host | `host`, optional `count` |
-| [Journal Unit](release-pack/journal-unit.md) | Zeigt aktuelle Dienstprotokolle | `unit`, optional `lines` |
+| [Echo-Skript](release-pack/echo-script.md) | Führt ein Skript über Bash aus | `path`, optional `args` |
+| [Datenträgerpfad](release-pack/disk-path.md) | Zeigt die Datenträgerbelegung | optional `path` |
+| [Curl-URL](release-pack/curl-url.md) | Ruft eine URL ab | `url` |
+| [Host anpingen](release-pack/ping-host.md) | Pingt einen Host | `host`, optional `count` |
+| [Journal-Unit](release-pack/journal-unit.md) | Zeigt aktuelle Dienstprotokolle | `unit`, optional `lines` |
 
 Beginnen Sie zum Schreiben einer eigenen Funktion mit der
 [Dateistruktur](write-your-own/file-structure.md) oder folgen Sie der

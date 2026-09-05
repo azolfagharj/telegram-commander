@@ -23,7 +23,7 @@ Werte der Schaltfläche ein und führt das Ergebnis in der [Shell](shell.md) aus
 !!! example "Eine Schaltfläche mit der integrierten Funktion `command`"
 
     ```yaml title="Laufzeit-Schaltfläche"
-    - name: Laufzeit
+    - name: Uptime
       type: button
       function: command
       command: "uptime"

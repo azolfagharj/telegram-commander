@@ -1,0 +1,40 @@
+{#-
+  Copy of the theme tabs partial with one addition: each top tab gets its own
+  small picture. The theme only draws a picture for a page, and it uses the
+  picture of that page, so the tabs are listed here instead. Add a line when a
+  new tab appears.
+-#}
+{% macro tab_icon(url) %}
+  {% if "documentation/" in url %}
+    {% include ".icons/octicons/book-24.svg" %}
+  {% else %}
+    {% include ".icons/material/home.svg" %}
+  {% endif %}
+{% endmacro %}
+{% macro render(nav_item, ref) %}
+  {% set ref = ref or nav_item %}
+  {% set class = "md-tabs__item" %}
+  {% if ref.active %}
+    {% set class = class ~ " md-tabs__item--active" %}
+  {% endif %}
+  {% if nav_item.children %}
+    {% set first = nav_item.children | first %}
+    {% if first.children %}
+      {{ render(first, ref) }}
+    {% else %}
+      <li class="{{ class }}">
+        <a href="{{ first.url | url }}" class="md-tabs__link">
+          {{ tab_icon(first.url) }}
+          {{ ref.title }}
+        </a>
+      </li>
+    {% endif %}
+  {% else %}
+    <li class="{{ class }}">
+      <a href="{{ nav_item.url | url }}" class="md-tabs__link">
+        {{ tab_icon(nav_item.url) }}
+        {{ nav_item.title }}
+      </a>
+    </li>
+  {% endif %}
+{% endmacro %}

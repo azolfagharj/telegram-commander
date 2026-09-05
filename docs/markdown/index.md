@@ -19,6 +19,15 @@ hide:
 Telegram Commander turns a simple YAML [config file](documentation/concepts/config-file.md)
 into a Telegram bot with a menu of [buttons](documentation/concepts/button.md). Put any
 terminal command behind a button and run it from your phone. You do not write any code.
+
+<p class="hero-lang">Read this in another language:
+<a href="/de/" hreflang="de" class="hero-lang__link">Deutsch</a>
+<a href="/fr/" hreflang="fr" class="hero-lang__link">Français</a>
+<a href="/es/" hreflang="es" class="hero-lang__link">Español</a>
+<a href="/ru/" hreflang="ru" class="hero-lang__link">Русский</a>
+<a href="/zh/" hreflang="zh" class="hero-lang__link">简体中文</a>
+<a href="/fa/" hreflang="fa" class="hero-lang__link">فارسی</a>
+</p>
 </div>
 </div>
 

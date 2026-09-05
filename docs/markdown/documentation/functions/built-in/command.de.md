@@ -17,7 +17,7 @@ Schaltfläche angegeben haben.
 !!! example "Einen Befehl unverändert ausführen"
 
     ```yaml title="Schaltfläche zum Anzeigen des Kernels"
-    - name: Kernel anzeigen
+    - name: Show kernel
       type: button
       function: command
       command: "uname -a"
@@ -32,7 +32,7 @@ Deshalb funktionieren Pipes, Umleitungen und `&&` innerhalb eines einzelnen
 !!! example "Pipes funktionieren innerhalb von Befehlen"
 
     ```yaml title="Schaltfläche für die wichtigsten Prozesse"
-    - name: Wichtigste Prozesse
+    - name: Top processes
       type: button
       function: command
       command: "ps aux --sort=-%mem | head -n 10"

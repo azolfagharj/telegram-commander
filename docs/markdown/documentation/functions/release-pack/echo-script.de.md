@@ -1,10 +1,10 @@
 ---
-title: Echo Script
+title: Echo-Skript
 description: Die mitgelieferte Funktion echo-script führt eine Skriptdatei über Bash aus, sodass die Datei nicht ausführbar sein muss. Sie übernimmt path und args von einer Schaltfläche.
 icon: material/bash
 ---
 
-# :material-bash: Echo Script
+# :material-bash: Echo-Skript
 
 `echo-script` führt ein Skript über `bash` aus, sodass die Skriptdatei selbst
 kein Ausführungsbit benötigt. Die Funktion gehört zu den
@@ -36,7 +36,7 @@ Schreiben Sie beide Parameternamen direkt auf die Schaltfläche.
 !!! example "Ein Skript über Bash ausführen"
 
     ```yaml title="Schaltfläche zum Ausführen der Bereinigung"
-    - name: Bereinigung ausführen
+    - name: Run cleanup
       type: button
       function: echo-script
       path: "/opt/scripts/cleanup.sh"

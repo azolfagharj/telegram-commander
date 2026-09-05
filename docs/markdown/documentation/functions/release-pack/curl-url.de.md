@@ -1,10 +1,10 @@
 ---
-title: Curl URL
+title: Curl-URL
 description: Die mitgelieferte Funktion curl-url ruft eine URL mit curl ab. Fügen Sie die URL mit dem Schlüssel url direkt zu einer Schaltfläche hinzu.
 icon: material/web
 ---
 
-# :material-web: Curl URL
+# :material-web: Curl-URL
 
 `curl-url` ruft eine URL mit `curl` ab. Die Funktion schlägt bei HTTP-Fehlern
 fehl (`-f`) und bricht nach 30 Sekunden ab. Sie gehört zu den
@@ -34,7 +34,7 @@ der Funktion deklarierten Parameter.
 !!! example "Einen Endpunkt prüfen"
 
     ```yaml title="Schaltfläche zum Prüfen der API"
-    - name: API prüfen
+    - name: Check API
       type: button
       function: curl-url
       url: "https://example.com/health"

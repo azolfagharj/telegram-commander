@@ -1,6 +1,6 @@
 ---
 title: Als Dienst ausführen
-description: Führen Sie den Bot mit systemd im Hintergrund aus, damit er beim Systemstart startet und nach einem Fehler zurückkehrt — als root oder als normaler Benutzer.
+description: Führen Sie den Bot mit systemd im Hintergrund aus, damit er beim Systemstart und nach einem Fehler automatisch startet — als root oder als normaler Benutzer.
 icon: material/server
 ---
 

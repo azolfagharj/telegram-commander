@@ -62,7 +62,7 @@ verwenden. Ein nicht deklarierter Platzhalter ist ein Fehler.
     run: "echo {{.args}}"
     params:
       - name: args
-        requird: true      # refused: unknown key
+        requird: true      # abgelehnt: unbekannter Schlüssel
     ```
 
 ## Erforderliche Werte und Standardwerte

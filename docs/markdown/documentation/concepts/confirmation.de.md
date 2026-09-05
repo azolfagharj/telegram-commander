@@ -1,6 +1,6 @@
 ---
 title: Bestätigung
-description: Lassen Sie den Bot vor dem Ausführen einer Schaltfläche nachfragen. Aktivieren Sie confirm für nicht rückgängig zu machende Aktionen und legen Sie fest, wie lange die Aufforderung mit Ja oder Abbrechen gültig bleibt.
+description: Lassen Sie den Bot vor dem Ausführen einer Schaltfläche nachfragen. Aktivieren Sie confirm für nicht rückgängig zu machende Aktionen und legen Sie fest, wie lange die Aufforderung mit Yes oder Cancel gültig bleibt.
 icon: material/help-circle-outline
 ---
 
@@ -30,7 +30,7 @@ Schaltfläche erneut an, um eine neue Aufforderung zu erhalten.
 !!! example "Eine Schaltfläche, die vor der Ausführung nachfragt"
 
     ```yaml title="Schaltfläche zum Stoppen von nginx"
-    - name: nginx stoppen
+    - name: Stop nginx
       type: button
       function: command
       command: "systemctl stop nginx"

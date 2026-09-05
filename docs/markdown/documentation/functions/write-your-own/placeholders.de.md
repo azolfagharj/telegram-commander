@@ -54,12 +54,12 @@ Zwei Schaltflächen verwenden die Funktion, eine mit und eine ohne Filter:
 !!! example "Werte von einer Schaltfläche bereitstellen"
 
     ```yaml title="Schaltflächen für das Anwendungsprotokoll"
-    - name: Anwendungsprotokoll
+    - name: App log
       type: button
       function: tail-log
       path: "/var/log/app.log"
 
-    - name: Anwendungsfehler
+    - name: App errors
       type: button
       function: tail-log
       path: "/var/log/app.log"
