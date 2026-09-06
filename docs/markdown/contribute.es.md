@@ -9,7 +9,7 @@ icon: material/handshake-outline
 Telegram Commander está aún en sus comienzos. Hay varias formas de ayudar,
 incluso sin escribir código.
 
-<div class="grid cards cols-4 center-title" markdown>
+<div class="grid cards cols-1 center-title" markdown>
 
 -   :material-bug-outline:{ .lg .middle } __Informar de un fallo__
 

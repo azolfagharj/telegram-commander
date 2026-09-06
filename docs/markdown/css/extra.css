@@ -33,7 +33,7 @@
   margin: .1rem .35rem .1rem 0;
 }
 
-/* Exactly this many columns on wide screens */
+.md-typeset .grid.cols-1 { grid-template-columns: 1fr }
 @media screen and (min-width: 76.25em) {
   .md-typeset .grid.cols-2 { grid-template-columns: repeat(2, 1fr) }
   .md-typeset .grid.cols-3 { grid-template-columns: repeat(3, 1fr) }

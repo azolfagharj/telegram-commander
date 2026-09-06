@@ -8,7 +8,7 @@ icon: material/handshake-outline
 
 Telegram Commander 还处在早期阶段。即使不写代码，你也有多种方式可以帮忙。
 
-<div class="grid cards cols-4 center-title" markdown>
+<div class="grid cards cols-1 center-title" markdown>
 
 -   :material-bug-outline:{ .lg .middle } __报告问题__
 

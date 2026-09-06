@@ -9,8 +9,8 @@ import (
 )
 
 // Change these when you release a new version.
-const version = "1.3.3"
-const releaseDate = "2026-09-05"
+const version = "1.3.4"
+const releaseDate = "2026-09-06"
 
 func main() {
 	if err := cli.NewRoot(version, releaseDate).Execute(); err != nil {
