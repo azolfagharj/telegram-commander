@@ -1,0 +1,26 @@
+# Telegram Commander
+
+Telegram Commander es un bot de Telegram gratuito y de código abierto para
+servidores Linux. Usted describe un menú de botones en un archivo de
+configuración YAML y cada botón contiene un comando de shell. Cuando una cuenta
+de Telegram permitida toca un botón, el bot ejecuta ese comando en la máquina y
+devuelve la salida al chat. Puede agrupar botones en categorías, pedir
+confirmación antes de acciones peligrosas, limitar quién recibe el menú y
+registrar cada ejecución en un registro de auditoría. Nada escucha conexiones
+entrantes: el bot solo se conecta a Telegram, por lo que no abre ningún
+puerto en el servidor. No hay que escribir código ni proteger un panel web.
+
+## Documentación
+
+- Inicio: https://telecommander.ir/es/
+- Ejecutar en la CLI (instalación y primer inicio):
+  https://telecommander.ir/es/documentation/installation/download-and-run/
+- Archivo de configuración: https://telecommander.ir/es/documentation/concepts/config-file/
+- Menú: https://telecommander.ir/es/documentation/concepts/menu/
+- Funciones: https://telecommander.ir/es/documentation/functions/
+- Referencia de configuración: https://telecommander.ir/es/documentation/configuration/
+- Referencia de la CLI: https://telecommander.ir/es/documentation/cli/
+
+## Código fuente
+
+- GitHub: https://github.com/azolfagharj/telegram-commander

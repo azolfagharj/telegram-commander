@@ -1,0 +1,23 @@
+# Telegram Commander
+
+Telegram Commander 是一款适用于 Linux 服务器的免费开源 Telegram 机器人。你
+可以在一个 YAML 配置文件中定义按钮菜单，每个按钮对应一条 shell
+命令。当允许的 Telegram 账号点击按钮时，机器人会在服务器上运行命令，
+并将输出发回聊天。你可以将按钮整理到不同分类中，在危险操作前要求确认，
+限制可使用菜单的用户，并在审计日志中记录每次运行。机器人不监听入站连接，
+只会主动连接 Telegram，因此无需在服务器上开放端口，也无需编写代码或保护
+Web 管理面板。
+
+## 文档
+
+- 主页：https://telecommander.ir/zh/
+- 在 CLI 中运行（安装和首次运行）：https://telecommander.ir/zh/documentation/installation/download-and-run/
+- 配置文件：https://telecommander.ir/zh/documentation/concepts/config-file/
+- 菜单：https://telecommander.ir/zh/documentation/concepts/menu/
+- 函数：https://telecommander.ir/zh/documentation/functions/
+- 配置参考：https://telecommander.ir/zh/documentation/configuration/
+- CLI 参考：https://telecommander.ir/zh/documentation/cli/
+
+## 源代码
+
+- GitHub: https://github.com/azolfagharj/telegram-commander

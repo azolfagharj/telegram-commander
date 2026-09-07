@@ -1,0 +1,120 @@
+/* Persian pages are shown in Vazirmatn. The font files live in this repo,
+   so the site never asks an outside font service for them.
+
+   Three cuts of the same family, picked by where the text sits:
+   - Vazirmatn variable: page text, from light notes to extra bold titles
+   - Vazirmatn UI regular and medium: header, tabs, sidebar, search, footer
+   - Vazirmatn UI bold: site title and the menu item you are on
+
+   Code, commands and file names stay in the monospace font. */
+
+@font-face {
+  font-family: "Vazirmatn";
+  src: url("../fonts/vazirmatn/Vazirmatn-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Vazirmatn UI";
+  src: url("../fonts/vazirmatn/Vazirmatn-UI-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Vazirmatn UI";
+  src: url("../fonts/vazirmatn/Vazirmatn-UI-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Vazirmatn UI";
+  src: url("../fonts/vazirmatn/Vazirmatn-UI-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Everything on a Persian page starts from Vazirmatn */
+html[lang="fa"] {
+  --md-text-font: "Vazirmatn";
+}
+
+html[lang="fa"] body,
+html[lang="fa"] input,
+html[lang="fa"] button,
+html[lang="fa"] select,
+html[lang="fa"] textarea {
+  font-family: "Vazirmatn", Tahoma, sans-serif;
+}
+
+/* Persian letters need a little more room between lines */
+html[lang="fa"] .md-typeset {
+  line-height: 1.8;
+}
+
+/* Titles get heavier the more important they are */
+html[lang="fa"] .md-typeset h1 { font-weight: 800 }
+html[lang="fa"] .md-typeset h2 { font-weight: 700 }
+html[lang="fa"] .md-typeset h3,
+html[lang="fa"] .md-typeset h4,
+html[lang="fa"] .md-typeset h5,
+html[lang="fa"] .md-typeset h6 { font-weight: 600 }
+
+/* Boxes, buttons and table heads sit between plain text and titles */
+html[lang="fa"] .md-typeset .admonition-title,
+html[lang="fa"] .md-typeset summary,
+html[lang="fa"] .md-typeset .md-button,
+html[lang="fa"] .md-typeset table th,
+html[lang="fa"] .md-typeset .tabbed-labels > label,
+html[lang="fa"] .md-typeset .grid.cards > ul > li > p:first-child {
+  font-weight: 600;
+}
+
+/* Side notes and small print stay light */
+html[lang="fa"] .md-typeset blockquote,
+html[lang="fa"] .md-typeset figcaption,
+html[lang="fa"] .md-typeset small,
+html[lang="fa"] .md-copyright {
+  font-weight: 300;
+}
+
+/* Header, menus and footer use the UI cut, which is tighter */
+html[lang="fa"] .md-header,
+html[lang="fa"] .md-tabs,
+html[lang="fa"] .md-nav,
+html[lang="fa"] .md-search,
+html[lang="fa"] .md-search__input,
+html[lang="fa"] .md-select,
+html[lang="fa"] .md-footer {
+  font-family: "Vazirmatn UI", "Vazirmatn", Tahoma, sans-serif;
+}
+
+html[lang="fa"] .md-nav__link,
+html[lang="fa"] .md-tabs__link,
+html[lang="fa"] .md-footer__title { font-weight: 500 }
+
+html[lang="fa"] .md-header__topic:first-child,
+html[lang="fa"] .md-nav__title,
+html[lang="fa"] .md-nav__link--active,
+html[lang="fa"] .md-tabs__link--active { font-weight: 700 }
+
+/* The Persian name in the language menu keeps Vazirmatn on every page */
+[hreflang="fa"] {
+  font-family: "Vazirmatn UI", "Vazirmatn", Tahoma, sans-serif;
+}
+
+/* Code blocks and inline code keep the monospace font */
+html[lang="fa"] code,
+html[lang="fa"] kbd,
+html[lang="fa"] pre,
+html[lang="fa"] .md-typeset code,
+html[lang="fa"] .md-typeset pre {
+  font-family: var(--md-code-font-family);
+  font-weight: 400;
+}

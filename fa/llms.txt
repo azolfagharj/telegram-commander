@@ -1,0 +1,25 @@
+# Telegram Commander
+
+Telegram Commander یک ربات تلگرام رایگان و متن‌باز برای سرورهای لینوکس
+است. منویی از دکمه‌ها را در یک فایل پیکربندی YAML توصیف می‌کنید و هر دکمه
+یک فرمان شِل دارد. وقتی یک حساب تلگرام مجاز دکمه را بزند، ربات آن فرمان را
+روی همان ماشین اجرا می‌کند و خروجی را به گفتگو برمی‌گرداند. می‌توانید
+دکمه‌ها را در دسته گروه‌بندی کنید، قبل از کارهای پرخطر تأیید بخواهید، دسترسی
+را به کاربران انتخاب‌شده محدود کنید و هر اجرا را در گزارش حسابرسی ثبت کنید.
+ربات به اتصال ورودی گوش نمی‌دهد و فقط به بیرون به تلگرام وصل می‌شود. بنابراین
+روی سرور لازم نیست پورتی باز شود. نه برنامه‌نویسی لازم است و نه پنل وبی که
+باید امن شود.
+
+## مستندات
+
+- خانه: https://telecommander.ir/fa/
+- اجرا در CLI (نصب و اولین اجرا): https://telecommander.ir/fa/documentation/installation/download-and-run/
+- فایل پیکربندی: https://telecommander.ir/fa/documentation/concepts/config-file/
+- منو: https://telecommander.ir/fa/documentation/concepts/menu/
+- توابع: https://telecommander.ir/fa/documentation/functions/
+- مرجع پیکربندی: https://telecommander.ir/fa/documentation/configuration/
+- مرجع CLI: https://telecommander.ir/fa/documentation/cli/
+
+## منبع
+
+- GitHub: https://github.com/azolfagharj/telegram-commander
