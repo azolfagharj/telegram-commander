@@ -74,7 +74,9 @@ Ahora tiene un único programa llamado `telegram-commander`.
 
 ## :material-file-cog-outline: Paso 3: crear la configuración
 
-Copie el ejemplo mínimo a un archivo de trabajo:
+Copie el ejemplo mínimo a un archivo de trabajo. Abre la categoría
+**System Status** con tres botones de solo lectura: Uptime, Memory y
+Disk Space. No hay un botón para escribir un comando libre.
 
 !!! example "Crear una configuración editable"
 

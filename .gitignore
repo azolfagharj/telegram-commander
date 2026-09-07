@@ -30,4 +30,7 @@ statics/
 __pycache__/
 *.py[cod]
 
+# Local roadmap canvases
+.roadmap/
+
 

@@ -32,7 +32,7 @@ Nur `telegram` (mit Token und einem
 [zugelassenen Benutzer](concepts/allowed-users.md)) sowie `menu` sind
 erforderlich. Alles andere besitzt einen Standardwert:
 
-!!! example "Mit einem zugelassenen Benutzer und einer Schaltfläche beginnen"
+!!! example "Mit einem zugelassenen Benutzer und drei Status-Schaltflächen beginnen"
 
     ```yaml title="config.yaml (minimal)"
     telegram:
@@ -41,10 +41,25 @@ erforderlich. Alles andere besitzt einen Standardwert:
         - "123456789"
 
     menu:
-      - name: Uptime
-        type: button
-        function: command
-        command: "uptime"
+      - name: System Status
+        type: category
+        icon: "🖥️"
+        items:
+          - name: Uptime
+            type: button
+            icon: "🕒"
+            function: command
+            command: "uptime"
+          - name: Memory
+            type: button
+            icon: "🧮"
+            function: command
+            command: "free -h"
+          - name: Disk Space
+            type: button
+            icon: "💾"
+            function: command
+            command: "df -h /"
     ```
 
 Der Ordner `config-examples/` im Release enthält ein minimales und ein

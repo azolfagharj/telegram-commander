@@ -69,7 +69,9 @@ Now you have a single program named `telegram-commander`.
 
 ## :material-file-cog-outline: Step 3: create your config
 
-Copy the minimal example to a working file:
+Copy the minimal example to a working file. It opens a **System Status**
+category with three read-only buttons: Uptime, Memory, and Disk Space. There
+is no free-form command button.
 
 !!! example "Make an editable config"
 

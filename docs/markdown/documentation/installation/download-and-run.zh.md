@@ -67,7 +67,7 @@ icon: material/console
 
 ## :material-file-cog-outline: 第 3 步：创建配置
 
-将最小示例复制到工作文件中：
+将最小示例复制到工作文件中。它打开 **System Status** 分类，其中有三个只读按钮：Uptime、Memory 和 Disk Space。没有可随意输入命令的按钮。
 
 !!! example "制作可编辑配置"
 

@@ -29,7 +29,7 @@ description: همهٔ تنظیمات Telegram Commander همراه نوع، پی
 فقط `telegram` (با توکن و یک [کاربر مجاز](concepts/allowed-users.md)) و
 `menu` الزامی‌اند. بقیه مقدار پیش‌فرض دارند:
 
-!!! example "شروع با یک کاربر مجاز و یک دکمه"
+!!! example "شروع با یک کاربر مجاز و سه دکمهٔ وضعیت"
 
     ```yaml title="config.yaml (کمینه)"
     telegram:
@@ -38,10 +38,25 @@ description: همهٔ تنظیمات Telegram Commander همراه نوع، پی
         - "123456789"
 
     menu:
-      - name: Uptime
-        type: button
-        function: command
-        command: "uptime"
+      - name: System Status
+        type: category
+        icon: "🖥️"
+        items:
+          - name: Uptime
+            type: button
+            icon: "🕒"
+            function: command
+            command: "uptime"
+          - name: Memory
+            type: button
+            icon: "🧮"
+            function: command
+            command: "free -h"
+          - name: Disk Space
+            type: button
+            icon: "💾"
+            function: command
+            command: "df -h /"
     ```
 
 پوشهٔ `config-examples/` در نسخه، نمونهٔ کمینه و کامل را در خود دارد.

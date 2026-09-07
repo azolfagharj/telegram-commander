@@ -30,7 +30,7 @@ Seuls `telegram`, avec un jeton et un
 [utilisateur autorisé](concepts/allowed-users.md), et `menu` sont obligatoires.
 Tous les autres champs ont une valeur par défaut :
 
-!!! example "Commencer avec un utilisateur et un bouton"
+!!! example "Commencer avec un utilisateur et trois boutons d’état"
 
     ```yaml title="config.yaml (minimal)"
     telegram:
@@ -39,10 +39,25 @@ Tous les autres champs ont une valeur par défaut :
         - "123456789"
 
     menu:
-      - name: Uptime
-        type: button
-        function: command
-        command: "uptime"
+      - name: System Status
+        type: category
+        icon: "🖥️"
+        items:
+          - name: Uptime
+            type: button
+            icon: "🕒"
+            function: command
+            command: "uptime"
+          - name: Memory
+            type: button
+            icon: "🧮"
+            function: command
+            command: "free -h"
+          - name: Disk Space
+            type: button
+            icon: "💾"
+            function: command
+            command: "df -h /"
     ```
 
 Le dossier `config-examples/` de la version contient un exemple minimal et un complet.

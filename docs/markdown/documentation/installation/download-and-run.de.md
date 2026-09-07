@@ -71,7 +71,9 @@ Nun besitzen Sie ein einzelnes Programm namens `telegram-commander`.
 
 ## :material-file-cog-outline: Schritt 3: Konfiguration erstellen
 
-Kopieren Sie das Minimalbeispiel in eine Arbeitsdatei:
+Kopieren Sie das Minimalbeispiel in eine Arbeitsdatei. Es öffnet die Kategorie
+**System Status** mit drei schreibgeschützten Schaltflächen: Uptime, Memory
+und Disk Space. Es gibt keine Schaltfläche für beliebige Befehle.
 
 !!! example "Eine bearbeitbare Konfiguration erstellen"
 

@@ -9,7 +9,9 @@ telegram:
     url: "socks5://127.0.0.1:10808"
   insecure: false
 
-function_directory: "examples/functions"
+# Custom function YAML files are in the functions folder next to this example.
+# This field is empty so the same file validates in the repository and in the release archive.
+function_directory: ""
 
 shell: "/bin/bash"
 timeout: "60s"
@@ -17,8 +19,6 @@ max_output_bytes: 524288
 menu_columns: 2
 page_size: 8
 confirm_ttl: "5m"
-# Show a Run Command button that runs the next message as a shell command.
-enable_run_command: true
 
 logging:
   logs:
@@ -99,6 +99,7 @@ menu:
             icon: "📦"
             function: command
             command: "apt update -qq"
+            confirm: true
           - name: "APT Upgrades"
             type: button
             icon: "📦"
@@ -113,9 +114,8 @@ menu:
       - name: "Nginx logs"
         type: button
         icon: "📜"
-        function: journal-unit
-        unit: "nginx.service"
-        lines: 100
+        function: command
+        command: "journalctl -u nginx.service -n 100 --no-pager"
   - name: "Network"
     type: category
     icon: "🌐"
@@ -123,13 +123,13 @@ menu:
       - name: "Check API"
         type: button
         icon: "🩺"
-        function: curl-url
-        url: "https://example.com/health"
+        function: command
+        command: "curl -fsSL --max-time 30 https://example.com/health"
       - name: "Ping example.com"
         type: button
         icon: "📡"
-        function: ping-host
-        host: "example.com"
+        function: command
+        command: "ping -c 4 example.com"
       - name: "Public IP"
         type: button
         icon: "📍"

@@ -29,15 +29,15 @@ You describe the menu in YAML:
 
 ```yaml
 menu:
-  - name: System
+  - name: System Status
     type: category
     icon: "🖥️"
     items:
-      - name: Uptime & Load
+      - name: Uptime
         type: button
         icon: "🕒"
         function: command
-        command: "uptime && uptime -p"
+        command: "uptime"
 ```
 
 That button shows up in your chat. Tap it, the command runs on the server, and
@@ -132,7 +132,9 @@ chmod +x telegram-commander
 cp config-examples/config.minimal.yaml ./config.yaml
 ```
 
-Edit `config.yaml` and replace `YOUR_BOT_TOKEN` and `YOUR_USER_ID`.
+Edit `config.yaml` and replace `YOUR_BOT_TOKEN` and `YOUR_USER_ID`. The starter
+menu is **System Status** with three read-only buttons: Uptime, Memory, and
+Disk Space. There is no button that runs a command you type.
 
 If you do not know your user id, leave any number in `allowed_users` for now
 and start the bot, then send it a message. Because you are not on the list yet,

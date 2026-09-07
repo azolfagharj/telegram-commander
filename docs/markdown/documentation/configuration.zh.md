@@ -26,7 +26,7 @@ description: Telegram Commander 的全部设置及其类型、默认值和含义
 仅`telegram`（带有一个令牌和一个[允许的用户](concepts/allowed-users.md)）
 需要 `menu`。其他一切都有默认值：
 
-!!! example " 以一名允许的用户和一个按钮启动"
+!!! example "以一名允许的用户和三个状态按钮启动"
 
     ```yaml title="config.yaml (minimal)"
     telegram:
@@ -35,10 +35,25 @@ description: Telegram Commander 的全部设置及其类型、默认值和含义
         - "123456789"
 
     menu:
-      - name: Uptime
-        type: button
-        function: command
-        command: "uptime"
+      - name: System Status
+        type: category
+        icon: "🖥️"
+        items:
+          - name: Uptime
+            type: button
+            icon: "🕒"
+            function: command
+            command: "uptime"
+          - name: Memory
+            type: button
+            icon: "🧮"
+            function: command
+            command: "free -h"
+          - name: Disk Space
+            type: button
+            icon: "💾"
+            function: command
+            command: "df -h /"
     ```
 
 该版本中的 `config-examples/` 文件夹包括最小的和完整的

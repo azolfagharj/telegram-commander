@@ -27,7 +27,7 @@ for the vocabulary used below.
 Only `telegram` (with a token and one [allowed user](concepts/allowed-users.md))
 and `menu` are required. Everything else has a default:
 
-!!! example "Start with one allowed user and one button"
+!!! example "Start with one allowed user and three status buttons"
 
     ```yaml title="config.yaml (minimal)"
     telegram:
@@ -36,10 +36,25 @@ and `menu` are required. Everything else has a default:
         - "123456789"
 
     menu:
-      - name: Uptime
-        type: button
-        function: command
-        command: "uptime"
+      - name: System Status
+        type: category
+        icon: "🖥️"
+        items:
+          - name: Uptime
+            type: button
+            icon: "🕒"
+            function: command
+            command: "uptime"
+          - name: Memory
+            type: button
+            icon: "🧮"
+            function: command
+            command: "free -h"
+          - name: Disk Space
+            type: button
+            icon: "💾"
+            function: command
+            command: "df -h /"
     ```
 
 The `config-examples/` folder in the release includes both a minimal and a full

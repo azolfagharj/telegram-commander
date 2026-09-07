@@ -28,7 +28,7 @@ description: Каждая настройка Telegram Commander с указан�
 пользователем](concepts/allowed-users.md)) и `menu` обязательны. Все остальное
 имеет значение по умолчанию:
 
-!!! example "Начните с одного разрешенного пользователя и одной кнопки"
+!!! example "Начните с одного разрешенного пользователя и трёх кнопок состояния"
 
     ```yaml title="config.yaml (minimal)"
     telegram:
@@ -37,10 +37,25 @@ description: Каждая настройка Telegram Commander с указан�
         - "123456789"
 
     menu:
-      - name: Uptime
-        type: button
-        function: command
-        command: "uptime"
+      - name: System Status
+        type: category
+        icon: "🖥️"
+        items:
+          - name: Uptime
+            type: button
+            icon: "🕒"
+            function: command
+            command: "uptime"
+          - name: Memory
+            type: button
+            icon: "🧮"
+            function: command
+            command: "free -h"
+          - name: Disk Space
+            type: button
+            icon: "💾"
+            function: command
+            command: "df -h /"
     ```
 
 Папка `config-examples/` в релизе включает как минимальную, так и полный пример.

@@ -106,8 +106,7 @@ jobs:
           cp release-binaries/telegram-commander-linux-amd64 "$ROOT/"
           cp release-binaries/telegram-commander-linux-arm64 "$ROOT/"
           cp examples/config-examples/config.minimal.yaml "$ROOT/config-examples/"
-          sed 's|function_directory: "examples/functions"|function_directory: "./functions"|' \
-            examples/config-examples/config.full.yaml > "$ROOT/config-examples/config.full.yaml"
+          cp examples/config-examples/config.full.yaml "$ROOT/config-examples/"
           cp examples/functions/*.yaml "$ROOT/functions/"
           tar -C release-pack -czf telegram-commander.tar.gz telegram-commander
           tar -tzf telegram-commander.tar.gz
