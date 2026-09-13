@@ -44,7 +44,9 @@ icon: material/gesture-tap-button
 
 1. 机器人会发布一条简短的 **正在运行** 行，以便您知道它已开始。
 2. 该命令在运行机器人的计算机上运行。
-3. 输出以代码块形式返回，并包含退出代码和耗时。较长的输出会拆成连续多条消息。
+3. 输出以代码块形式返回，并包含退出代码和耗时。较短的输出会留在聊天中，
+   以一条或多条消息送达；较长的输出可以作为 `.txt` 文件到达
+   （参见[长结果作为文件](#long-results-as-a-file)）。
 4. 您仍停留在原来的菜单中，因此**返回**仍会离开当前分类。
 
 ## :material-code-braces: 常用按钮
@@ -147,7 +149,7 @@ icon: material/gesture-tap-button
 `timeout` 给这个命令更长的时间来完成，`workdir` 选择
 它运行的目录，`env` 专门为其添加了环境变量。
 
-## 长结果作为文件
+## 长结果作为文件 { #long-results-as-a-file }
 
 按钮上不必写 `output`。省略时使用根级设置（除非您改过，否则是 `auto`）：短结果仍是聊天消息，超过两条消息的结果会变成一个 `.txt` 文件。仅当该按钮应始终发文件或始终保持文本时才在按钮上写 `output`。`max_output_messages` 不能写在按钮上。
 
@@ -156,6 +158,8 @@ icon: material/gesture-tap-button
 
 根键 `output` 与 `max_output_messages` 见
 [配置 → 您看到多少命令输出](../configuration.md#how-much-command-output-you-see)。
+[控制输出](../output-control.md)逐一讲解根级与按钮的每一种组合，并各配一个
+示例。
 
 ## 函数的值
 
@@ -217,5 +221,13 @@ icon: material/gesture-tap-button
     构建并组织整个树。
 
     [:octicons-arrow-right-24: 菜单](menu.md)
+
+- :material-export-variant:{ .middle } __控制输出__
+
+    ---
+
+    消息还是 `.txt` 文件，以及按钮如何覆盖根级设置。
+
+    [:octicons-arrow-right-24: 控制输出](../output-control.md)
 
 </div>

@@ -146,13 +146,13 @@ squeezed or cut off.
     command output stay in the chat, so you can still read what ran after you
     open the menu again.
 
-!!! info "Long output arrives in several messages"
+!!! info "Results stay as messages, or arrive as a file"
 
-    Command output is shown as a code block. If it is longer than one Telegram
-    message, it arrives as several messages, each a reply to the one before it.
-    The last part keeps the same buttons as the page you were on, so **Back**
-    still means leave that category. See
-    [Configuration → How much command output you see](../configuration.md#how-much-command-output-you-see).
+    Short command output stays in the chat as a code block. A longer result
+    can arrive as several reply messages or as one `.txt` file, depending on
+    `output`. The last message (or the file) keeps the same buttons as the
+    page you were on, so **Back** still means leave that category. See
+    [Control output](../output-control.md).
 
 ## :material-help-circle-outline: Confirmation
 
@@ -207,7 +207,8 @@ If you set `enable_run_command: true` at the root of your config, a
 **$ >_ Run Command** button stays on the menu (after Back inside a category,
 or after Home on the first screen). Tap it, then send the shell command you
 want to run. The bot uses the same shell, timeout, working directory, and
-output limits as your other buttons.
+[output](../output-control.md) settings as your other buttons. Run Command
+has no `output` of its own, so it always follows the root.
 
 Home or Back cancels the prompt without running anything. This is off by
 default. See [Configuration → Root fields](../configuration.md#root-fields).
@@ -241,4 +242,5 @@ functions, built-in versus custom, and how to add your own, read
 
 - [Button](button.md) — what a button is
 - [Category](category.md) — submenu nodes
+- [Control output](../output-control.md) — messages versus a `.txt` file
 - [Configuration → Menu](../configuration.md#menu) — every field

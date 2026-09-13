@@ -54,7 +54,9 @@ Siehe [Menü → Darstellung des Telegram-Menüs](menu.md#how-the-telegram-menu-
     Ausführung begonnen hat.
 2.  Der Befehl wird auf dem Rechner ausgeführt, auf dem der Bot läuft.
 3.  Die Ausgabe kommt als Codeblock mit Exit-Code und Ausführungsdauer zurück.
-    Lange Ausgaben werden in mehreren aufeinanderfolgenden Nachrichten gesendet.
+    Kurze Ausgaben bleiben als eine oder mehrere Nachrichten im Chat; längere
+    Ausgaben können als `.txt`-Datei ankommen (siehe
+    [Lange Ergebnisse als Datei](#long-results-as-a-file)).
 4.  Sie bleiben im aktuellen Menü, sodass **Back** diese Kategorie weiterhin
     verlässt.
 
@@ -159,7 +161,7 @@ Die meisten globalen Einstellungen lassen sich für eine einzelne Schaltfläche
 `timeout` gibt diesem Befehl mehr Zeit, `workdir` wählt sein
 Arbeitsverzeichnis und `env` ergänzt Umgebungsvariablen nur für ihn.
 
-## Lange Ergebnisse als Datei
+## Lange Ergebnisse als Datei { #long-results-as-a-file }
 
 `output` brauchen Sie an einem Button nicht. Lassen Sie es weg, gilt die
 Root-Einstellung (`auto`, sofern Sie sie nicht geändert haben): ein kurzes
@@ -174,7 +176,8 @@ behalten.
 
 Die Root-Schlüssel `output` und `max_output_messages` sind unter
 [Konfiguration → Umfang der angezeigten Befehlsausgabe](../configuration.md#how-much-command-output-you-see)
-beschrieben.
+beschrieben. [Ausgabe steuern](../output-control.md) geht jede Kombination aus
+Root und Button mit je einem Beispiel durch.
 
 ## Werte für die Funktion
 
@@ -237,5 +240,13 @@ Alle von einer Schaltfläche akzeptierten Felder finden Sie unter
     Den gesamten Baum erstellen und organisieren.
 
     [:octicons-arrow-right-24: Menü](menu.md)
+
+-   :material-export-variant:{ .middle } __Ausgabe steuern__
+
+    ---
+
+    Nachrichten oder eine `.txt`-Datei, und wie eine Schaltfläche den Root-Wert überschreibt.
+
+    [:octicons-arrow-right-24: Ausgabe steuern](../output-control.md)
 
 </div>

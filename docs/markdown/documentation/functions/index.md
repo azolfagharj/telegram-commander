@@ -164,12 +164,12 @@ To write your own, start with
     shell input: prefer fixed values on buttons, and add
     [`confirm: true`](../concepts/confirmation.md) to anything destructive.
 
-!!! info "Long output is cut and split"
+!!! info "Long output is kept, then delivered"
 
     Commands stop at their `timeout`, and the bot keeps at most
-    `max_output_bytes` of their output. Anything longer than one Telegram
-    message arrives as several messages. See
-    [Configuration → How much command output you see](../configuration.md#how-much-command-output-you-see).
+    `max_output_bytes` of their output. What then reaches the chat — several
+    messages, or one `.txt` file — is decided by `output`. See
+    [Control output](../output-control.md).
 
 ## Related
 
@@ -178,3 +178,4 @@ To write your own, start with
 - [Step by step guide](write-your-own/step-by-step.md) — build your first custom function
 - [Menu](../concepts/menu.md) — how buttons reference functions
 - [Parameter](../concepts/parameter.md) — the named values a function needs
+- [Control output](../output-control.md) — how the result reaches the chat

@@ -18,6 +18,7 @@ Telegram Commander یک ربات تلگرام رایگان و متن‌باز ب
 - منو: https://telecommander.ir/fa/documentation/concepts/menu/
 - توابع: https://telecommander.ir/fa/documentation/functions/
 - مرجع پیکربندی: https://telecommander.ir/fa/documentation/configuration/
+- کنترل خروجی: https://telecommander.ir/fa/documentation/output-control/
 - مرجع CLI: https://telecommander.ir/fa/documentation/cli/
 
 ## منبع

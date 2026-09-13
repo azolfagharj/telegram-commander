@@ -109,6 +109,21 @@ html[lang="fa"] .md-tabs__link--active { font-weight: 700 }
   font-family: "Vazirmatn UI", "Vazirmatn", Tahoma, sans-serif;
 }
 
+/* The caption under an enlarged picture is drawn outside the page text and
+   comes with its own Latin font, so Persian words fall back to a system
+   font. Put it back in Vazirmatn and let it read from the right. */
+html[lang="fa"] .gslide-description,
+html[lang="fa"] .gslide-title,
+html[lang="fa"] .gslide-desc {
+  font-family: "Vazirmatn", Tahoma, sans-serif;
+}
+
+html[lang="fa"] .gslide-description {
+  direction: rtl;
+  text-align: right;
+  line-height: 1.8;
+}
+
 /* Code blocks and inline code keep the monospace font */
 html[lang="fa"] code,
 html[lang="fa"] kbd,

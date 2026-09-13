@@ -20,6 +20,7 @@ Programmierung noch ein abzusicherndes Webpanel erforderlich.
 - Menü: https://telecommander.ir/de/documentation/concepts/menu/
 - Funktionen: https://telecommander.ir/de/documentation/functions/
 - Konfigurationsreferenz: https://telecommander.ir/de/documentation/configuration/
+- Ausgabe steuern: https://telecommander.ir/de/documentation/output-control/
 - CLI-Referenz: https://telecommander.ir/de/documentation/cli/
 
 ## Quellcode

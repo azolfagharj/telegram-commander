@@ -90,6 +90,60 @@
 /* Tighter buttons on the landing page */
 .md-typeset .md-button { padding: .35em .8em; font-size: .72rem }
 
+/* Writing a block of HTML around Markdown leaves empty paragraphs behind.
+   They carry nothing but still take up a line, so they stay hidden. */
+.md-typeset p:empty { display: none }
+
+/* Chat pictures: a small preview sits beside the text that describes it.
+   The picture stays a thumbnail, because the reader clicks it to see the
+   full size in the lightbox. */
+.md-typeset .result {
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+}
+
+.md-typeset .result > .result-text { flex: 1 1 12rem; min-width: 0 }
+.md-typeset .result > .result-text > :first-child { margin-top: 0 }
+.md-typeset .result > .result-text > :last-child { margin-bottom: 0 }
+
+/* The picture column keeps its own width and centres what it holds */
+.md-typeset .result > .result-shot {
+  flex: 0 0 auto;
+  margin: 0;
+  text-align: center;
+}
+
+.md-typeset .result > .result-shot p { margin: 0 }
+
+/* A single centred picture, used when there is no text beside it */
+.md-typeset .shot-center {
+  margin: .8em 0;
+  text-align: center;
+}
+
+.md-typeset .shot-center p { margin: 0 }
+
+/* Softer corners and a thin frame, so the picture does not end abruptly */
+.md-typeset img.shot {
+  display: inline-block;
+  width: 9rem;
+  max-width: 100%;
+  height: auto;
+  border-radius: .3rem;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  box-shadow: 0 .1rem .35rem rgba(0, 0, 0, .18);
+}
+
+/* The side by side chats are twice as wide, so they get more room */
+.md-typeset img.shot--wide { width: 15rem }
+
+/* On a narrow screen the picture drops under its text and fills the row */
+@media screen and (max-width: 59.9375em) {
+  .md-typeset .result { flex-wrap: wrap; justify-content: center }
+  .md-typeset .result > .result-shot { flex: 1 1 100% }
+}
+
 /* Right to left pages: anything that points forward has to point the other
    way. The theme already turns its own arrows, but not these. */
 

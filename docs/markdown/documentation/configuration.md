@@ -69,9 +69,9 @@ example.
 | `function_directory` | string | no | unset | Custom function YAML directory (see rules below) |
 | `shell` | string | no | `/bin/bash` | [Shell](concepts/shell.md) used as `shell -c "<command>"` |
 | `timeout` | duration | no | `60s` | Default command timeout |
-| `max_output_bytes` | int | no | `524288` | Max output kept per command (see [How much command output you see](#how-much-command-output-you-see)) |
-| `output` | `auto` \| `text` \| `file` | no | `auto` | How command results are delivered (see [How much command output you see](#how-much-command-output-you-see)) |
-| `max_output_messages` | int | no | `2` | Root only. In `auto` mode, send a `.txt` file when the result would need more than this many messages (1–10). Omit it to keep `2` |
+| `max_output_bytes` | int | no | `524288` | Max output kept per command (see [How much command output you see](#how-much-command-output-you-see) and [Control output](output-control.md)) |
+| `output` | `auto` \| `text` \| `file` | no | `auto` | How command results are delivered (see [How much command output you see](#how-much-command-output-you-see) and [Control output](output-control.md)) |
+| `max_output_messages` | int | no | `2` | Root only. In `auto` mode, send a `.txt` file when the result would need more than this many messages (1–10). Omit it to keep `2`. See [Control output](output-control.md) |
 | `workdir` | string | no | process cwd | Default working directory for commands |
 | `env` | map | no | empty | Extra environment variables for commands |
 | `menu_columns` | int | no | `2` | Item buttons per row under the message box |
@@ -125,6 +125,14 @@ or always stay as text.
 So for long logs, prefer `output: auto` (the default) or set `output: file` on
 that button. You can still shorten the command itself when you only need a
 tail of the log.
+
+!!! abstract ":material-export-variant: More on this: Control output"
+
+    A whole page is dedicated to these three fields. It walks through every
+    root and button combination, one at a time, and shows a picture of the
+    Telegram chat for each one.
+
+    [:octicons-arrow-right-24: Read Control output](output-control.md)
 
 ### `function_directory` rules
 
@@ -196,7 +204,7 @@ This section is the field reference. For a guided explanation with examples, see
 | `workdir` | string | no | Override working directory |
 | `env` | map | no | Extra env for this button |
 | `columns` | int | no | Override columns for this category |
-| `output` | `auto` \| `text` \| `file` | no | Optional. Omit it to use the root `output` value. Set it only to force this button to `file` or `text` (see [How much command output you see](#how-much-command-output-you-see)) |
+| `output` | `auto` \| `text` \| `file` | no | Optional. Omit it to use the root `output` value. Set it only to force this button to `file` or `text` (see [How much command output you see](#how-much-command-output-you-see) and [Control output](output-control.md)) |
 | `args` | string | no | Optional args for `script` |
 | Any declared parameter name | scalar | as declared by the function | Value passed to the selected function, for example `url`, `host`, `unit`, or `lines` |
 
@@ -247,5 +255,6 @@ exit code, duration). See [Audit log](concepts/audit-log.md).
 
 - [Run in CLI](installation/download-and-run.md) — build and run a first config
 - [Menu](concepts/menu.md) — the menu tree in depth
+- [Control output](output-control.md) — messages versus a `.txt` file, with every root and button combination
 - [Functions](functions/index.md) — what `function`, `command`, `path`, and `args` mean
 - [CLI](cli.md) — validate and run with your config

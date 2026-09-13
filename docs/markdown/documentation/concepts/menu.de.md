@@ -148,14 +148,14 @@ oder abgeschnitten wird.
     Zeile **Running** und die Befehlsausgabe bleiben im Chat, sodass Sie auch
     nach erneutem Öffnen des Menüs sehen können, was ausgeführt wurde.
 
-!!! info "Lange Ausgaben werden in mehreren Nachrichten gesendet"
+!!! info "Ergebnisse bleiben Nachrichten oder kommen als Datei"
 
-    Befehlsausgaben werden als Codeblock dargestellt. Ist die Ausgabe länger
-    als eine Telegram-Nachricht, wird sie in mehreren Nachrichten gesendet, von
-    denen jede auf die vorherige antwortet. Der letzte Teil behält die
-    Schaltflächen der aktuellen Seite, sodass **Back** weiterhin die Kategorie
-    verlässt. Siehe
-    [Konfiguration → Umfang der angezeigten Befehlsausgabe](../configuration.md#how-much-command-output-you-see).
+    Kurze Befehlsausgaben bleiben als Codeblock im Chat. Ein längeres Ergebnis
+    kann als mehrere Antwortnachrichten oder als eine `.txt`-Datei ankommen, je
+    nach `output`. Die letzte Nachricht (oder die Datei) behält dieselben
+    Schaltflächen wie die Seite, auf der Sie waren, sodass **Back** weiterhin
+    die Kategorie verlässt. Siehe
+    [Ausgabe steuern](../output-control.md).
 
 ## :material-help-circle-outline: Bestätigung { #confirmation }
 
@@ -213,8 +213,10 @@ Wenn Sie auf der obersten Ebene Ihrer Konfiguration
 **$ >_ Run Command** im Menü (innerhalb einer Kategorie hinter Back, auf dem
 ersten Bildschirm hinter Home). Tippen Sie sie an und senden Sie anschließend
 den auszuführenden Shell-Befehl. Der Bot verwendet dieselbe Shell, dieselbe
-Zeitüberschreitung, dasselbe Arbeitsverzeichnis und dieselben Ausgabelimits wie
-Ihre anderen Schaltflächen.
+Zeitüberschreitung, dasselbe Arbeitsverzeichnis und dieselben
+[Ausgabe](../output-control.md)-Einstellungen wie Ihre anderen Schaltflächen.
+Run Command hat kein eigenes `output` und folgt deshalb immer der obersten
+Ebene.
 
 Home oder Back bricht die Aufforderung ab, ohne etwas auszuführen. Diese
 Funktion ist standardmäßig deaktiviert. Siehe
@@ -252,4 +254,5 @@ Hinzufügen eigener Funktionen finden Sie unter
 
 - [Schaltfläche](button.md) — was eine Schaltfläche ist
 - [Kategorie](category.md) — Knoten für Untermenüs
+- [Ausgabe steuern](../output-control.md) — Nachrichten oder eine `.txt`-Datei
 - [Konfiguration → Menü](../configuration.md#menu) — alle Felder

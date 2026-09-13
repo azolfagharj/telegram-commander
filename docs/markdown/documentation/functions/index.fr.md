@@ -163,11 +163,12 @@ Pour écrire la vôtre, commencez par la
     shell : préférez des valeurs fixes et ajoutez
     [`confirm: true`](../concepts/confirmation.md) aux actions destructrices.
 
-!!! info "Les longues sorties sont limitées et divisées"
+!!! info "La sortie est d’abord conservée, puis livrée"
 
     Les commandes s’arrêtent à leur `timeout` et le bot conserve au plus
-    `max_output_bytes`. Une sortie dépassant un message Telegram est divisée.
-    Consultez [Configuration → Quantité de sortie affichée](../configuration.md#how-much-command-output-you-see).
+    `max_output_bytes` de leur sortie. Ce qui arrive ensuite dans la
+    conversation, plusieurs messages ou un seul fichier `.txt`, est décidé par
+    `output`. Consultez [Contrôler la sortie](../output-control.md).
 
 ## Pages associées
 
@@ -176,3 +177,4 @@ Pour écrire la vôtre, commencez par la
 - [Guide pas à pas](write-your-own/step-by-step.md) — créer votre première fonction
 - [Menu](../concepts/menu.md) — comment les boutons référencent les fonctions
 - [Paramètre](../concepts/parameter.md) — les valeurs nommées d’une fonction
+- [Contrôler la sortie](../output-control.md) — comment le résultat arrive dans la conversation

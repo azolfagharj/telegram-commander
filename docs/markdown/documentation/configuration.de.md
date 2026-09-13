@@ -74,9 +74,9 @@ vollständiges Beispiel.
 | `function_directory` | Zeichenfolge | nein | nicht gesetzt | YAML-Verzeichnis eigener Funktionen (siehe Regeln unten) |
 | `shell` | Zeichenfolge | nein | `/bin/bash` | Als `shell -c "<command>"` verwendete [Shell](concepts/shell.md) |
 | `timeout` | Dauer | nein | `60s` | Standardmäßige Befehlszeitüberschreitung |
-| `max_output_bytes` | Ganzzahl | nein | `524288` | Maximal aufbewahrte Ausgabe pro Befehl (siehe [Umfang der angezeigten Befehlsausgabe](#how-much-command-output-you-see)) |
-| `output` | `auto` \| `text` \| `file` | nein | `auto` | Wie Befehlsergebnisse zugestellt werden (siehe [Umfang der angezeigten Befehlsausgabe](#how-much-command-output-you-see)) |
-| `max_output_messages` | Ganzzahl | nein | `2` | Nur auf Root-Ebene. Im Modus `auto`: eine `.txt`-Datei senden, wenn das Ergebnis mehr als so viele Nachrichten bräuchte (1–10). Auslassen, um `2` zu behalten |
+| `max_output_bytes` | Ganzzahl | nein | `524288` | Maximal aufbewahrte Ausgabe pro Befehl (siehe [Umfang der angezeigten Befehlsausgabe](#how-much-command-output-you-see) und [Ausgabe steuern](output-control.md)) |
+| `output` | `auto` \| `text` \| `file` | nein | `auto` | Wie Befehlsergebnisse zugestellt werden (siehe [Umfang der angezeigten Befehlsausgabe](#how-much-command-output-you-see) und [Ausgabe steuern](output-control.md)) |
+| `max_output_messages` | Ganzzahl | nein | `2` | Nur auf Root-Ebene. Im Modus `auto`: eine `.txt`-Datei senden, wenn das Ergebnis mehr als so viele Nachrichten bräuchte (1–10). Auslassen, um `2` zu behalten. Siehe [Ausgabe steuern](output-control.md) |
 | `workdir` | Zeichenfolge | nein | Arbeitsverzeichnis des Prozesses | Standardarbeitsverzeichnis für Befehle |
 | `env` | Zuordnung | nein | leer | Zusätzliche Umgebungsvariablen für Befehle |
 | `menu_columns` | Ganzzahl | nein | `2` | Menüeinträge pro Zeile unter dem Nachrichtenfeld |
@@ -131,6 +131,13 @@ Für lange Logs eignet sich `output: auto` (Standard) oder `output: file` an
 diesem Button. Den Befehl selbst können Sie trotzdem kürzen, wenn nur ein
 Ausschnitt nötig ist.
 
+!!! abstract ":material-export-variant: Mehr dazu: Ausgabe steuern"
+
+    Diesen drei Feldern ist eine eigene Seite gewidmet. Sie geht jede
+    Kombination aus Root und Button einzeln durch und zeigt zu jeder ein Bild
+    des Telegram-Chats.
+
+    [:octicons-arrow-right-24: Ausgabe steuern lesen](output-control.md)
 
 ### Regeln für `function_directory` { #function_directory-rules }
 
@@ -206,7 +213,7 @@ finden Sie unter [Menü](concepts/menu.md). Jeder Knoten vom Typ
 | `workdir` | Zeichenfolge | nein | Arbeitsverzeichnis überschreiben |
 | `env` | Zuordnung | nein | Zusätzliche Umgebungsvariablen für diese Schaltfläche |
 | `columns` | Ganzzahl | nein | Spalten für diese Kategorie überschreiben |
-| `output` | `auto` \| `text` \| `file` | nein | Optional. Weglassen, um den Root-Wert von `output` zu nutzen. Nur setzen, um diesen Button auf `file` oder `text` zu zwingen (siehe [Umfang der angezeigten Befehlsausgabe](#how-much-command-output-you-see)) |
+| `output` | `auto` \| `text` \| `file` | nein | Optional. Weglassen, um den Root-Wert von `output` zu nutzen. Nur setzen, um diesen Button auf `file` oder `text` zu zwingen (siehe [Umfang der angezeigten Befehlsausgabe](#how-much-command-output-you-see) und [Ausgabe steuern](output-control.md)) |
 | `args` | Zeichenfolge | nein | Optionale Argumente für `script` |
 | Jeder deklarierte Parametername | Skalar | wie von der Funktion deklariert | An die Funktion übergebener Wert, z. B. `url`, `host`, `unit` oder `lines` |
 
@@ -260,5 +267,6 @@ Schaltfläche, Exit-Code und Dauer). Siehe
 
 - [In der CLI ausführen](installation/download-and-run.md) — eine erste Konfiguration erstellen und ausführen
 - [Menü](concepts/menu.md) — der Menübaum im Detail
+- [Ausgabe steuern](output-control.md) — Nachrichten oder eine `.txt`-Datei, mit jeder Kombination aus Root und Button
 - [Funktionen](functions/index.md) — Bedeutung von `function`, `command`, `path` und `args`
 - [CLI](cli.md) — Ihre Konfiguration validieren und ausführen

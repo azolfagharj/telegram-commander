@@ -168,6 +168,8 @@ Set `output: file` on a button that always prints a lot (for example logs), or
 
 The root keys `output` and `max_output_messages` are documented under
 [Configuration → How much command output you see](../configuration.md#how-much-command-output-you-see).
+[Control output](../output-control.md) walks through every root and button
+combination with an example each.
 
 ## Values for the function
 
@@ -229,5 +231,13 @@ For every field a button accepts, see
     Build and organise the whole tree.
 
     [:octicons-arrow-right-24: Menu](menu.md)
+
+-   :material-export-variant:{ .middle } __Control output__
+
+    ---
+
+    Messages versus a `.txt` file, and how a button can override the root.
+
+    [:octicons-arrow-right-24: Control output](../output-control.md)
 
 </div>

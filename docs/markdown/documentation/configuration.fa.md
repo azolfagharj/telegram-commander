@@ -70,9 +70,9 @@ description: همهٔ تنظیمات Telegram Commander همراه نوع، پی
 | `function_directory` | string | خیر | تنظیم‌نشده | دایرکتوری YAML توابع سفارشی (قواعد پایین) |
 | `shell` | string | خیر | `/bin/bash` | [Shell](concepts/shell.md) به‌شکل `shell -c "<command>"` |
 | `timeout` | duration | خیر | `60s` | timeout پیش‌فرض فرمان |
-| `max_output_bytes` | int | خیر | `524288` | بیشترین خروجی نگه‌داری‌شده برای هر فرمان ([مقدار خروجی فرمان](#how-much-command-output-you-see)) |
-| `output` | `auto` \| `text` \| `file` | خیر | `auto` | نحوهٔ تحویل نتیجهٔ فرمان ([مقدار خروجی فرمان](#how-much-command-output-you-see)) |
-| `max_output_messages` | int | خیر | `2` | فقط در ریشه. در حالت `auto`، اگر نتیجه به بیش از این تعداد پیام نیاز داشته باشد یک فایل `.txt` فرستاده می‌شود (۱ تا ۱۰). ننویسید تا همان `۲` بماند |
+| `max_output_bytes` | int | خیر | `524288` | بیشترین خروجی نگه‌داری‌شده برای هر فرمان ([مقدار خروجی فرمان](#how-much-command-output-you-see) و [کنترل خروجی](output-control.md)) |
+| `output` | `auto` \| `text` \| `file` | خیر | `auto` | نحوهٔ تحویل نتیجهٔ فرمان ([مقدار خروجی فرمان](#how-much-command-output-you-see) و [کنترل خروجی](output-control.md)) |
+| `max_output_messages` | int | خیر | `2` | فقط در ریشه. در حالت `auto`، اگر نتیجه به بیش از این تعداد پیام نیاز داشته باشد یک فایل `.txt` فرستاده می‌شود (۱ تا ۱۰). ننویسید تا همان `۲` بماند. [کنترل خروجی](output-control.md) را ببینید |
 | `workdir` | string | خیر | cwd فرایند | دایرکتوری کاری پیش‌فرض فرمان‌ها |
 | `env` | map | خیر | خالی | متغیرهای محیطی بیشتر برای فرمان‌ها |
 | `menu_columns` | int | خیر | `2` | تعداد دکمه‌های گزینه در هر ردیف زیر کادر پیام |
@@ -124,6 +124,13 @@ description: همهٔ تنظیمات Telegram Commander همراه نوع، پی
 برای لاگ‌های بلند، `output: auto` (پیش‌فرض) یا `output: file` روی همان دکمه را
 ترجیح دهید. اگر فقط انتهای لاگ لازم است، خود فرمان را هم می‌توانید کوتاه کنید.
 
+!!! abstract ":material-export-variant: بیشتر بخوانید: کنترل خروجی"
+
+    یک صفحهٔ کامل به همین سه فیلد اختصاص دارد. آن صفحه همهٔ ترکیب‌های ریشه و
+    دکمه را یکی‌یکی شرح می‌دهد و برای هرکدام تصویری از گفتگوی تلگرام نشان
+    می‌دهد.
+
+    [:octicons-arrow-left-24: خواندن کنترل خروجی](output-control.md)
 
 ### قواعد `function_directory` { #function_directory-rules }
 
@@ -198,7 +205,7 @@ description: همهٔ تنظیمات Telegram Commander همراه نوع، پی
 | `workdir` | string | خیر | بازنویسی دایرکتوری کاری |
 | `env` | map | خیر | متغیر محیطی بیشتر برای این دکمه |
 | `columns` | int | خیر | بازنویسی ستون‌های این دسته |
-| `output` | `auto` \| `text` \| `file` | خیر | اختیاری. ننویسید تا `output` ریشه استفاده شود. فقط وقتی بگذارید که این دکمه حتماً `file` یا `text` باشد ([مقدار خروجی فرمان](#how-much-command-output-you-see)) |
+| `output` | `auto` \| `text` \| `file` | خیر | اختیاری. ننویسید تا `output` ریشه استفاده شود. فقط وقتی بگذارید که این دکمه حتماً `file` یا `text` باشد ([مقدار خروجی فرمان](#how-much-command-output-you-see) و [کنترل خروجی](output-control.md)) |
 | `args` | string | خیر | آرگومان‌های اختیاری `script` |
 | هر نام پارامتر تعریف‌شده | scalar | طبق تعریف تابع | مقدار داده‌شده به تابع، مانند `url`، `host`، `unit` یا `lines` |
 
@@ -251,5 +258,6 @@ description: همهٔ تنظیمات Telegram Commander همراه نوع، پی
 
 - [اجرا در CLI](installation/download-and-run.md) — ساخت و اجرای نخستین پیکربندی
 - [منو](concepts/menu.md) — شرح کامل درخت منو
+- [کنترل خروجی](output-control.md) — پیام در برابر فایل `.txt`، با همهٔ ترکیب‌های ریشه و دکمه
 - [توابع](functions/index.md) — معنی `function`، `command`، `path` و `args`
 - [CLI](cli.md) — اعتبارسنجی و اجرا با پیکربندی

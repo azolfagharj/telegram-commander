@@ -68,9 +68,9 @@ description: Telegram Commander 的全部设置及其类型、默认值和含义
 | `function_directory` | 字符串 | 否 | 未设置 | 自定义函数YAML目录（见下面的规则） |
 | `shell` | 字符串 | 否 | `/bin/bash` | [Shell](concepts/shell.md) 用作 `shell -c "<command>"` |
 | `timeout` | 时长 | 否 | `60s` | 默认命令超时 |
-| `max_output_bytes` | 整数 | 否 | `524288` | 每个命令保留的最大输出（请参阅[可查看的命令输出量](#how-much-command-output-you-see)） |
-| `output` | `auto` \| `text` \| `file` | 否 | `auto` | 命令结果的送达方式（请参阅[可查看的命令输出量](#how-much-command-output-you-see)） |
-| `max_output_messages` | 整数 | 否 | `2` | 仅根级。在 `auto` 模式下，当结果需要超过该条数的消息时改为发送 `.txt` 文件（1–10）。省略则保持 `2` |
+| `max_output_bytes` | 整数 | 否 | `524288` | 每个命令保留的最大输出（请参阅[可查看的命令输出量](#how-much-command-output-you-see)和[控制输出](output-control.md)） |
+| `output` | `auto` \| `text` \| `file` | 否 | `auto` | 命令结果的送达方式（请参阅[可查看的命令输出量](#how-much-command-output-you-see)和[控制输出](output-control.md)） |
+| `max_output_messages` | 整数 | 否 | `2` | 仅根级。在 `auto` 模式下，当结果需要超过该条数的消息时改为发送 `.txt` 文件（1–10）。省略则保持 `2`。参见[控制输出](output-control.md) |
 | `workdir` | 字符串 | 否 | 进程cwd | 命令的默认工作目录 |
 | `env` | 映射 | 否 | 空 | 命令的额外环境变量 |
 | `menu_columns` | 整数 | 否 | `2` | 消息框下方每行的项目按钮 |
@@ -115,6 +115,13 @@ Telegram 单条消息最多 4096 字节。机器人可以把长结果拆成多�
 
 对于很长的日志，优先使用 `output: auto`（默认）或在该按钮上设置 `output: file`。
 若只需日志尾部，仍可缩短命令本身。
+
+!!! abstract ":material-export-variant: 延伸阅读：控制输出"
+
+    有一整页专门讲这三个字段。它逐一走过根级与按钮的每一种组合，
+    并为每一种配上一张 Telegram 聊天的图片。
+
+    [:octicons-arrow-right-24: 阅读控制输出](output-control.md)
 
 
 ### `function_directory` 规则 { #function_directory-rules }
@@ -186,7 +193,7 @@ Telegram 单条消息最多 4096 字节。机器人可以把长结果拆成多�
 | `workdir` | 字符串 | 否 | 覆盖工作目录 |
 | `env` | 映射 | 否 | 此按钮的额外环境 |
 | `columns` | 整数 | 否 | 覆盖此类别的列 |
-| `output` | `auto` \| `text` \| `file` | 否 | 可选。省略则使用根级 `output`。仅在要强制此按钮为 `file` 或 `text` 时再写（请参阅[可查看的命令输出量](#how-much-command-output-you-see)） |
+| `output` | `auto` \| `text` \| `file` | 否 | 可选。省略则使用根级 `output`。仅在要强制此按钮为 `file` 或 `text` 时再写（请参阅[可查看的命令输出量](#how-much-command-output-you-see)和[控制输出](output-control.md)） |
 | `args` | 字符串 | 否 | `script` 的可选参数 |
 | 任何声明的参数名称 | 标量 | 正如函数所声明的 | 传递给所选函数的值，例如 `url`、`host`、`unit` 或 `lines` |
 
@@ -237,5 +244,6 @@ Telegram 单条消息最多 4096 字节。机器人可以把长结果拆成多�
 
 - [在 CLI](installation/download-and-run.md) 中运行 — 构建并运行第一个配置
 - [菜单](concepts/menu.md) — 深入了解菜单树
+- [控制输出](output-control.md) — 消息还是 `.txt` 文件，以及根级与按钮的每一种组合
 - [函数](functions/index.md) — `function`、`command`、`path` 和 `args` 的含义
 - [CLI](cli.md) — 验证并使用您的配置运行

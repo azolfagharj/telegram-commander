@@ -17,6 +17,7 @@ is no code to write and no web panel to secure.
 - Menu: https://telecommander.ir/documentation/concepts/menu/
 - Functions: https://telecommander.ir/documentation/functions/
 - Configuration reference: https://telecommander.ir/documentation/configuration/
+- Control output: https://telecommander.ir/documentation/output-control/
 - CLI reference: https://telecommander.ir/documentation/cli/
 
 ## Source

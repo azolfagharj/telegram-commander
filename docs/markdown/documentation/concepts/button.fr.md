@@ -48,7 +48,9 @@ pour un téléphone. Consultez
 1. Le bot publie une courte ligne **Running** pour indiquer le démarrage.
 2. La commande s’exécute sur la machine où tourne le bot.
 3. La sortie revient sous forme de bloc de code, avec le code de sortie et la
-   durée. Une longue sortie arrive en plusieurs messages.
+   durée. Une sortie courte reste dans la conversation en un ou plusieurs
+   messages ; une sortie plus longue peut arriver en fichier `.txt` (voir
+   [Longs résultats en fichier](#long-results-as-a-file)).
 4. Vous restez dans le même menu ; **Retour** quitte donc toujours la catégorie.
 
 ## :material-code-braces: Boutons courants
@@ -150,7 +152,7 @@ La plupart des réglages globaux peuvent être remplacés sur un bouton :
 `timeout` accorde plus de temps à cette commande, `workdir` choisit son dossier
 et `env` ajoute ses variables d’environnement.
 
-## Longs résultats en fichier
+## Longs résultats en fichier { #long-results-as-a-file }
 
 Vous n’avez pas besoin de `output` sur un bouton. Si vous l’omettez, le bouton
 prend le réglage racine (`auto` sauf si vous l’avez changé) : un résultat court
@@ -165,6 +167,8 @@ bouton.
 
 Les clés racine `output` et `max_output_messages` sont documentées sous
 [Configuration → Quantité de sortie affichée](../configuration.md#how-much-command-output-you-see).
+[Contrôler la sortie](../output-control.md) parcourt chaque combinaison racine
+et bouton, avec un exemple à chaque fois.
 
 ## Valeurs de la fonction
 
@@ -227,5 +231,13 @@ Pour tous les champs acceptés, consultez
     Organisez toute l’arborescence.
 
     [:octicons-arrow-right-24: Menu](menu.md)
+
+-   :material-export-variant:{ .middle } __Contrôler la sortie__
+
+    ---
+
+    Messages ou fichier `.txt`, et comment un bouton remplace la racine.
+
+    [:octicons-arrow-right-24: Contrôler la sortie](../output-control.md)
 
 </div>

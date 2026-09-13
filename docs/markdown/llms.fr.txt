@@ -18,6 +18,7 @@ ouvert sur le serveur. Il n’y a aucun code à écrire ni panneau web à sécur
 - Menu : https://telecommander.ir/fr/documentation/concepts/menu/
 - Fonctions : https://telecommander.ir/fr/documentation/functions/
 - Référence de configuration : https://telecommander.ir/fr/documentation/configuration/
+- Contrôler la sortie : https://telecommander.ir/fr/documentation/output-control/
 - Référence CLI : https://telecommander.ir/fr/documentation/cli/
 
 ## Code source

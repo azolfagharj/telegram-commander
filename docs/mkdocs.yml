@@ -119,6 +119,7 @@ nav:
             - Step by step guide: documentation/functions/write-your-own/step-by-step.md
     - Reference:
         - Configuration: documentation/configuration.md
+        - Control output: documentation/output-control.md
         - CLI: documentation/cli.md
   - Contribute: contribute.md
 
@@ -202,6 +203,7 @@ plugins:
             Step by step guide: Schritt-für-Schritt-Anleitung
             Reference: Referenz
             Configuration: Konfiguration
+            Control output: Ausgabe steuern
             CLI: CLI
         - locale: fr
           name: Français
@@ -248,6 +250,7 @@ plugins:
             Step by step guide: Guide pas à pas
             Reference: Référence
             Configuration: Configuration
+            Control output: Contrôler la sortie
             CLI: CLI
         - locale: es
           name: Español
@@ -293,6 +296,7 @@ plugins:
             Step by step guide: Guía paso a paso
             Reference: Referencia
             Configuration: Configuración
+            Control output: Controlar la salida
             CLI: CLI
         - locale: ru
           name: Русский
@@ -338,6 +342,7 @@ plugins:
             Step by step guide: Пошаговое руководство
             Reference: Справочник
             Configuration: Конфигурация
+            Control output: Управление выводом
             CLI: CLI
         - locale: zh
           name: 简体中文
@@ -381,6 +386,7 @@ plugins:
             Step by step guide: 分步指南
             Reference: 参考
             Configuration: 配置
+            Control output: 控制输出
             CLI: CLI
         - locale: fa
           name: فارسی
@@ -426,6 +432,7 @@ plugins:
             Step by step guide: راهنمای گام‌به‌گام
             Reference: مرجع
             Configuration: پیکربندی
+            Control output: کنترل خروجی
             CLI: CLI
   # auto_caption shows each image's alt text under the enlarged picture.
   - glightbox:

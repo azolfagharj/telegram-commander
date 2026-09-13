@@ -175,12 +175,12 @@ Beginnen Sie zum Schreiben einer eigenen Funktion mit der
     ergänzen Sie [`confirm: true`](../concepts/confirmation.md) für alle
     destruktiven Aktionen.
 
-!!! info "Lange Ausgaben werden gekürzt und aufgeteilt"
+!!! info "Lange Ausgaben werden behalten und dann zugestellt"
 
     Befehle enden nach ihrem `timeout`, und der Bot behält höchstens
-    `max_output_bytes` ihrer Ausgabe. Alles, was länger als eine
-    Telegram-Nachricht ist, wird als mehrere Nachrichten gesendet. Siehe
-    [Konfiguration → Umfang der angezeigten Befehlsausgabe](../configuration.md#how-much-command-output-you-see).
+    `max_output_bytes` ihrer Ausgabe. Was davon in den Chat kommt — mehrere
+    Nachrichten oder eine `.txt`-Datei — entscheidet `output`. Siehe
+    [Ausgabe steuern](../output-control.md).
 
 ## Verwandte Themen
 
@@ -189,3 +189,4 @@ Beginnen Sie zum Schreiben einer eigenen Funktion mit der
 - [Schritt-für-Schritt-Anleitung](write-your-own/step-by-step.md) — Ihre erste eigene Funktion erstellen
 - [Menü](../concepts/menu.md) — wie Schaltflächen auf Funktionen verweisen
 - [Parameter](../concepts/parameter.md) — benannte Werte, die eine Funktion benötigt
+- [Ausgabe steuern](../output-control.md) — wie das Ergebnis in den Chat kommt

@@ -21,6 +21,7 @@ Telegram нажимает кнопку, бот выполняет команду
 - Функции: https://telecommander.ir/ru/documentation/functions/
 - Справочник по конфигурации:
   https://telecommander.ir/ru/documentation/configuration/
+- Управление выводом: https://telecommander.ir/ru/documentation/output-control/
 - Справочник по CLI: https://telecommander.ir/ru/documentation/cli/
 
 ## Источник

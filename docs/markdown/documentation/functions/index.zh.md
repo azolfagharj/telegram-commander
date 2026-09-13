@@ -160,11 +160,11 @@ description: 函数将按钮上写入的值转换为一个 shell 命令。了解
     固定值，并为破坏性操作添加
     [`confirm: true`](../concepts/confirmation.md)。
 
-!!! info "较长的输出会被截断和拆分"
+!!! info "较长的输出先被保留，再送达"
 
     命令会在达到 `timeout` 时停止，机器人最多保留 `max_output_bytes`
-    的输出。超过一条 Telegram 消息的内容会拆成多条消息。详见
-    [配置 → 可查看的命令输出量](../configuration.md#how-much-command-output-you-see)。
+    的输出。之后有多少内容到达聊天 —— 是多条消息，还是一个 `.txt` 文件 ——
+    由 `output` 决定。详见[控制输出](../output-control.md)。
 
 ## 相关
 
@@ -173,3 +173,4 @@ description: 函数将按钮上写入的值转换为一个 shell 命令。了解
 - [分步指南](write-your-own/step-by-step.md) — 构建您的第一个自定义函数
 - [菜单](../concepts/menu.md) — 按钮如何引用函数
 - [参数](../concepts/parameter.md) — 函数需要的命名值
+- [控制输出](../output-control.md) — 结果如何到达聊天

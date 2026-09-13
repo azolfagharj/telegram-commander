@@ -165,12 +165,12 @@ Para escribir una, empiece por
     use [`confirm: true`](../concepts/confirmation.md) para acciones
     destructivas.
 
-!!! info "La salida larga se recorta y divide"
+!!! info "La salida larga se guarda y después se entrega"
 
     Los comandos se detienen al alcanzar su `timeout` y el bot conserva como
-    máximo `max_output_bytes` de su salida. Cualquier salida que supere un
-    mensaje de Telegram llega en varios mensajes. Consulte
-    [Configuración → Cuánta salida verá](../configuration.md#how-much-command-output-you-see).
+    máximo `max_output_bytes` de su salida. Lo que llega después al chat, varios
+    mensajes o un único archivo `.txt`, lo decide `output`. Consulte
+    [Controlar la salida](../output-control.md).
 
 ## Relacionado
 
@@ -179,3 +179,4 @@ Para escribir una, empiece por
 - [Guía paso a paso](write-your-own/step-by-step.md) — cree su primera función
 - [Menú](../concepts/menu.md) — cómo hacen referencia los botones a funciones
 - [Parámetro](../concepts/parameter.md) — los valores que necesita una función
+- [Controlar la salida](../output-control.md) — cómo llega el resultado al chat

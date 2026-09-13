@@ -16,6 +16,7 @@ Web 管理面板。
 - 菜单：https://telecommander.ir/zh/documentation/concepts/menu/
 - 函数：https://telecommander.ir/zh/documentation/functions/
 - 配置参考：https://telecommander.ir/zh/documentation/configuration/
+- 控制输出：https://telecommander.ir/zh/documentation/output-control/
 - CLI 参考：https://telecommander.ir/zh/documentation/cli/
 
 ## 源代码

@@ -55,7 +55,9 @@ Consulte [Menú → Aspecto del menú](menu.md#how-the-telegram-menu-looks).
 1. El bot publica una breve línea **Running** para indicar que ha empezado.
 2. El comando se ejecuta en la máquina donde funciona el bot.
 3. La salida vuelve como bloque de código, con el código de salida y la
-   duración. Una salida larga llega en varios mensajes consecutivos.
+   duración. Una salida corta se queda en el chat como uno o varios mensajes;
+   una salida más larga puede llegar como archivo `.txt` (consulte
+   [Resultados largos como archivo](#long-results-as-a-file)).
 4. Usted permanece en el mismo menú, por lo que **Atrás** sigue saliendo de esa
    categoría.
 
@@ -158,7 +160,7 @@ que resulta útil cuando una tarea se comporta de forma distinta a las demás:
 `timeout` concede más tiempo a este comando, `workdir` elige el directorio
 donde se ejecuta y `env` añade variables de entorno solo para él.
 
-## Resultados largos como archivo
+## Resultados largos como archivo { #long-results-as-a-file }
 
 No hace falta `output` en un botón. Si lo omite, el botón usa el ajuste de la
 raíz (`auto` salvo que lo haya cambiado): un resultado corto se queda como
@@ -173,6 +175,8 @@ botón.
 
 Las claves raíz `output` y `max_output_messages` están documentadas en
 [Configuración → Cuánta salida de comando verá](../configuration.md#how-much-command-output-you-see).
+[Controlar la salida](../output-control.md) recorre todas las combinaciones de
+raíz y botón con un ejemplo cada una.
 
 ## Valores para la función
 
@@ -235,5 +239,13 @@ Para todos los campos admitidos, consulte
     Cree y organice todo el árbol.
 
     [:octicons-arrow-right-24: Menú](menu.md)
+
+-   :material-export-variant:{ .middle } __Controlar la salida__
+
+    ---
+
+    Mensajes o un archivo `.txt`, y cómo un botón sustituye a la raíz.
+
+    [:octicons-arrow-right-24: Controlar la salida](../output-control.md)
 
 </div>

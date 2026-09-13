@@ -144,13 +144,12 @@ icon: material/view-list
     聊天不会被空白页面填满。**正在运行**提示和命令输出会留在聊天中，
     因此再次打开菜单后仍能查看之前运行的内容。
 
-!!! info "长输出以多条消息到达"
+!!! info "结果留作消息，或者作为文件到达"
 
-    命令输出以代码块显示。如果超过一条 Telegram 消息的长度，
-    它会拆成多条消息，每条都回复上一条。
-    最后一部分保留与您所在页面相同的按钮，因此**返回**
-    仍然意味着离开该类别。参见
-    [配置 → 可查看的命令输出量](../configuration.md#how-much-command-output-you-see)。
+    较短的命令输出以代码块留在聊天里。较长的结果可能以多条回复消息到达，
+    也可能作为一个 `.txt` 文件到达，取决于 `output`。最后一条消息（或那个
+    文件）保留与您所在页面相同的按钮，因此**返回**仍然意味着离开该类别。
+    参见[控制输出](../output-control.md)。
 
 ## :material-help-circle-outline: 确认 { #confirmation }
 
@@ -198,12 +197,13 @@ icon: material/view-list
 （默认 8）时会分页，并显示“上一页”或“下一页”，直到到达两端。详见
 [配置 → 根字段](../configuration.md#root-fields)。
 
-## :material-console: 运行命令
+## :material-console: 运行命令 { #run-command }
 
 如果您在配置的根目录设置 `enable_run_command: true`，
 **$ >_ Run Command** 按钮会保留在菜单中（在分类内位于“返回”之后，
 在首页位于“首页”之后）。点击后发送要运行的 shell 命令。机器人会使用
-与其他按钮相同的 shell、超时、工作目录和输出限制。
+与其他按钮相同的 shell、超时、工作目录和[输出](../output-control.md)设置。
+“运行命令”没有自己的 `output`，因此它始终跟随根级设置。
 
 “首页”或“返回”会取消提示，不运行任何内容。此功能默认关闭。
 详见[配置 → 根字段](../configuration.md#root-fields)。
@@ -235,4 +235,5 @@ icon: material/view-list
 
 - [按钮](button.md) — 什么是按钮
 - [分类](category.md) — 子菜单节点
+- [控制输出](../output-control.md) — 消息还是 `.txt` 文件
 - [配置 → 菜单](../configuration.md#menu) — 每个字段

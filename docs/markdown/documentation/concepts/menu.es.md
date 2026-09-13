@@ -149,13 +149,14 @@ de los botones no queda apretado ni cortado.
     la salida del comando permanecen, por lo que podrá seguir viendo qué se
     ejecutó después de volver a abrir el menú.
 
-!!! info "La salida larga llega en varios mensajes"
+!!! info "Los resultados se quedan como mensajes o llegan como archivo"
 
-    La salida del comando se muestra como bloque de código. Si supera un
-    mensaje de Telegram, llega en varios mensajes, cada uno como respuesta al
-    anterior. La última parte conserva los botones de la página en la que se
-    encontraba, por lo que **Atrás** sigue saliendo de esa categoría. Consulte
-    [Configuración → Cuánta salida verá](../configuration.md#how-much-command-output-you-see).
+    La salida corta del comando se queda en el chat como bloque de código. Un
+    resultado más largo puede llegar en varios mensajes de respuesta o como un
+    único archivo `.txt`, según `output`. El último mensaje, o el archivo,
+    conserva los botones de la página en la que se encontraba, por lo que
+    **Atrás** sigue saliendo de esa categoría. Consulte
+    [Controlar la salida](../output-control.md).
 
 ## :material-help-circle-outline: Confirmación { #confirmation }
 
@@ -203,13 +204,15 @@ Si un menú tiene más elementos que `page_size` (8 de forma predeterminada), se
 divide en páginas y se muestran Prev y Next hasta llegar a los extremos.
 Consulte [Configuración → Campos raíz](../configuration.md#root-fields).
 
-## :material-console: Ejecutar comando
+## :material-console: Ejecutar comando { #run-command }
 
 Con `enable_run_command: true` en la raíz de la configuración, el botón
 **$ >_ Run Command** permanece en el menú: aparece después de Atrás dentro de
 una categoría o después de Inicio en la primera pantalla. Tóquelo y envíe el
 comando de shell que quiera ejecutar. El bot usa el mismo shell, tiempo máximo,
-directorio de trabajo y límites de salida que los demás botones.
+directorio de trabajo y ajustes de
+[salida](../output-control.md) que los demás botones. Ejecutar comando no tiene
+un `output` propio, por lo que siempre sigue el de la raíz.
 
 Inicio o Atrás cancelan la petición sin ejecutar nada. Esta opción está
 desactivada de forma predeterminada. Consulte
@@ -243,4 +246,5 @@ integradas y personalizadas y aprender a crear las suyas, consulte
 
 - [Botón](button.md) — qué es un botón
 - [Categoría](category.md) — nodos de submenú
+- [Controlar la salida](../output-control.md) — mensajes o un archivo `.txt`
 - [Configuración → Menú](../configuration.md#menu) — todos los campos

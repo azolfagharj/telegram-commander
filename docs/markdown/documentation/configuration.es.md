@@ -75,9 +75,9 @@ La carpeta `config-examples/` de la versión contiene un ejemplo mínimo y otro 
 | `function_directory` | cadena | no | sin definir | Directorio YAML de funciones personalizadas (consulte las reglas más abajo) |
 | `shell` | cadena | no | `/bin/bash` | [Shell](concepts/shell.md) usado como `shell -c "<command>"` |
 | `timeout` | duración | no | `60s` | Tiempo máximo predeterminado de un comando |
-| `max_output_bytes` | entero | no | `524288` | Salida máxima guardada por comando (consulte [Cuánta salida de comando verá](#how-much-command-output-you-see)) |
-| `output` | `auto` \| `text` \| `file` | no | `auto` | Cómo se entrega el resultado del comando (consulte [Cuánta salida de comando verá](#how-much-command-output-you-see)) |
-| `max_output_messages` | entero | no | `2` | Solo en la raíz. En modo `auto`, enviar un archivo `.txt` cuando el resultado necesitaría más de este número de mensajes (1–10). Omítalo para conservar `2` |
+| `max_output_bytes` | entero | no | `524288` | Salida máxima guardada por comando (consulte [Cuánta salida de comando verá](#how-much-command-output-you-see) y [Controlar la salida](output-control.md)) |
+| `output` | `auto` \| `text` \| `file` | no | `auto` | Cómo se entrega el resultado del comando (consulte [Cuánta salida de comando verá](#how-much-command-output-you-see) y [Controlar la salida](output-control.md)) |
+| `max_output_messages` | entero | no | `2` | Solo en la raíz. En modo `auto`, enviar un archivo `.txt` cuando el resultado necesitaría más de este número de mensajes (1–10). Omítalo para conservar `2`. Consulte [Controlar la salida](output-control.md) |
 | `workdir` | cadena | no | directorio de trabajo del proceso | Directorio de trabajo predeterminado para los comandos |
 | `env` | mapa | no | vacío | Variables de entorno adicionales para los comandos |
 | `menu_columns` | entero | no | `2` | Botones de elementos por fila bajo el cuadro de mensajes |
@@ -131,6 +131,13 @@ archivo o quedarse siempre en texto.
 Para registros largos, use `output: auto` (predeterminado) o `output: file` en
 ese botón. Aun así puede acortar el propio comando si solo necesita un fragmento.
 
+!!! abstract ":material-export-variant: Más sobre esto: Controlar la salida"
+
+    Hay una página entera dedicada a estos tres campos. Recorre una por una
+    todas las combinaciones de raíz y botón, y muestra una imagen del chat de
+    Telegram para cada caso.
+
+    [:octicons-arrow-right-24: Leer Controlar la salida](output-control.md)
 
 ### Reglas de `function_directory` { #function_directory-rules }
 
@@ -204,7 +211,7 @@ Esta sección es la referencia de campos. Para una explicación guiada, consulte
 | `workdir` | cadena | no | Sustituir el directorio de trabajo |
 | `env` | mapa | no | Variables de entorno adicionales para este botón |
 | `columns` | entero | no | Sustituir las columnas de la categoría |
-| `output` | `auto` \| `text` \| `file` | no | Opcional. Omítalo para usar el `output` de la raíz. Póngalo solo para forzar este botón a `file` o `text` (consulte [Cuánta salida de comando verá](#how-much-command-output-you-see)) |
+| `output` | `auto` \| `text` \| `file` | no | Opcional. Omítalo para usar el `output` de la raíz. Póngalo solo para forzar este botón a `file` o `text` (consulte [Cuánta salida de comando verá](#how-much-command-output-you-see) y [Controlar la salida](output-control.md)) |
 | `args` | cadena | no | Argumentos opcionales de `script` |
 | Cualquier parámetro declarado | escalar | según la función | Valor pasado, como `url`, `host`, `unit` o `lines` |
 
@@ -258,5 +265,6 @@ código de salida y la duración. Consulte
 
 - [Ejecutar en la CLI](installation/download-and-run.md) — cree y ejecute una primera configuración
 - [Menú](concepts/menu.md) — el árbol del menú en detalle
+- [Controlar la salida](output-control.md) — mensajes o un archivo `.txt`, con todas las combinaciones de raíz y botón
 - [Funciones](functions/index.md) — significado de `function`, `command`, `path` y `args`
 - [CLI](cli.md) — valide y ejecute su configuración

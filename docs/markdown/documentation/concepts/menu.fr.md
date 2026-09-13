@@ -145,14 +145,14 @@ occupe toute la largeur de la conversation afin que le texte reste lisible.
     d’écrans vides. La ligne **Running** et la sortie restent visibles après
     la réouverture du menu.
 
-!!! info "Les longues sorties arrivent en plusieurs messages"
+!!! info "Le résultat reste en messages, ou arrive en fichier"
 
-    La sortie est présentée comme bloc de code. Si elle dépasse un message
-    Telegram, elle est divisée en plusieurs messages, chacun répondant au
-    précédent. La dernière partie conserve les boutons de la page sur laquelle
-    vous vous trouviez, afin que **Retour** quitte toujours la catégorie.
-    Consultez
-    [Configuration → Quantité de sortie affichée](../configuration.md#how-much-command-output-you-see).
+    Une sortie de commande courte reste dans la conversation sous forme de bloc
+    de code. Un résultat plus long peut arriver en plusieurs messages de
+    réponse ou en un seul fichier `.txt`, selon `output`. Le dernier message,
+    ou le fichier, conserve les boutons de la page sur laquelle vous vous
+    trouviez, afin que **Retour** quitte toujours la catégorie. Consultez
+    [Contrôler la sortie](../output-control.md).
 
 ## :material-help-circle-outline: Confirmation { #confirmation }
 
@@ -201,13 +201,14 @@ catégorie peut le remplacer avec `columns`. Au-delà de `page_size` éléments,
 8 par défaut, le menu est divisé en pages avec Précédent et Suivant. Consultez
 [Configuration → Champs racine](../configuration.md#root-fields).
 
-## :material-console: Exécuter une commande
+## :material-console: Exécuter une commande { #run-command }
 
 Avec `enable_run_command: true` à la racine, un bouton
 **$ >_ Run Command** reste dans le menu, après Retour dans une catégorie ou
 après Accueil sur le premier écran. Appuyez dessus puis envoyez la commande
 shell à exécuter. Le bot utilise les mêmes shell, délai, dossier de travail et
-limites de sortie que les autres boutons.
+réglages de [sortie](../output-control.md) que les autres boutons. Exécuter une
+commande n’a pas de `output` propre : ce bouton suit donc toujours la racine.
 
 Accueil ou Retour annule la demande sans rien exécuter. Cette fonction est
 désactivée par défaut. Consultez
@@ -241,4 +242,5 @@ personnalisées et leur création, consultez [Fonctions](../functions/index.md).
 
 - [Bouton](button.md) — définition d’un bouton
 - [Catégorie](category.md) — éléments de sous-menu
+- [Contrôler la sortie](../output-control.md) — messages ou fichier `.txt`
 - [Configuration → Menu](../configuration.md#menu) — tous les champs
