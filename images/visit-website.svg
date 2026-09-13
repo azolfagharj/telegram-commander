@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="56" viewBox="0 0 300 56" role="img" aria-label="Visit the website">
+  <rect x="1" y="1" width="298" height="54" rx="27" fill="#3f51b5"/>
+  <text
+    x="150"
+    y="35"
+    text-anchor="middle"
+    font-family="Segoe UI, Helvetica, Arial, sans-serif"
+    font-size="19"
+    font-weight="600"
+    fill="#ffffff"
+  >Visit the website</text>
+</svg>
