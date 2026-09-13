@@ -9,7 +9,7 @@ import (
 )
 
 // Change these when you release a new version.
-const version = "1.3.8"
+const version = "1.3.9"
 const releaseDate = "2026-09-13"
 
 func main() {

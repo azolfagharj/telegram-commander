@@ -1,3 +1,27 @@
+/* Persian words show up on every page, not only on Persian ones: the language
+   menu names the language in its own script, and the search box and its
+   results can hold anything the reader types. The page font has no Persian
+   letters, so the browser would pick some font from the machine and the words
+   would look out of place.
+
+   This cut of Vazirmatn is listed after the page font and covers Persian
+   letters only, so the browser fetches the file only when such a word is
+   drawn, and Latin, Cyrillic and Chinese text stays on the page font. */
+@font-face {
+  font-family: "Vazirmatn UI";
+  src: url("../fonts/vazirmatn/Vazirmatn-UI-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+200C-200D,
+    U+FB50-FDFF, U+FE70-FEFF;
+}
+
+body {
+  --md-text-font-family: var(--md-text-font, _), "Vazirmatn UI", -apple-system,
+    BlinkMacSystemFont, Helvetica, Arial, sans-serif;
+}
+
 /* Smaller, finer cards */
 .md-typeset .grid { grid-gap: .5rem; margin: .9em 0 }
 .md-typeset .grid.cards > ul > li,

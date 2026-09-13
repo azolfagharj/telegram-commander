@@ -150,13 +150,18 @@ markdown_extensions:
 
 # site_url enables sitemap.xml and canonical URLs
 plugins:
-  - search
+  # The search index holds every language. Persian has no word list in the
+  # search engine, and mixing word lists throws Persian text away, so the
+  # index keeps the plain words and only splits them on spaces and marks.
+  - search:
+      separator: '[\s\u200c\-,;:!=\[\]()"/]+|\.(?!\d)|&[lg]t;'
   - privacy
   - i18n:
       docs_structure: suffix
       fallback_to_default: false
       reconfigure_material: true
-      reconfigure_search: true
+      # Leave the search word lists alone, so Persian stays searchable.
+      reconfigure_search: false
       languages:
         - locale: en
           name: English
