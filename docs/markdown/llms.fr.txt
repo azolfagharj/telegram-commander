@@ -12,15 +12,15 @@ ouvert sur le serveur. Il n’y a aucun code à écrire ni panneau web à sécur
 
 ## Documentation
 
-- Accueil : https://telecommander.ir/fr/
-- Exécuter dans la CLI (installation et premier lancement) : https://telecommander.ir/fr/documentation/installation/download-and-run/
-- Fichier de configuration : https://telecommander.ir/fr/documentation/concepts/config-file/
-- Menu : https://telecommander.ir/fr/documentation/concepts/menu/
-- Fonctions : https://telecommander.ir/fr/documentation/functions/
-- Référence de configuration : https://telecommander.ir/fr/documentation/configuration/
-- Contrôler la sortie : https://telecommander.ir/fr/documentation/output-control/
-- Référence CLI : https://telecommander.ir/fr/documentation/cli/
+- [Accueil](https://telecommander.ir/fr/)
+- [Exécuter dans la CLI (installation et premier lancement)](https://telecommander.ir/fr/documentation/installation/download-and-run/)
+- [Fichier de configuration](https://telecommander.ir/fr/documentation/concepts/config-file/)
+- [Menu](https://telecommander.ir/fr/documentation/concepts/menu/)
+- [Fonctions](https://telecommander.ir/fr/documentation/functions/)
+- [Référence de configuration](https://telecommander.ir/fr/documentation/configuration/)
+- [Contrôler la sortie](https://telecommander.ir/fr/documentation/output-control/)
+- [Référence CLI](https://telecommander.ir/fr/documentation/cli/)
 
 ## Code source
 
-- GitHub : https://github.com/azolfagharj/telegram-commander
+- [GitHub](https://github.com/azolfagharj/telegram-commander)

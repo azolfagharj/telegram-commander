@@ -10,7 +10,7 @@ hide:
 
 <div class="hero" markdown>
 <div class="hero-art" markdown>
-![Telegram Commander](/images/logo-large.png){ .off-glb width="230" }
+![Telegram Commander](/images/logo-230.webp){ .off-glb width="230" height="230" srcset="/images/logo-230.webp 1x, /images/logo-460.webp 2x" fetchpriority="high" decoding="async" }
 </div>
 <div class="hero-text" markdown>
 **Одно касание запускает команду на вашем сервере и отправляет результат обратно
@@ -49,11 +49,11 @@ Telegram Commander превращает простой YAML-[файл
 Нажмите на любую картинку, чтобы увидеть ее в полном размере.
 
 <div style="text-align: center" markdown="span">
-  ![Вывод команды при открытом системном меню](/images/01.jpeg){ width="140" loading=lazy }
-  ![Кнопки ресурсов и процессов](/images/02.jpeg){ width="140" loading=lazy }
-  ![Кнопки хранения и упаковки](/images/03.jpeg){ width="140" loading=lazy }
-  ![Сетевые инструменты и ввод команды вручную](/images/04.jpeg){ width="140" loading=lazy }
-  ![Вывод команды отправлен обратно в чат](/images/05.jpeg){ width="140" loading=lazy }
+  [![Вывод команды при открытом системном меню](/images/01-thumb.webp){ width="140" height="187" loading=lazy decoding="async" }](/images/01.jpeg){ .glightbox data-type="image" data-title="Вывод команды при открытом системном меню" data-desc-position="bottom" }
+  [![Кнопки ресурсов и процессов](/images/02-thumb.webp){ width="140" height="187" loading=lazy decoding="async" }](/images/02.jpeg){ .glightbox data-type="image" data-title="Кнопки ресурсов и процессов" data-desc-position="bottom" }
+  [![Кнопки хранения и упаковки](/images/03-thumb.webp){ width="140" height="187" loading=lazy decoding="async" }](/images/03.jpeg){ .glightbox data-type="image" data-title="Кнопки хранения и упаковки" data-desc-position="bottom" }
+  [![Сетевые инструменты и ввод команды вручную](/images/04-thumb.webp){ width="140" height="187" loading=lazy decoding="async" }](/images/04.jpeg){ .glightbox data-type="image" data-title="Сетевые инструменты и ввод команды вручную" data-desc-position="bottom" }
+  [![Вывод команды отправлен обратно в чат](/images/05-thumb.webp){ width="140" height="187" loading=lazy decoding="async" }](/images/05.jpeg){ .glightbox data-type="image" data-title="Вывод команды отправлен обратно в чат" data-desc-position="bottom" }
 </div>
 
 ## :material-lightning-bolt:{ .bolt } Быстро и легко { .split }

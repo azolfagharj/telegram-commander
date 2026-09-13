@@ -10,15 +10,15 @@ Web 管理面板。
 
 ## 文档
 
-- 主页：https://telecommander.ir/zh/
-- 在 CLI 中运行（安装和首次运行）：https://telecommander.ir/zh/documentation/installation/download-and-run/
-- 配置文件：https://telecommander.ir/zh/documentation/concepts/config-file/
-- 菜单：https://telecommander.ir/zh/documentation/concepts/menu/
-- 函数：https://telecommander.ir/zh/documentation/functions/
-- 配置参考：https://telecommander.ir/zh/documentation/configuration/
-- 控制输出：https://telecommander.ir/zh/documentation/output-control/
-- CLI 参考：https://telecommander.ir/zh/documentation/cli/
+- [主页](https://telecommander.ir/zh/)
+- [在 CLI 中运行（安装和首次运行）](https://telecommander.ir/zh/documentation/installation/download-and-run/)
+- [配置文件](https://telecommander.ir/zh/documentation/concepts/config-file/)
+- [菜单](https://telecommander.ir/zh/documentation/concepts/menu/)
+- [函数](https://telecommander.ir/zh/documentation/functions/)
+- [配置参考](https://telecommander.ir/zh/documentation/configuration/)
+- [控制输出](https://telecommander.ir/zh/documentation/output-control/)
+- [CLI 参考](https://telecommander.ir/zh/documentation/cli/)
 
 ## 源代码
 
-- GitHub: https://github.com/azolfagharj/telegram-commander
+- [GitHub](https://github.com/azolfagharj/telegram-commander)

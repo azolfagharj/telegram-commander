@@ -11,7 +11,7 @@ hide:
 
 <div class="hero" markdown>
 <div class="hero-art" markdown>
-![Telegram Commander](/images/logo-large.png){ .off-glb width="230" }
+![Telegram Commander](/images/logo-230.webp){ .off-glb width="230" height="230" srcset="/images/logo-230.webp 1x, /images/logo-460.webp 2x" fetchpriority="high" decoding="async" }
 </div>
 <div class="hero-text" markdown>
 **یک ضربه فرمان را روی سرور اجرا می‌کند و خروجی را به گفتگو برمی‌گرداند.**
@@ -49,11 +49,11 @@ Telegram Commander یک [فایل پیکربندی](documentation/concepts/confi
 تصویر بزنید تا تمام‌صفحه دیده شود.
 
 <div style="text-align: center" markdown="span">
-  ![خروجی فرمان با منوی System باز](/images/01.jpeg){ width="140" loading=lazy }
-  ![دکمه‌های منابع و فرایندها](/images/02.jpeg){ width="140" loading=lazy }
-  ![دکمه‌های فضای ذخیره‌سازی و بسته‌ها](/images/03.jpeg){ width="140" loading=lazy }
-  ![ابزار شبکه و تایپ دستی فرمان](/images/04.jpeg){ width="140" loading=lazy }
-  ![خروجی فرمان برگشته به گفتگو](/images/05.jpeg){ width="140" loading=lazy }
+  [![خروجی فرمان با منوی System باز](/images/01-thumb.webp){ width="140" height="187" loading=lazy decoding="async" }](/images/01.jpeg){ .glightbox data-type="image" data-title="خروجی فرمان با منوی System باز" data-desc-position="bottom" }
+  [![دکمه‌های منابع و فرایندها](/images/02-thumb.webp){ width="140" height="187" loading=lazy decoding="async" }](/images/02.jpeg){ .glightbox data-type="image" data-title="دکمه‌های منابع و فرایندها" data-desc-position="bottom" }
+  [![دکمه‌های فضای ذخیره‌سازی و بسته‌ها](/images/03-thumb.webp){ width="140" height="187" loading=lazy decoding="async" }](/images/03.jpeg){ .glightbox data-type="image" data-title="دکمه‌های فضای ذخیره‌سازی و بسته‌ها" data-desc-position="bottom" }
+  [![ابزار شبکه و تایپ دستی فرمان](/images/04-thumb.webp){ width="140" height="187" loading=lazy decoding="async" }](/images/04.jpeg){ .glightbox data-type="image" data-title="ابزار شبکه و تایپ دستی فرمان" data-desc-position="bottom" }
+  [![خروجی فرمان برگشته به گفتگو](/images/05-thumb.webp){ width="140" height="187" loading=lazy decoding="async" }](/images/05.jpeg){ .glightbox data-type="image" data-title="خروجی فرمان برگشته به گفتگو" data-desc-position="bottom" }
 </div>
 
 ## :material-lightning-bolt:{ .bolt } سریع و ساده { .split }

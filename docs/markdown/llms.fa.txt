@@ -12,15 +12,15 @@ Telegram Commander یک ربات تلگرام رایگان و متن‌باز ب
 
 ## مستندات
 
-- خانه: https://telecommander.ir/fa/
-- اجرا در CLI (نصب و اولین اجرا): https://telecommander.ir/fa/documentation/installation/download-and-run/
-- فایل پیکربندی: https://telecommander.ir/fa/documentation/concepts/config-file/
-- منو: https://telecommander.ir/fa/documentation/concepts/menu/
-- توابع: https://telecommander.ir/fa/documentation/functions/
-- مرجع پیکربندی: https://telecommander.ir/fa/documentation/configuration/
-- کنترل خروجی: https://telecommander.ir/fa/documentation/output-control/
-- مرجع CLI: https://telecommander.ir/fa/documentation/cli/
+- [خانه](https://telecommander.ir/fa/)
+- [اجرا در CLI (نصب و اولین اجرا)](https://telecommander.ir/fa/documentation/installation/download-and-run/)
+- [فایل پیکربندی](https://telecommander.ir/fa/documentation/concepts/config-file/)
+- [منو](https://telecommander.ir/fa/documentation/concepts/menu/)
+- [توابع](https://telecommander.ir/fa/documentation/functions/)
+- [مرجع پیکربندی](https://telecommander.ir/fa/documentation/configuration/)
+- [کنترل خروجی](https://telecommander.ir/fa/documentation/output-control/)
+- [مرجع CLI](https://telecommander.ir/fa/documentation/cli/)
 
 ## منبع
 
-- GitHub: https://github.com/azolfagharj/telegram-commander
+- [GitHub](https://github.com/azolfagharj/telegram-commander)

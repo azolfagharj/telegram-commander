@@ -12,16 +12,15 @@ puerto en el servidor. No hay que escribir código ni proteger un panel web.
 
 ## Documentación
 
-- Inicio: https://telecommander.ir/es/
-- Ejecutar en la CLI (instalación y primer inicio):
-  https://telecommander.ir/es/documentation/installation/download-and-run/
-- Archivo de configuración: https://telecommander.ir/es/documentation/concepts/config-file/
-- Menú: https://telecommander.ir/es/documentation/concepts/menu/
-- Funciones: https://telecommander.ir/es/documentation/functions/
-- Referencia de configuración: https://telecommander.ir/es/documentation/configuration/
-- Controlar la salida: https://telecommander.ir/es/documentation/output-control/
-- Referencia de la CLI: https://telecommander.ir/es/documentation/cli/
+- [Inicio](https://telecommander.ir/es/)
+- [Ejecutar en la CLI (instalación y primer inicio)](https://telecommander.ir/es/documentation/installation/download-and-run/)
+- [Archivo de configuración](https://telecommander.ir/es/documentation/concepts/config-file/)
+- [Menú](https://telecommander.ir/es/documentation/concepts/menu/)
+- [Funciones](https://telecommander.ir/es/documentation/functions/)
+- [Referencia de configuración](https://telecommander.ir/es/documentation/configuration/)
+- [Controlar la salida](https://telecommander.ir/es/documentation/output-control/)
+- [Referencia de la CLI](https://telecommander.ir/es/documentation/cli/)
 
 ## Código fuente
 
-- GitHub: https://github.com/azolfagharj/telegram-commander
+- [GitHub](https://github.com/azolfagharj/telegram-commander)

@@ -24,7 +24,7 @@ theme:
   # Only used to add structured data for search engines on the home page.
   custom_dir: overrides
   language: en
-  logo: images/logo.png
+  logo: images/logo-header.webp
   favicon: images/favicon.png
   icon:
     alternate: material/translate
@@ -67,10 +67,13 @@ theme:
 
 extra_css:
   - css/extra.css
-  - css/persian.css
+
+extra_javascript:
+  - javascript/accessibility.js
 
 hooks:
   - hooks/language_sitemaps.py
+  - hooks/html_fixes.py
 
 extra:
   social:
@@ -148,6 +151,7 @@ markdown_extensions:
 # site_url enables sitemap.xml and canonical URLs
 plugins:
   - search
+  - privacy
   - i18n:
       docs_structure: suffix
       fallback_to_default: false

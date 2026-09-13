@@ -11,7 +11,7 @@ hide:
 
 <div class="hero" markdown>
 <div class="hero-art" markdown>
-![Telegram Commander](/images/logo-large.png){ .off-glb width="230" }
+![Telegram Commander](/images/logo-230.webp){ .off-glb width="230" height="230" srcset="/images/logo-230.webp 1x, /images/logo-460.webp 2x" fetchpriority="high" decoding="async" }
 </div>
 <div class="hero-text" markdown>
 **Un appui exécute une commande sur votre serveur et renvoie la sortie dans votre conversation.**
@@ -49,11 +49,11 @@ Votre menu, une commande en cours, la sortie reçue et la saisie manuelle d’un
 commande. Cliquez sur une image pour l’agrandir.
 
 <div style="text-align: center" markdown="span">
-  ![Sortie de commande avec le menu Système ouvert](/images/01.jpeg){ width="140" loading=lazy }
-  ![Boutons des ressources et processus](/images/02.jpeg){ width="140" loading=lazy }
-  ![Boutons du stockage et des paquets](/images/03.jpeg){ width="140" loading=lazy }
-  ![Outils réseau et saisie manuelle d’une commande](/images/04.jpeg){ width="140" loading=lazy }
-  ![Sortie de commande renvoyée dans la conversation](/images/05.jpeg){ width="140" loading=lazy }
+  [![Sortie de commande avec le menu Système ouvert](/images/01-thumb.webp){ width="140" height="187" loading=lazy decoding="async" }](/images/01.jpeg){ .glightbox data-type="image" data-title="Sortie de commande avec le menu Système ouvert" data-desc-position="bottom" }
+  [![Boutons des ressources et processus](/images/02-thumb.webp){ width="140" height="187" loading=lazy decoding="async" }](/images/02.jpeg){ .glightbox data-type="image" data-title="Boutons des ressources et processus" data-desc-position="bottom" }
+  [![Boutons du stockage et des paquets](/images/03-thumb.webp){ width="140" height="187" loading=lazy decoding="async" }](/images/03.jpeg){ .glightbox data-type="image" data-title="Boutons du stockage et des paquets" data-desc-position="bottom" }
+  [![Outils réseau et saisie manuelle d’une commande](/images/04-thumb.webp){ width="140" height="187" loading=lazy decoding="async" }](/images/04.jpeg){ .glightbox data-type="image" data-title="Outils réseau et saisie manuelle d’une commande" data-desc-position="bottom" }
+  [![Sortie de commande renvoyée dans la conversation](/images/05-thumb.webp){ width="140" height="187" loading=lazy decoding="async" }](/images/05.jpeg){ .glightbox data-type="image" data-title="Sortie de commande renvoyée dans la conversation" data-desc-position="bottom" }
 </div>
 
 ## :material-lightning-bolt:{ .bolt } Simple et rapide { .split }

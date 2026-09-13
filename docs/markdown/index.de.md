@@ -11,7 +11,7 @@ hide:
 
 <div class="hero" markdown>
 <div class="hero-art" markdown>
-![Telegram Commander](/images/logo-large.png){ .off-glb width="230" }
+![Telegram Commander](/images/logo-230.webp){ .off-glb width="230" height="230" srcset="/images/logo-230.webp 1x, /images/logo-460.webp 2x" fetchpriority="high" decoding="async" }
 </div>
 <div class="hero-text" markdown>
 **Ein Antippen führt einen Befehl auf Ihrem Server aus und sendet die Ausgabe an Ihren Chat zurück.**
@@ -49,11 +49,11 @@ Ihr Menü, ein laufender Befehl, die zurückgesendete Ausgabe und die manuelle
 Eingabe eines Befehls. Klicken Sie ein Bild an, um es in voller Größe zu sehen.
 
 <div style="text-align: center" markdown="span">
-  ![Befehlsausgabe bei geöffnetem System-Menü](/images/01.jpeg){ width="140" loading=lazy }
-  ![Schaltflächen für Ressourcen und Prozesse](/images/02.jpeg){ width="140" loading=lazy }
-  ![Schaltflächen für Speicher und Pakete](/images/03.jpeg){ width="140" loading=lazy }
-  ![Netzwerkwerkzeuge und manuelle Befehlseingabe](/images/04.jpeg){ width="140" loading=lazy }
-  ![An den Chat zurückgesendete Befehlsausgabe](/images/05.jpeg){ width="140" loading=lazy }
+  [![Befehlsausgabe bei geöffnetem System-Menü](/images/01-thumb.webp){ width="140" height="187" loading=lazy decoding="async" }](/images/01.jpeg){ .glightbox data-type="image" data-title="Befehlsausgabe bei geöffnetem System-Menü" data-desc-position="bottom" }
+  [![Schaltflächen für Ressourcen und Prozesse](/images/02-thumb.webp){ width="140" height="187" loading=lazy decoding="async" }](/images/02.jpeg){ .glightbox data-type="image" data-title="Schaltflächen für Ressourcen und Prozesse" data-desc-position="bottom" }
+  [![Schaltflächen für Speicher und Pakete](/images/03-thumb.webp){ width="140" height="187" loading=lazy decoding="async" }](/images/03.jpeg){ .glightbox data-type="image" data-title="Schaltflächen für Speicher und Pakete" data-desc-position="bottom" }
+  [![Netzwerkwerkzeuge und manuelle Befehlseingabe](/images/04-thumb.webp){ width="140" height="187" loading=lazy decoding="async" }](/images/04.jpeg){ .glightbox data-type="image" data-title="Netzwerkwerkzeuge und manuelle Befehlseingabe" data-desc-position="bottom" }
+  [![An den Chat zurückgesendete Befehlsausgabe](/images/05-thumb.webp){ width="140" height="187" loading=lazy decoding="async" }](/images/05.jpeg){ .glightbox data-type="image" data-title="An den Chat zurückgesendete Befehlsausgabe" data-desc-position="bottom" }
 </div>
 
 ## :material-lightning-bolt:{ .bolt } Schnell und einfach { .split }

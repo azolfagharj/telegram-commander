@@ -3,6 +3,9 @@
 <!-- Structured data for search engines. Home page only. -->
 {% block extrahead %}
   {{ super() }}
+  {% if config.theme.language == "fa" %}
+    <link rel="stylesheet" href="{{ 'css/persian.css' | url }}">
+  {% endif %}
   {% if page and page.is_homepage %}
     <script type="application/ld+json">
       {

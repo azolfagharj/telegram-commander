@@ -11,7 +11,7 @@ hide:
 
 <div class="hero" markdown>
 <div class="hero-art" markdown>
-![Telegram Commander](/images/logo-large.png){ .off-glb width="230" }
+![Telegram Commander](/images/logo-230.webp){ .off-glb width="230" height="230" srcset="/images/logo-230.webp 1x, /images/logo-460.webp 2x" fetchpriority="high" decoding="async" }
 </div>
 <div class="hero-text" markdown>
 **轻点一下即可在服务器上运行命令，并将输出发回聊天。**
@@ -48,11 +48,11 @@ Telegram Commander 将一个简单的 YAML [配置文件](documentation/concepts
 点击任意图片可查看大图。
 
 <div style="text-align: center" markdown="span">
-  ![打开系统菜单时的命令输出](/images/01.jpeg){ width="140" loading=lazy }
-  ![资源和进程按钮](/images/02.jpeg){ width="140" loading=lazy }
-  ![存储和软件包按钮](/images/03.jpeg){ width="140" loading=lazy }
-  ![网络工具和手动输入命令](/images/04.jpeg){ width="140" loading=lazy }
-  ![命令输出发送回聊天](/images/05.jpeg){ width="140" loading=lazy }
+  [![打开系统菜单时的命令输出](/images/01-thumb.webp){ width="140" height="187" loading=lazy decoding="async" }](/images/01.jpeg){ .glightbox data-type="image" data-title="打开系统菜单时的命令输出" data-desc-position="bottom" }
+  [![资源和进程按钮](/images/02-thumb.webp){ width="140" height="187" loading=lazy decoding="async" }](/images/02.jpeg){ .glightbox data-type="image" data-title="资源和进程按钮" data-desc-position="bottom" }
+  [![存储和软件包按钮](/images/03-thumb.webp){ width="140" height="187" loading=lazy decoding="async" }](/images/03.jpeg){ .glightbox data-type="image" data-title="存储和软件包按钮" data-desc-position="bottom" }
+  [![网络工具和手动输入命令](/images/04-thumb.webp){ width="140" height="187" loading=lazy decoding="async" }](/images/04.jpeg){ .glightbox data-type="image" data-title="网络工具和手动输入命令" data-desc-position="bottom" }
+  [![命令输出发送回聊天](/images/05-thumb.webp){ width="140" height="187" loading=lazy decoding="async" }](/images/05.jpeg){ .glightbox data-type="image" data-title="命令输出发送回聊天" data-desc-position="bottom" }
 </div>
 
 ## :material-lightning-bolt:{ .bolt } 快速简单 { .split }

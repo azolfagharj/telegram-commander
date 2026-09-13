@@ -14,15 +14,15 @@ Programmierung noch ein abzusicherndes Webpanel erforderlich.
 
 ## Dokumentation
 
-- Startseite: https://telecommander.ir/de/
-- In der CLI ausführen (Installation und erster Start): https://telecommander.ir/de/documentation/installation/download-and-run/
-- Konfigurationsdatei: https://telecommander.ir/de/documentation/concepts/config-file/
-- Menü: https://telecommander.ir/de/documentation/concepts/menu/
-- Funktionen: https://telecommander.ir/de/documentation/functions/
-- Konfigurationsreferenz: https://telecommander.ir/de/documentation/configuration/
-- Ausgabe steuern: https://telecommander.ir/de/documentation/output-control/
-- CLI-Referenz: https://telecommander.ir/de/documentation/cli/
+- [Startseite](https://telecommander.ir/de/)
+- [In der CLI ausführen (Installation und erster Start)](https://telecommander.ir/de/documentation/installation/download-and-run/)
+- [Konfigurationsdatei](https://telecommander.ir/de/documentation/concepts/config-file/)
+- [Menü](https://telecommander.ir/de/documentation/concepts/menu/)
+- [Funktionen](https://telecommander.ir/de/documentation/functions/)
+- [Konfigurationsreferenz](https://telecommander.ir/de/documentation/configuration/)
+- [Ausgabe steuern](https://telecommander.ir/de/documentation/output-control/)
+- [CLI-Referenz](https://telecommander.ir/de/documentation/cli/)
 
 ## Quellcode
 
-- GitHub: https://github.com/azolfagharj/telegram-commander
+- [GitHub](https://github.com/azolfagharj/telegram-commander)

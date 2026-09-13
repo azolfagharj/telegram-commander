@@ -24,6 +24,7 @@ coverage.html
 
 # MkDocs output
 statics/
+.cache/
 .venv-docs/
 
 # Python

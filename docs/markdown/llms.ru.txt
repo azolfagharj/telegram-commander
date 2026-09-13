@@ -12,18 +12,15 @@ Telegram нажимает кнопку, бот выполняет команду
 
 ## Документация
 
-- Главная: https://telecommander.ir/ru/
-- Запуск в CLI (установка и первый запуск):
-  https://telecommander.ir/ru/documentation/installation/download-and-run/
-- Файл конфигурации:
-  https://telecommander.ir/ru/documentation/concepts/config-file/
-- Меню: https://telecommander.ir/ru/documentation/concepts/menu/
-- Функции: https://telecommander.ir/ru/documentation/functions/
-- Справочник по конфигурации:
-  https://telecommander.ir/ru/documentation/configuration/
-- Управление выводом: https://telecommander.ir/ru/documentation/output-control/
-- Справочник по CLI: https://telecommander.ir/ru/documentation/cli/
+- [Главная](https://telecommander.ir/ru/)
+- [Запуск в CLI (установка и первый запуск)](https://telecommander.ir/ru/documentation/installation/download-and-run/)
+- [Файл конфигурации](https://telecommander.ir/ru/documentation/concepts/config-file/)
+- [Меню](https://telecommander.ir/ru/documentation/concepts/menu/)
+- [Функции](https://telecommander.ir/ru/documentation/functions/)
+- [Справочник по конфигурации](https://telecommander.ir/ru/documentation/configuration/)
+- [Управление выводом](https://telecommander.ir/ru/documentation/output-control/)
+- [Справочник по CLI](https://telecommander.ir/ru/documentation/cli/)
 
 ## Источник
 
-- GitHub: https://github.com/azolfagharj/telegram-commander
+- [GitHub](https://github.com/azolfagharj/telegram-commander)

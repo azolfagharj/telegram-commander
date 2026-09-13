@@ -11,15 +11,15 @@ is no code to write and no web panel to secure.
 
 ## Documentation
 
-- Home: https://telecommander.ir/
-- Run in CLI (install and first run): https://telecommander.ir/documentation/installation/download-and-run/
-- Config file: https://telecommander.ir/documentation/concepts/config-file/
-- Menu: https://telecommander.ir/documentation/concepts/menu/
-- Functions: https://telecommander.ir/documentation/functions/
-- Configuration reference: https://telecommander.ir/documentation/configuration/
-- Control output: https://telecommander.ir/documentation/output-control/
-- CLI reference: https://telecommander.ir/documentation/cli/
+- [Home](https://telecommander.ir/)
+- [Run in CLI (install and first run)](https://telecommander.ir/documentation/installation/download-and-run/)
+- [Config file](https://telecommander.ir/documentation/concepts/config-file/)
+- [Menu](https://telecommander.ir/documentation/concepts/menu/)
+- [Functions](https://telecommander.ir/documentation/functions/)
+- [Configuration reference](https://telecommander.ir/documentation/configuration/)
+- [Control output](https://telecommander.ir/documentation/output-control/)
+- [CLI reference](https://telecommander.ir/documentation/cli/)
 
 ## Source
 
-- GitHub: https://github.com/azolfagharj/telegram-commander
+- [GitHub](https://github.com/azolfagharj/telegram-commander)

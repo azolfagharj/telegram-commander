@@ -1,0 +1,9 @@
+{#-
+  Copy of the theme logo partial with intrinsic dimensions for the image.
+-#}
+{% if config.theme.logo %}
+  <img src="{{ config.theme.logo | url }}" alt="logo" width="42" height="42">
+{% else %}
+  {% set icon = config.theme.icon.logo or "material/library" %}
+  {% include ".icons/" ~ icon ~ ".svg" %}
+{% endif %}

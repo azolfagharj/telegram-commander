@@ -13,7 +13,7 @@ hide:
 
 <div class="hero" markdown>
 <div class="hero-art" markdown>
-![Telegram Commander](/images/logo-large.png){ .off-glb width="230" }
+![Telegram Commander](/images/logo-230.webp){ .off-glb width="230" height="230" srcset="/images/logo-230.webp 1x, /images/logo-460.webp 2x" fetchpriority="high" decoding="async" }
 </div>
 <div class="hero-text" markdown>
 **Un toque ejecuta un comando en su servidor y devuelve la salida al chat.**
@@ -52,11 +52,11 @@ Su menú, un comando en ejecución, la salida devuelta y la escritura manual de 
 comando. Haga clic en cualquier imagen para verla a tamaño completo.
 
 <div style="text-align: center" markdown="span">
-  ![Salida de un comando con el menú System abierto](/images/01.jpeg){ width="140" loading=lazy }
-  ![Botones de recursos y procesos](/images/02.jpeg){ width="140" loading=lazy }
-  ![Botones de almacenamiento y paquetes](/images/03.jpeg){ width="140" loading=lazy }
-  ![Herramientas de red y escritura manual de un comando](/images/04.jpeg){ width="140" loading=lazy }
-  ![Salida de un comando devuelta al chat](/images/05.jpeg){ width="140" loading=lazy }
+  [![Salida de un comando con el menú System abierto](/images/01-thumb.webp){ width="140" height="187" loading=lazy decoding="async" }](/images/01.jpeg){ .glightbox data-type="image" data-title="Salida de un comando con el menú System abierto" data-desc-position="bottom" }
+  [![Botones de recursos y procesos](/images/02-thumb.webp){ width="140" height="187" loading=lazy decoding="async" }](/images/02.jpeg){ .glightbox data-type="image" data-title="Botones de recursos y procesos" data-desc-position="bottom" }
+  [![Botones de almacenamiento y paquetes](/images/03-thumb.webp){ width="140" height="187" loading=lazy decoding="async" }](/images/03.jpeg){ .glightbox data-type="image" data-title="Botones de almacenamiento y paquetes" data-desc-position="bottom" }
+  [![Herramientas de red y escritura manual de un comando](/images/04-thumb.webp){ width="140" height="187" loading=lazy decoding="async" }](/images/04.jpeg){ .glightbox data-type="image" data-title="Herramientas de red y escritura manual de un comando" data-desc-position="bottom" }
+  [![Salida de un comando devuelta al chat](/images/05-thumb.webp){ width="140" height="187" loading=lazy decoding="async" }](/images/05.jpeg){ .glightbox data-type="image" data-title="Salida de un comando devuelta al chat" data-desc-position="bottom" }
 </div>
 
 ## :material-lightning-bolt:{ .bolt } Rápido y sencillo { .split }

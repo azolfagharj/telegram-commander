@@ -11,7 +11,7 @@ hide:
 
 <div class="hero" markdown>
 <div class="hero-art" markdown>
-![Telegram Commander](images/logo-large.png){ .off-glb width="230" }
+![Telegram Commander](/images/logo-230.webp){ .off-glb width="230" height="230" srcset="/images/logo-230.webp 1x, /images/logo-460.webp 2x" fetchpriority="high" decoding="async" }
 </div>
 <div class="hero-text" markdown>
 **One tap runs a command on your server and sends the output back to your chat.**
@@ -48,11 +48,11 @@ Your menu, a command running, the output that comes back, and typing a command
 by hand. Click any picture to see it full size.
 
 <div style="text-align: center" markdown="span">
-  ![Command output with the System menu open](images/01.jpeg){ width="140" loading=lazy }
-  ![Resource and process buttons](images/02.jpeg){ width="140" loading=lazy }
-  ![Storage and package buttons](images/03.jpeg){ width="140" loading=lazy }
-  ![Network tools and typing a command by hand](images/04.jpeg){ width="140" loading=lazy }
-  ![Command output sent back to the chat](images/05.jpeg){ width="140" loading=lazy }
+  [![Command output with the System menu open](/images/01-thumb.webp){ width="140" height="187" loading=lazy decoding="async" }](/images/01.jpeg){ .glightbox data-type="image" data-title="Command output with the System menu open" data-desc-position="bottom" }
+  [![Resource and process buttons](/images/02-thumb.webp){ width="140" height="187" loading=lazy decoding="async" }](/images/02.jpeg){ .glightbox data-type="image" data-title="Resource and process buttons" data-desc-position="bottom" }
+  [![Storage and package buttons](/images/03-thumb.webp){ width="140" height="187" loading=lazy decoding="async" }](/images/03.jpeg){ .glightbox data-type="image" data-title="Storage and package buttons" data-desc-position="bottom" }
+  [![Network tools and typing a command by hand](/images/04-thumb.webp){ width="140" height="187" loading=lazy decoding="async" }](/images/04.jpeg){ .glightbox data-type="image" data-title="Network tools and typing a command by hand" data-desc-position="bottom" }
+  [![Command output sent back to the chat](/images/05-thumb.webp){ width="140" height="187" loading=lazy decoding="async" }](/images/05.jpeg){ .glightbox data-type="image" data-title="Command output sent back to the chat" data-desc-position="bottom" }
 </div>
 
 ## :material-lightning-bolt:{ .bolt } Quick and easy { .split }
