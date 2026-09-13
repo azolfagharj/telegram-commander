@@ -50,7 +50,8 @@ a phone. See [Menu → How the Telegram menu looks](menu.md#how-the-telegram-men
 1.  The bot posts a short **Running** line so you know it started.
 2.  The command runs on the machine where the bot is running.
 3.  The output comes back as a code block, with the exit code and how long it
-    took. Long output arrives as several messages in a row.
+    took. Short output stays in the chat as one or more messages; longer output
+    can arrive as a `.txt` file (see [Long results as a file](#long-results-as-a-file)).
 4.  You stay on the same menu you were on, so **Back** still leaves that
     category.
 
@@ -153,6 +154,20 @@ one job behaves differently from the rest:
 
 `timeout` gives this one command longer to finish, `workdir` chooses the
 directory it runs in, and `env` adds environment variables just for it.
+
+## Long results as a file
+
+You do not need `output` on a button. If you omit it, the button uses the root
+setting (`auto` unless you changed it): a short result stays as chat messages,
+and a result that would need more than two messages arrives as one `.txt`
+file. Write `output` on a button only when that one button should always send a
+file or always stay as text. `max_output_messages` cannot be set on a button.
+
+Set `output: file` on a button that always prints a lot (for example logs), or
+`output: text` to keep the old split-message behaviour for that button only.
+
+The root keys `output` and `max_output_messages` are documented under
+[Configuration → How much command output you see](../configuration.md#how-much-command-output-you-see).
 
 ## Values for the function
 

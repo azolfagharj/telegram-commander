@@ -5,14 +5,16 @@ import (
 	"html"
 	"strings"
 	"time"
+	"unicode"
 	"unicode/utf8"
 
+	"github.com/azolfagharj/telegram-commander/internal/config"
 	"github.com/azolfagharj/telegram-commander/internal/executor"
 )
 
 const (
 	telegramMaxMessageLen = 4096
-	maxResultChunks       = 10
+	telegramMaxCaptionLen = 1024
 )
 
 // buildResultHeader is the summary lines above stdout/stderr.
@@ -87,7 +89,7 @@ func splitResultChunks(header, stdout, stderr string) []string {
 
 	maxForCurrent := func() int {
 		m := telegramMaxMessageLen
-		if len(chunks) >= maxResultChunks-1 {
+		if len(chunks) >= config.MaxOutputMessagesCeiling-1 {
 			m -= len(tooLongNote(len(stdout) + len(stderr)))
 		}
 		return m
@@ -111,7 +113,7 @@ func splitResultChunks(header, stdout, stderr string) []string {
 		continued := false
 		i := 0
 		for i < len(lines) {
-			if len(chunks) >= maxResultChunks {
+			if len(chunks) >= config.MaxOutputMessagesCeiling {
 				leftover = true
 				break
 			}
@@ -175,7 +177,7 @@ func splitResultChunks(header, stdout, stderr string) []string {
 			} else {
 				i++
 			}
-			if len(chunks) >= maxResultChunks && (rest != "" || i < len(lines)) {
+			if len(chunks) >= config.MaxOutputMessagesCeiling && (rest != "" || i < len(lines)) {
 				leftover = true
 				break
 			}
@@ -183,7 +185,7 @@ func splitResultChunks(header, stdout, stderr string) []string {
 	}
 
 	if cur != "" {
-		if len(chunks) < maxResultChunks {
+		if len(chunks) < config.MaxOutputMessagesCeiling {
 			flush()
 		} else {
 			leftover = true
@@ -220,4 +222,96 @@ func splitRawPrefixToFit(s string, avail int) (part, rest string) {
 		n += size
 	}
 	return s[:n], s[n:]
+}
+
+// plainResultHeader is the plain-text summary used for file captions and bodies.
+func plainResultHeader(node *Node, res executor.Result, err error) string {
+	var body strings.Builder
+	body.WriteString(fmt.Sprintf("Button: %s\n", node.Name))
+	body.WriteString(fmt.Sprintf("Exit: %d\n", res.ExitCode))
+	body.WriteString(fmt.Sprintf("Duration: %s\n", res.Duration.Round(time.Millisecond)))
+	if res.TimedOut {
+		body.WriteString("Status: TIMED OUT\n")
+	}
+	if err != nil && !res.TimedOut {
+		body.WriteString("Error: " + err.Error() + "\n")
+	}
+	if res.Truncated {
+		body.WriteString("(output truncated)\n")
+	}
+	return body.String()
+}
+
+// buildResultFile builds a plain .txt body and a safe file name for a result.
+func buildResultFile(node *Node, res executor.Result, err error) (name string, body []byte) {
+	var b strings.Builder
+	b.WriteString(plainResultHeader(node, res, err))
+	b.WriteByte('\n')
+	b.WriteString("--- stdout ---\n")
+	b.WriteString(strings.TrimRight(res.Stdout, "\n"))
+	b.WriteByte('\n')
+	if res.Stderr != "" {
+		b.WriteByte('\n')
+		b.WriteString("--- stderr ---\n")
+		b.WriteString(strings.TrimRight(res.Stderr, "\n"))
+		b.WriteByte('\n')
+	}
+	return resultFileName(node.Name, time.Now()), []byte(b.String())
+}
+
+// resultCaption is the plain-text caption for a result document.
+func resultCaption(node *Node, res executor.Result, err error) string {
+	return truncateRunes(plainResultHeader(node, res, err), telegramMaxCaptionLen)
+}
+
+// resultDelivery reports whether the result should be sent as a document.
+func resultDelivery(mode string, chunkCount, maxMessages int) bool {
+	switch strings.ToLower(strings.TrimSpace(mode)) {
+	case "file":
+		return true
+	case "text":
+		return false
+	default: // auto
+		if maxMessages < 1 {
+			maxMessages = config.DefaultMaxOutputMessages
+		}
+		return chunkCount > maxMessages
+	}
+}
+
+func resultFileName(buttonName string, when time.Time) string {
+	slug := slugifyFileName(buttonName)
+	if slug == "" {
+		slug = "output"
+	}
+	return fmt.Sprintf("%s-%s.txt", slug, when.UTC().Format("20060102-150405"))
+}
+
+func slugifyFileName(s string) string {
+	var b strings.Builder
+	lastDash := true
+	for _, r := range strings.ToLower(s) {
+		switch {
+		case unicode.IsLetter(r) || unicode.IsDigit(r):
+			b.WriteRune(r)
+			lastDash = false
+		default:
+			if !lastDash {
+				b.WriteByte('-')
+				lastDash = true
+			}
+		}
+	}
+	return strings.Trim(b.String(), "-")
+}
+
+func truncateRunes(s string, max int) string {
+	if max <= 0 || s == "" {
+		return ""
+	}
+	if utf8.RuneCountInString(s) <= max {
+		return s
+	}
+	runes := []rune(s)
+	return string(runes[:max])
 }

@@ -16,6 +16,8 @@ function_directory: ""
 shell: "/bin/bash"
 timeout: "60s"
 max_output_bytes: 524288
+output: auto
+max_output_messages: 2
 menu_columns: 2
 page_size: 8
 confirm_ttl: "5m"
@@ -116,6 +118,7 @@ menu:
         icon: "📜"
         function: command
         command: "journalctl -u nginx.service -n 100 --no-pager"
+        output: file
   - name: "Network"
     type: category
     icon: "🌐"

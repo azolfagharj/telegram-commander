@@ -72,6 +72,8 @@ Le dossier `config-examples/` de la version contient un exemple minimal et un co
 | `shell` | chaîne | non | `/bin/bash` | [Shell](concepts/shell.md) utilisé comme `shell -c "<command>"` |
 | `timeout` | durée | non | `60s` | Délai maximal par défaut d’une commande |
 | `max_output_bytes` | entier | non | `524288` | Sortie maximale conservée par commande (voir [Quantité de sortie affichée](#how-much-command-output-you-see)) |
+| `output` | `auto` \| `text` \| `file` | non | `auto` | Comment le résultat de la commande est livré (voir [Quantité de sortie affichée](#how-much-command-output-you-see)) |
+| `max_output_messages` | entier | non | `2` | Uniquement à la racine. En mode `auto`, envoyer un fichier `.txt` lorsque le résultat dépasserait ce nombre de messages (1–10). Omettez-le pour garder `2` |
 | `workdir` | chaîne | non | dossier du processus | Dossier de travail par défaut |
 | `env` | objet | non | vide | Variables d’environnement supplémentaires |
 | `menu_columns` | entier | non | `2` | Boutons d’élément par ligne sous la zone de message |
@@ -89,30 +91,42 @@ Le dossier `config-examples/` de la version contient un exemple minimal et un co
 ### Quantité de sortie affichée { #how-much-command-output-you-see }
 
 Deux limites s’appliquent successivement. `max_output_bytes` est **votre**
-limite, en plus d’une limite Telegram non modifiable.
+limite, en plus d’une limite Telegram que vous ne pouvez pas changer.
 
 **1. Votre limite : `max_output_bytes`** (`524288` par défaut, soit 512 Ko)
 
-Pendant l’exécution, le bot conserve au maximum cette quantité pour la sortie
-normale et la sortie d’erreur, séparément. Le surplus est abandonné, mais la
-commande continue jusqu’à sa fin ou son `timeout`. Le résultat commence alors
-par `(output truncated)`.
+Pendant qu’une commande tourne, le bot conserve au plus cette quantité de
+sortie, comptée séparément pour la sortie normale et les erreurs. Au-delà, le
+reste est jeté, mais la commande continue jusqu’à la fin ou son `timeout`. Le
+résultat commence alors par `(output truncated)`.
 
-**2. Limite Telegram : un message contient au maximum 4096 octets**
+**2. Livraison du résultat : `output`** (`auto` par défaut)
 
-Si le résultat dépasse un message, le bot le divise en plusieurs messages liés
-et ordonnés. Les boutons apparaissent sur la dernière partie. La séparation se
-fait si possible entre les lignes.
+Telegram autorise au plus 4096 octets par message. Le bot peut découper un long
+résultat en plusieurs messages de réponse, ou envoyer toute la sortie comme
+fichier `.txt`. Choisissez le mode avec `output` à la racine, ou remplacez-le
+sur un bouton :
 
-Pour une sortie encore plus longue, le bot s’arrête après 10 messages et le
-dernier se termine par une note comme
-`(output too long; showing first N bytes)`, où `N` indique la quantité de sortie
-que vous avez réellement reçue.
+| Valeur | Comportement |
+|--------|--------------|
+| `auto` | Messages texte tant que le résultat tient dans `max_output_messages` messages (défaut `2`). S’il en faudrait plus, envoi d’un fichier `.txt`. |
+| `text` | Toujours découper en messages texte. S’arrête toujours après 10 messages et signale la coupure. |
+| `file` | Toujours envoyer un fichier `.txt` avec une légende courte (nom du bouton, code de sortie, durée). |
 
-Augmenter `max_output_bytes` conserve plus de sortie, mais vous en voyez
-toujours environ dix messages au maximum. Réduisez plutôt la sortie de la
-commande, par exemple `journalctl -u nginx | tail -n 50`, ou écrivez-la dans
-un fichier sur le serveur.
+En modes `auto` et `file`, le fichier contient l’en-tête plus stdout et
+stderr : augmenter `max_output_bytes` livre vraiment plus de sortie. Si l’envoi
+du fichier échoue, le bot repasse par les messages texte.
+
+Vous n’avez pas à écrire `output` ni `max_output_messages`. Si vous les omettez,
+le bot utilise `auto` et `2`. Un fichier déjà valide reste inchangé.
+`max_output_messages` n’existe qu’à la racine. Sur un bouton, omettez `output`
+pour utiliser la valeur racine ; ne le mettez que si ce bouton doit toujours
+envoyer un fichier ou rester en texte.
+
+Pour les longs journaux, préférez `output: auto` (défaut) ou `output: file` sur
+ce bouton. Vous pouvez aussi raccourcir la commande si seule une fin de journal
+suffit.
+
 
 ### Règles de `function_directory` { #function_directory-rules }
 
@@ -187,6 +201,7 @@ Cette section référence les champs. Pour une explication guidée, consultez
 | `workdir` | chaîne | non | Remplace le dossier de travail |
 | `env` | objet | non | Variables d’environnement du bouton |
 | `columns` | entier | non | Remplace le nombre de colonnes de la catégorie |
+| `output` | `auto` \| `text` \| `file` | non | Facultatif. Omettez-le pour utiliser le `output` racine. Ne le mettez que pour forcer ce bouton en `file` ou `text` (voir [Quantité de sortie affichée](#how-much-command-output-you-see)) |
 | `args` | chaîne | non | Arguments facultatifs de `script` |
 | Tout nom de paramètre déclaré | scalaire | selon la fonction | Valeur transmise, par exemple `url`, `host`, `unit` ou `lines` |
 

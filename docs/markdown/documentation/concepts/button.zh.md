@@ -147,6 +147,16 @@ icon: material/gesture-tap-button
 `timeout` 给这个命令更长的时间来完成，`workdir` 选择
 它运行的目录，`env` 专门为其添加了环境变量。
 
+## 长结果作为文件
+
+按钮上不必写 `output`。省略时使用根级设置（除非您改过，否则是 `auto`）：短结果仍是聊天消息，超过两条消息的结果会变成一个 `.txt` 文件。仅当该按钮应始终发文件或始终保持文本时才在按钮上写 `output`。`max_output_messages` 不能写在按钮上。
+
+对总是输出很多的按钮（例如日志）设置 `output: file`，
+或用 `output: text` 仅在该按钮上保留旧的拆分消息行为。
+
+根键 `output` 与 `max_output_messages` 见
+[配置 → 您看到多少命令输出](../configuration.md#how-much-command-output-you-see)。
+
 ## 函数的值
 
 直接在按钮上填写函数值。`command`、`path` 和 `args`

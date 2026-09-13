@@ -159,6 +159,23 @@ Die meisten globalen Einstellungen lassen sich für eine einzelne Schaltfläche
 `timeout` gibt diesem Befehl mehr Zeit, `workdir` wählt sein
 Arbeitsverzeichnis und `env` ergänzt Umgebungsvariablen nur für ihn.
 
+## Lange Ergebnisse als Datei
+
+`output` brauchen Sie an einem Button nicht. Lassen Sie es weg, gilt die
+Root-Einstellung (`auto`, sofern Sie sie nicht geändert haben): ein kurzes
+Ergebnis bleibt als Chatnachrichten, und ein Ergebnis, das mehr als zwei
+Nachrichten bräuchte, kommt als eine `.txt`-Datei. Setzen Sie `output` nur, wenn
+genau dieser Button immer eine Datei oder immer Text senden soll.
+`max_output_messages` gibt es an einem Button nicht.
+
+Setzen Sie `output: file` an einem Button, der oft viel ausgibt (zum Beispiel
+Logs), oder `output: text`, um das alte Split-Verhalten nur für diesen Button zu
+behalten.
+
+Die Root-Schlüssel `output` und `max_output_messages` sind unter
+[Konfiguration → Umfang der angezeigten Befehlsausgabe](../configuration.md#how-much-command-output-you-see)
+beschrieben.
+
 ## Werte für die Funktion
 
 Schreiben Sie Funktionswerte direkt auf die Schaltfläche. `command`, `path` und

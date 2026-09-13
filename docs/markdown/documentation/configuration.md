@@ -70,6 +70,8 @@ example.
 | `shell` | string | no | `/bin/bash` | [Shell](concepts/shell.md) used as `shell -c "<command>"` |
 | `timeout` | duration | no | `60s` | Default command timeout |
 | `max_output_bytes` | int | no | `524288` | Max output kept per command (see [How much command output you see](#how-much-command-output-you-see)) |
+| `output` | `auto` \| `text` \| `file` | no | `auto` | How command results are delivered (see [How much command output you see](#how-much-command-output-you-see)) |
+| `max_output_messages` | int | no | `2` | Root only. In `auto` mode, send a `.txt` file when the result would need more than this many messages (1–10). Omit it to keep `2` |
 | `workdir` | string | no | process cwd | Default working directory for commands |
 | `env` | map | no | empty | Extra environment variables for commands |
 | `menu_columns` | int | no | `2` | Item buttons per row under the message box |
@@ -97,23 +99,32 @@ separately for normal output and error output. Anything past that is dropped,
 but the command itself keeps running until it finishes or hits its `timeout`.
 When this happens, the result starts with `(output truncated)`.
 
-**2. Telegram's limit: one message holds at most 4096 bytes**
+**2. How the bot delivers the result: `output`** (default `auto`)
 
-This one is fixed by Telegram. If the result is longer than a single message,
-the bot splits it into several messages. Each part is sent as a reply to the
-part before it, so they stay together and in order, and the menu buttons appear
-on the last part. The split happens on line boundaries whenever possible, so
-lines are not cut in half.
+Telegram allows at most 4096 bytes in one message. The bot can either split a
+long result into several reply messages, or send the full result as a `.txt`
+file. Choose the mode with `output` on the root config, or override it on a
+single button:
 
-If the result is still very long after splitting, the bot stops after 10
-messages and the last one ends with a note like
-`(output too long; showing first N bytes)`, where `N` is how much of the output
-you actually received.
+| Value | Behaviour |
+|-------|-----------|
+| `auto` | Use text messages while the result fits in `max_output_messages` messages (default `2`). If it would need more, send one `.txt` file instead. |
+| `text` | Always split into text messages. Still stops after 10 messages and notes that more was cut. |
+| `file` | Always send one `.txt` file with a short caption (button name, exit code, duration). |
 
-So raising `max_output_bytes` lets the bot keep more output, but you still see
-at most about ten messages of it. For output that long, it is usually better to
-shorten the command itself (for example `journalctl -u nginx | tail -n 50`) or
-write the full output to a file on the server.
+In `auto` and `file` modes, the file includes the header plus stdout and
+stderr, so raising `max_output_bytes` really does deliver more output to you.
+If sending the file fails, the bot falls back to the text-message path.
+
+You do not need to write `output` or `max_output_messages`. If you omit them,
+the bot uses `auto` and `2`. A config that already works stays the same.
+`max_output_messages` exists only at the root. On a button, omit `output` to
+use the root value; set it only when that one button should always send a file
+or always stay as text.
+
+So for long logs, prefer `output: auto` (the default) or set `output: file` on
+that button. You can still shorten the command itself when you only need a
+tail of the log.
 
 ### `function_directory` rules
 
@@ -185,6 +196,7 @@ This section is the field reference. For a guided explanation with examples, see
 | `workdir` | string | no | Override working directory |
 | `env` | map | no | Extra env for this button |
 | `columns` | int | no | Override columns for this category |
+| `output` | `auto` \| `text` \| `file` | no | Optional. Omit it to use the root `output` value. Set it only to force this button to `file` or `text` (see [How much command output you see](#how-much-command-output-you-see)) |
 | `args` | string | no | Optional args for `script` |
 | Any declared parameter name | scalar | as declared by the function | Value passed to the selected function, for example `url`, `host`, `unit`, or `lines` |
 

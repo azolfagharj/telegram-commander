@@ -104,7 +104,7 @@ func loadDefinition(t *testing.T, body string) (*function.Registry, *function.De
 }
 
 func TestReservedButtonFieldParamNamesRejected(t *testing.T) {
-	names := []string{"name", "type", "icon", "id", "function", "confirm", "timeout", "workdir", "env", "columns", "items"}
+	names := []string{"name", "type", "icon", "id", "function", "confirm", "timeout", "workdir", "env", "columns", "items", "output"}
 	for _, name := range names {
 		t.Run(name, func(t *testing.T) {
 			dir := t.TempDir()

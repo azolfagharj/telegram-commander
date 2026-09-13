@@ -25,6 +25,7 @@ import (
 type apiServer struct {
 	mu         sync.Mutex
 	messages   []map[string]any
+	documents  []map[string]any
 	deletes    int
 	deletedIDs []string
 }
@@ -78,6 +79,41 @@ func (s *apiServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		s.deletes++
 		s.deletedIDs = append(s.deletedIDs, r.FormValue("message_id"))
 		writeOK(w, true)
+	case strings.HasSuffix(path, "/sendDocument"):
+		id := len(s.messages) + len(s.documents) + 1
+		var filename string
+		var size int
+		if r.MultipartForm != nil {
+			if files := r.MultipartForm.File["document"]; len(files) > 0 {
+				filename = files[0].Filename
+				size = int(files[0].Size)
+				f, err := files[0].Open()
+				if err == nil {
+					defer f.Close()
+					buf := make([]byte, size)
+					n, _ := f.Read(buf)
+					size = n
+					_ = buf
+				}
+			}
+		}
+		doc := map[string]any{
+			"chat_id":      r.FormValue("chat_id"),
+			"caption":      r.FormValue("caption"),
+			"reply_markup": r.FormValue("reply_markup"),
+			"filename":     filename,
+			"size":         size,
+			"message_id":   id,
+			"kind":         "document",
+		}
+		s.documents = append(s.documents, doc)
+		writeOK(w, map[string]any{
+			"message_id": id,
+			"date":       time.Now().Unix(),
+			"chat":       map[string]any{"id": 10, "type": "private"},
+			"document":   map[string]any{"file_name": filename, "file_size": size},
+			"caption":    doc["caption"],
+		})
 	default:
 		writeOK(w, true)
 	}
@@ -741,7 +777,7 @@ func TestLongCommandResultIsSplitAndReplied(t *testing.T) {
 			AllowedUsers: []string{"42"},
 		},
 		Menu: []config.ButtonNode{
-			{Name: "Echo", Type: "button", Function: "command", Command: "echo hi"},
+			{Name: "Echo", Type: "button", Function: "command", Command: "echo hi", Output: "text"},
 		},
 	}
 	cfg.ApplyDefaults()
@@ -903,4 +939,121 @@ func TestInlineParamsConfirmIntegration(t *testing.T) {
 	require.Empty(t, *command)
 	b.ProcessUpdate(ctx, textUpdate(42, "admin", "✅ Yes"))
 	require.Equal(t, "curl -fsSL --max-time 30 https://example.com/private?x=1&y=2", *command)
+}
+
+func TestAutoOutputSendsDocumentWhenTooManyChunks(t *testing.T) {
+	srv := &apiServer{}
+	ts := httptest.NewServer(srv)
+	defer ts.Close()
+
+	var stdout strings.Builder
+	line := strings.Repeat("abcdefghijklmnopqrstuvwxyz0123456789", 4)
+	for i := 0; i < 400; i++ {
+		stdout.WriteString(line)
+		stdout.WriteByte('\n')
+	}
+
+	fake := &executor.FakeExecutor{
+		Fn: func(_ context.Context, _ executor.Spec) (executor.Result, error) {
+			return executor.Result{ExitCode: 0, Stdout: stdout.String()}, nil
+		},
+	}
+
+	cfg := &config.Config{
+		Telegram: config.TelegramConfig{
+			API:          ts.URL,
+			BotToken:     "123:ABC",
+			AllowedUsers: []string{"42"},
+		},
+		Menu: []config.ButtonNode{
+			{Name: "Echo", Type: "button", Function: "command", Command: "echo hi"},
+		},
+	}
+	cfg.ApplyDefaults()
+
+	app := bot.NewApp(cfg, function.NewRegistry(), fake, nil)
+	b, err := app.NewBotWithOptions(
+		tgbot.WithHTTPClient(5*time.Second, ts.Client()),
+		tgbot.WithServerURL(ts.URL),
+		tgbot.WithSkipGetMe(),
+		tgbot.WithNotAsyncHandlers(),
+	)
+	require.NoError(t, err)
+
+	ctx := context.Background()
+	b.ProcessUpdate(ctx, startCommandUpdate(42, "admin", "/start"))
+	b.ProcessUpdate(ctx, textUpdate(42, "admin", "Echo"))
+
+	srv.mu.Lock()
+	defer srv.mu.Unlock()
+	require.Len(t, srv.documents, 1, "auto mode should send one document for long output")
+	var preMessages int
+	for _, m := range srv.messages {
+		text, _ := m["text"].(string)
+		if strings.Contains(text, "<pre>") {
+			preMessages++
+		}
+	}
+	require.Zero(t, preMessages, "chunked text result should not be sent when document succeeds")
+	doc := srv.documents[0]
+	require.Contains(t, fmt.Sprintf("%v", doc["filename"]), ".txt")
+	require.Contains(t, fmt.Sprintf("%v", doc["caption"]), "Button: Echo")
+	rm := fmt.Sprintf("%v", doc["reply_markup"])
+	require.Contains(t, rm, "Home")
+}
+
+func TestButtonOutputTextKeepsChunkedMessages(t *testing.T) {
+	srv := &apiServer{}
+	ts := httptest.NewServer(srv)
+	defer ts.Close()
+
+	var stdout strings.Builder
+	line := strings.Repeat("abcdefghijklmnopqrstuvwxyz0123456789", 4)
+	for i := 0; i < 400; i++ {
+		stdout.WriteString(line)
+		stdout.WriteByte('\n')
+	}
+
+	fake := &executor.FakeExecutor{
+		Fn: func(_ context.Context, _ executor.Spec) (executor.Result, error) {
+			return executor.Result{ExitCode: 0, Stdout: stdout.String()}, nil
+		},
+	}
+
+	cfg := &config.Config{
+		Telegram: config.TelegramConfig{
+			API:          ts.URL,
+			BotToken:     "123:ABC",
+			AllowedUsers: []string{"42"},
+		},
+		Menu: []config.ButtonNode{
+			{Name: "Echo", Type: "button", Function: "command", Command: "echo hi", Output: "text"},
+		},
+	}
+	cfg.ApplyDefaults()
+
+	app := bot.NewApp(cfg, function.NewRegistry(), fake, nil)
+	b, err := app.NewBotWithOptions(
+		tgbot.WithHTTPClient(5*time.Second, ts.Client()),
+		tgbot.WithServerURL(ts.URL),
+		tgbot.WithSkipGetMe(),
+		tgbot.WithNotAsyncHandlers(),
+	)
+	require.NoError(t, err)
+
+	ctx := context.Background()
+	b.ProcessUpdate(ctx, startCommandUpdate(42, "admin", "/start"))
+	b.ProcessUpdate(ctx, textUpdate(42, "admin", "Echo"))
+
+	srv.mu.Lock()
+	defer srv.mu.Unlock()
+	require.Empty(t, srv.documents)
+	var preMessages int
+	for _, m := range srv.messages {
+		text, _ := m["text"].(string)
+		if strings.Contains(text, "<pre>") {
+			preMessages++
+		}
+	}
+	require.Greater(t, preMessages, 1)
 }

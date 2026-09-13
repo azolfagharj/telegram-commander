@@ -158,6 +158,22 @@ que resulta útil cuando una tarea se comporta de forma distinta a las demás:
 `timeout` concede más tiempo a este comando, `workdir` elige el directorio
 donde se ejecuta y `env` añade variables de entorno solo para él.
 
+## Resultados largos como archivo
+
+No hace falta `output` en un botón. Si lo omite, el botón usa el ajuste de la
+raíz (`auto` salvo que lo haya cambiado): un resultado corto se queda como
+mensajes de chat, y uno que necesitaría más de dos mensajes llega como un
+archivo `.txt`. Ponga `output` solo cuando ese botón deba enviar siempre un
+archivo o quedarse siempre en texto. `max_output_messages` no se puede poner
+en un botón.
+
+Ponga `output: file` en un botón que siempre imprime mucho (por ejemplo
+registros), u `output: text` para conservar el comportamiento antiguo solo en ese
+botón.
+
+Las claves raíz `output` y `max_output_messages` están documentadas en
+[Configuración → Cuánta salida de comando verá](../configuration.md#how-much-command-output-you-see).
+
 ## Valores para la función
 
 Escriba los valores de la función directamente en el botón. `command`, `path`

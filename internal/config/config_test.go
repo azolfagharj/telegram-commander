@@ -400,3 +400,74 @@ func TestUnsupportedButtonTypeStillRejected(t *testing.T) {
 	cfg.ApplyDefaults()
 	require.Contains(t, cfg.Validate().Error(), `unsupported type "link"`)
 }
+
+func TestOutputModeValidation(t *testing.T) {
+	base := `
+telegram:
+  bot_token: "token"
+  allowed_users: ["1"]
+menu:
+  - name: Echo
+    type: button
+    function: command
+    command: "echo hi"
+`
+	t.Run("default auto", func(t *testing.T) {
+		cfg, err := config.Parse([]byte(base))
+		require.NoError(t, err)
+		require.Equal(t, config.DefaultOutput, cfg.Output)
+		require.Equal(t, config.DefaultMaxOutputMessages, cfg.MaxOutputMessages)
+		require.NoError(t, cfg.Validate().Err())
+	})
+	t.Run("invalid root output", func(t *testing.T) {
+		cfg, err := config.Parse([]byte("output: pdf\n" + base))
+		require.NoError(t, err)
+		err = cfg.Validate().Err()
+		require.Error(t, err)
+		require.Contains(t, err.Error(), "output")
+	})
+	t.Run("invalid max_output_messages", func(t *testing.T) {
+		cfg, err := config.Parse([]byte("max_output_messages: 99\n" + base))
+		require.NoError(t, err)
+		err = cfg.Validate().Err()
+		require.Error(t, err)
+		require.Contains(t, err.Error(), "max_output_messages")
+	})
+	t.Run("button output override", func(t *testing.T) {
+		yaml := `
+telegram:
+  bot_token: "token"
+  allowed_users: ["1"]
+output: auto
+menu:
+  - name: Echo
+    type: button
+    function: command
+    command: "echo hi"
+    output: file
+`
+		cfg, err := config.Parse([]byte(yaml))
+		require.NoError(t, err)
+		require.NoError(t, cfg.Validate().Err())
+		require.Equal(t, "file", cfg.Menu[0].Output)
+		require.NotContains(t, cfg.Menu[0].Params, "output")
+	})
+	t.Run("invalid button output", func(t *testing.T) {
+		yaml := `
+telegram:
+  bot_token: "token"
+  allowed_users: ["1"]
+menu:
+  - name: Echo
+    type: button
+    function: command
+    command: "echo hi"
+    output: zip
+`
+		cfg, err := config.Parse([]byte(yaml))
+		require.NoError(t, err)
+		err = cfg.Validate().Err()
+		require.Error(t, err)
+		require.Contains(t, err.Error(), "output")
+	})
+}

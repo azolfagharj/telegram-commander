@@ -69,6 +69,8 @@ description: Telegram Commander 的全部设置及其类型、默认值和含义
 | `shell` | 字符串 | 否 | `/bin/bash` | [Shell](concepts/shell.md) 用作 `shell -c "<command>"` |
 | `timeout` | 时长 | 否 | `60s` | 默认命令超时 |
 | `max_output_bytes` | 整数 | 否 | `524288` | 每个命令保留的最大输出（请参阅[可查看的命令输出量](#how-much-command-output-you-see)） |
+| `output` | `auto` \| `text` \| `file` | 否 | `auto` | 命令结果的送达方式（请参阅[可查看的命令输出量](#how-much-command-output-you-see)） |
+| `max_output_messages` | 整数 | 否 | `2` | 仅根级。在 `auto` 模式下，当结果需要超过该条数的消息时改为发送 `.txt` 文件（1–10）。省略则保持 `2` |
 | `workdir` | 字符串 | 否 | 进程cwd | 命令的默认工作目录 |
 | `env` | 映射 | 否 | 空 | 命令的额外环境变量 |
 | `menu_columns` | 整数 | 否 | `2` | 消息框下方每行的项目按钮 |
@@ -86,33 +88,34 @@ description: Telegram Commander 的全部设置及其类型、默认值和含义
 
 ### 您看到多少命令输出 { #how-much-command-output-you-see }
 
-两个限制依次适用。 `max_output_bytes` 是 **您的** 限制，并且
-超出了您无法更改的 Telegram 限制。
+两个限制依次适用。`max_output_bytes` 是 **您的** 限制，叠加在您无法更改的
+Telegram 限制之上。
 
 **1.您的限制：`max_output_bytes`**（默认 `524288`，因此 512 KB）
 
-当命令运行时，机器人最多保留这么多的输出（计算）
-分别用于正常输出和错误输出。过去的一切都被丢弃，
-但命令本身会继续运行，直到完成或达到 `timeout`。
-发生这种情况时，结果以 `(output truncated)` 开头。
+命令运行时，机器人最多保留这么多输出，普通输出与错误输出分别计算。超出部分
+会被丢弃，但命令本身会继续跑到结束或碰到 `timeout`。发生这种情况时，结果以
+`(output truncated)` 开头。
 
-**2. Telegram 的限制：一条消息最多可容纳 4096 字节**
+**2.结果如何送达：`output`**（默认 `auto`）
 
-这个问题已由 Telegram 修复。如果结果比一条消息长，
-机器人将其分成几条消息。每个部分都作为对
-在它之前分开，因此它们保持在一起并按顺序排列，并且菜单按钮出现
-在最后一部分。只要有可能，分割就会发生在行边界上，所以
-线条没有被切成两半。
+Telegram 单条消息最多 4096 字节。机器人可以把长结果拆成多条回复消息，或把完整
+输出作为 `.txt` 文件发送。用根配置里的 `output` 选择模式，或在单个按钮上覆盖：
 
-如果分割后结果仍然很长，机器人会在 10 后停止
-消息，最后一条以注释结尾，例如
-`(output too long; showing first N bytes)`，其中`N`是输出的多少
-你确实收到了。
+| 取值 | 行为 |
+|------|------|
+| `auto` | 结果能装进 `max_output_messages` 条消息（默认 `2`）时用文本；若需要更多，则发送一个 `.txt` 文件。 |
+| `text` | 始终拆成文本消息。仍会在 10 条后停止并注明被截断。 |
+| `file` | 始终发送一个带简短说明（按钮名、退出码、耗时）的 `.txt` 文件。 |
 
-因此，提高 `max_output_bytes` 可以让机器人保持更多输出，但你仍然会看到
-最多大约十条消息。对于那么长的输出，通常最好
-缩短命令本身（例如 `journalctl -u nginx | tail -n 50`）或
-将完整输出写入服务器上的文件。
+在 `auto` 与 `file` 模式下，文件包含页眉以及 stdout 与 stderr，因此提高
+`max_output_bytes` 会真正送达更多输出。若发送文件失败，机器人会回退到文本消息路径。
+
+不必写 `output` 或 `max_output_messages`。省略时机器人使用 `auto` 和 `2`。已经能用的配置保持不变。`max_output_messages` 只存在于根级。按钮上省略 `output` 即使用根值；仅当该按钮应始终发文件或始终保持文本时再写。
+
+对于很长的日志，优先使用 `output: auto`（默认）或在该按钮上设置 `output: file`。
+若只需日志尾部，仍可缩短命令本身。
+
 
 ### `function_directory` 规则 { #function_directory-rules }
 
@@ -183,6 +186,7 @@ description: Telegram Commander 的全部设置及其类型、默认值和含义
 | `workdir` | 字符串 | 否 | 覆盖工作目录 |
 | `env` | 映射 | 否 | 此按钮的额外环境 |
 | `columns` | 整数 | 否 | 覆盖此类别的列 |
+| `output` | `auto` \| `text` \| `file` | 否 | 可选。省略则使用根级 `output`。仅在要强制此按钮为 `file` 或 `text` 时再写（请参阅[可查看的命令输出量](#how-much-command-output-you-see)） |
 | `args` | 字符串 | 否 | `script` 的可选参数 |
 | 任何声明的参数名称 | 标量 | 正如函数所声明的 | 传递给所选函数的值，例如 `url`、`host`、`unit` 或 `lines` |
 

@@ -21,6 +21,8 @@ type Config struct {
 	PageSize          int               `yaml:"page_size"`
 	ConfirmTTL        Duration          `yaml:"confirm_ttl"`
 	EnableRunCommand  bool              `yaml:"enable_run_command"`
+	Output            string            `yaml:"output"` // auto | text | file
+	MaxOutputMessages int               `yaml:"max_output_messages"`
 	Logging           LoggingConfig     `yaml:"logging"`
 	Menu              []ButtonNode      `yaml:"menu"`
 
@@ -55,6 +57,7 @@ type ButtonNode struct {
 	WorkDir  string            `yaml:"workdir"`
 	Env      map[string]string `yaml:"env"`
 	Columns  *int              `yaml:"columns"`
+	Output   string            `yaml:"output"` // auto | text | file; empty inherits root
 	Items    []ButtonNode      `yaml:"items"`
 
 	// Params holds extra key/value pairs passed to the function (e.g. command).
@@ -72,7 +75,7 @@ type rawButtonNode ButtonNode
 var buttonNodeFields = map[string]struct{}{
 	"name": {}, "type": {}, "icon": {}, "id": {}, "function": {},
 	"confirm": {}, "timeout": {}, "workdir": {}, "env": {},
-	"columns": {}, "items": {}, "command": {}, "path": {}, "args": {},
+	"columns": {}, "output": {}, "items": {}, "command": {}, "path": {}, "args": {},
 }
 
 // UnmarshalYAML decodes standard button fields and collects function parameters.
@@ -161,13 +164,17 @@ func (d Duration) MarshalYAML() (any, error) {
 
 // Defaults applied when fields are omitted.
 const (
-	DefaultAPI            = "https://api.telegram.org"
-	DefaultShell          = "/bin/bash"
-	DefaultTimeout        = 60 * time.Second
-	DefaultMaxOutputBytes = 512 * 1024
-	DefaultMenuColumns    = 2
-	DefaultPageSize       = 8
-	DefaultConfirmTTL     = 5 * time.Minute
+	DefaultAPI               = "https://api.telegram.org"
+	DefaultShell             = "/bin/bash"
+	DefaultTimeout           = 60 * time.Second
+	DefaultMaxOutputBytes    = 512 * 1024
+	DefaultMenuColumns       = 2
+	DefaultPageSize          = 8
+	DefaultConfirmTTL        = 5 * time.Minute
+	DefaultOutput            = "auto"
+	DefaultMaxOutputMessages = 2
+	// MaxOutputMessagesCeiling is the hard cap on text result chunks.
+	MaxOutputMessagesCeiling = 10
 )
 
 // ApplyDefaults fills zero-value fields with defaults.
@@ -192,6 +199,12 @@ func (c *Config) ApplyDefaults() {
 	}
 	if c.ConfirmTTL.Duration == 0 {
 		c.ConfirmTTL.Duration = DefaultConfirmTTL
+	}
+	if c.Output == "" {
+		c.Output = DefaultOutput
+	}
+	if c.MaxOutputMessages == 0 {
+		c.MaxOutputMessages = DefaultMaxOutputMessages
 	}
 	if c.Logging.Logs == nil {
 		c.Logging.Logs = map[string]LoggerConfig{

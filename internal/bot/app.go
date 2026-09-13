@@ -1,6 +1,7 @@
 package bot
 
 import (
+	"bytes"
 	"context"
 	"crypto/tls"
 	"fmt"
@@ -605,6 +606,16 @@ func (a *App) deliverResult(ctx context.Context, b *bot.Bot, chatID, userID int6
 		}
 	}
 
+	mode := node.Output
+	if mode == "" {
+		mode = a.Cfg.Output
+	}
+	if resultDelivery(mode, len(chunks), a.Cfg.MaxOutputMessages) {
+		if a.sendResultDocument(ctx, b, chatID, node, res, err, view) {
+			return
+		}
+	}
+
 	var lastID int
 	for i, chunk := range chunks {
 		params := &bot.SendMessageParams{
@@ -625,4 +636,25 @@ func (a *App) deliverResult(ctx context.Context, b *bot.Bot, chatID, userID int6
 		}
 		lastID = msg.ID
 	}
+}
+
+func (a *App) sendResultDocument(ctx context.Context, b *bot.Bot, chatID int64, node *Node, res executor.Result, err error, view *MenuBuild) bool {
+	name, body := buildResultFile(node, res, err)
+	params := &bot.SendDocumentParams{
+		ChatID: chatID,
+		Document: &models.InputFileUpload{
+			Filename: name,
+			Data:     bytes.NewReader(body),
+		},
+		Caption: resultCaption(node, res, err),
+	}
+	if view != nil {
+		params.ReplyMarkup = view.Reply
+	}
+	msg, sendErr := b.SendDocument(ctx, params)
+	if sendErr != nil || msg == nil {
+		a.Log.Error("send result document", "err", sendErr)
+		return false
+	}
+	return true
 }

@@ -150,6 +150,22 @@ La plupart des réglages globaux peuvent être remplacés sur un bouton :
 `timeout` accorde plus de temps à cette commande, `workdir` choisit son dossier
 et `env` ajoute ses variables d’environnement.
 
+## Longs résultats en fichier
+
+Vous n’avez pas besoin de `output` sur un bouton. Si vous l’omettez, le bouton
+prend le réglage racine (`auto` sauf si vous l’avez changé) : un résultat court
+reste en messages de chat, et un résultat qui dépasserait deux messages arrive
+en un fichier `.txt`. N’écrivez `output` sur un bouton que si ce bouton doit
+toujours envoyer un fichier ou rester en texte. `max_output_messages` ne se
+règle pas sur un bouton.
+
+Mettez `output: file` sur un bouton qui imprime beaucoup (journaux, par
+exemple), ou `output: text` pour garder l’ancien découpage uniquement sur ce
+bouton.
+
+Les clés racine `output` et `max_output_messages` sont documentées sous
+[Configuration → Quantité de sortie affichée](../configuration.md#how-much-command-output-you-see).
+
 ## Valeurs de la fonction
 
 Écrivez les valeurs directement sur le bouton. `command`, `path` et `args` sont

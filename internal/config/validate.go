@@ -65,6 +65,18 @@ func (c *Config) Validate() ValidationErrors {
 			Message: "max_output_bytes must be positive",
 		})
 	}
+	if !validOutputMode(c.Output) {
+		errs = append(errs, ValidationError{
+			Path:    "output",
+			Message: fmt.Sprintf("unsupported output %q (expected auto, text, or file)", c.Output),
+		})
+	}
+	if c.MaxOutputMessages < 1 || c.MaxOutputMessages > MaxOutputMessagesCeiling {
+		errs = append(errs, ValidationError{
+			Path:    "max_output_messages",
+			Message: fmt.Sprintf("max_output_messages must be between 1 and %d", MaxOutputMessagesCeiling),
+		})
+	}
 	if c.MenuColumns < 1 {
 		errs = append(errs, ValidationError{
 			Path:    "menu_columns",
@@ -255,8 +267,23 @@ func validateButtons(nodes []ButtonNode, path string) ValidationErrors {
 				Message: "timeout must be positive",
 			})
 		}
+		if n.Output != "" && !validOutputMode(n.Output) {
+			errs = append(errs, ValidationError{
+				Path:    p + ".output",
+				Message: fmt.Sprintf("unsupported output %q (expected auto, text, or file)", n.Output),
+			})
+		}
 	}
 	return errs
+}
+
+func validOutputMode(mode string) bool {
+	switch strings.ToLower(strings.TrimSpace(mode)) {
+	case "auto", "text", "file":
+		return true
+	default:
+		return false
+	}
 }
 
 // AbsFunctionDirectory returns an absolute path for function_directory if set.

@@ -26,7 +26,7 @@ var ReservedNames = map[string]struct{}{
 var reservedParamNames = map[string]struct{}{
 	"name": {}, "type": {}, "icon": {}, "id": {}, "function": {},
 	"confirm": {}, "timeout": {}, "workdir": {}, "env": {},
-	"columns": {}, "items": {},
+	"columns": {}, "items": {}, "output": {},
 }
 
 // ParamSpec describes a single function parameter.

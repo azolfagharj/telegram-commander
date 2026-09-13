@@ -24,6 +24,7 @@ type Node struct {
 	WorkDir  string
 	Env      map[string]string
 	Columns  int
+	Output   string
 	Command  string
 	Path     string
 	Args     string
@@ -80,6 +81,7 @@ func walk(idx *Index, n *config.ButtonNode, parentID, id string, defaultColumns 
 		WorkDir:  n.WorkDir,
 		Env:      n.Env,
 		Columns:  cols,
+		Output:   n.Output,
 		Command:  n.Command,
 		Path:     n.Path,
 		Args:     n.Args,
