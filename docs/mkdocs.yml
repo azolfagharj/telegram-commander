@@ -100,6 +100,7 @@ nav:
         - Shell: documentation/concepts/shell.md
         - Allowed users: documentation/concepts/allowed-users.md
         - Confirmation: documentation/concepts/confirmation.md
+        - Delivery retries: documentation/concepts/delivery-retry.md
         - How the bot connects: documentation/concepts/long-polling.md
         - Audit log: documentation/concepts/audit-log.md
     # The first entry is the section's own page, so "Functions" is clickable.
@@ -193,6 +194,7 @@ plugins:
             Shell: Shell
             Allowed users: Zugelassene Benutzer
             Confirmation: Bestätigung
+            Delivery retries: Erneute Zustellversuche
             How the bot connects: Verbindung des Bots
             Audit log: Audit-Protokoll
             Functions: Funktionen
@@ -240,6 +242,7 @@ plugins:
             Shell: Shell
             Allowed users: Utilisateurs autorisés
             Confirmation: Confirmation
+            Delivery retries: Nouvelles tentatives d’envoi
             How the bot connects: Connexion du bot
             Audit log: Journal d’audit
             Functions: Fonctions
@@ -286,6 +289,7 @@ plugins:
             Shell: Shell
             Allowed users: Usuarios permitidos
             Confirmation: Confirmación
+            Delivery retries: Reintentos de entrega
             How the bot connects: Cómo se conecta el bot
             Audit log: Registro de auditoría
             Functions: Funciones
@@ -332,6 +336,7 @@ plugins:
             Shell: Shell
             Allowed users: Разрешённые пользователи
             Confirmation: Подтверждение
+            Delivery retries: Повторные попытки доставки
             How the bot connects: Как бот подключается
             Audit log: Журнал аудита
             Functions: Функции
@@ -376,6 +381,7 @@ plugins:
             Shell: Shell
             Allowed users: 允许的用户
             Confirmation: 确认
+            Delivery retries: 投递重试
             How the bot connects: 机器人如何连接
             Audit log: 审计日志
             Functions: 函数
@@ -422,6 +428,7 @@ plugins:
             Shell: Shell
             Allowed users: کاربران مجاز
             Confirmation: تأیید
+            Delivery retries: تلاش مجدد برای ارسال
             How the bot connects: نحوهٔ اتصال ربات
             Audit log: گزارش حسابرسی
             Functions: توابع

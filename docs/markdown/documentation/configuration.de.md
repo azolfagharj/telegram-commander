@@ -82,6 +82,9 @@ vollständiges Beispiel.
 | `menu_columns` | Ganzzahl | nein | `2` | Menüeinträge pro Zeile unter dem Nachrichtenfeld |
 | `page_size` | Ganzzahl | nein | `8` | Einträge pro Seite vor der Seitennavigation |
 | `confirm_ttl` | Dauer | nein | `5m` | Gültigkeitsdauer einer Aufforderung zur [Bestätigung](concepts/confirmation.md) |
+| `delivery_retry_backoff` | Dauer | nein | `1s` | Nur Root. Anfängliche Wartezeit vor dem ersten Wiederholungsversuch nach einem fehlgeschlagenen Sendevorgang. Siehe [Erneute Zustellversuche](concepts/delivery-retry.md) |
+| `delivery_retry_backoff_max` | Dauer | nein | `30s` | Nur Root. Längste Wartezeit zwischen Wiederholungsversuchen. Siehe [Erneute Zustellversuche](concepts/delivery-retry.md) |
+| `delivery_retry_ttl` | Dauer | nein | `2m` | Nur Root. Gesamtzeit, die der Bot weiter versucht, bevor er aufgibt (nur im Server-Log vermerkt). Siehe [Erneute Zustellversuche](concepts/delivery-retry.md) |
 | `enable_run_command` | bool | nein | `false` | Zeigt eine Schaltfläche **`$ >_ Run Command`**, die die nächste Nachricht als Shell-Befehl ausführt. Standardmäßig aus. Jeder Bot-Benutzer kann damit jeden Befehl auf dem Host ausführen. Aktivieren Sie dies nur, wenn Sie allen zugelassenen Benutzern vertrauen. Unter `telegram` ist dieser Schlüssel ungültig. |
 | `logging` | Objekt | nein | integrierter Standard-Logger | Benannte Logger (siehe unten) |
 
@@ -119,7 +122,8 @@ oder überschreiben Sie ihn an einem einzelnen Button:
 
 In den Modi `auto` und `file` enthält die Datei Kopfzeile sowie stdout und
 stderr — ein höheres `max_output_bytes` liefert Ihnen also wirklich mehr Ausgabe.
-Schlägt das Senden der Datei fehl, fällt der Bot auf den Textnachrichten-Weg zurück.
+Schlägt das Senden der Datei fehl, versucht der Bot es automatisch erneut und
+wechselt erst nach Aufgabe auf den Textnachrichten-Weg. Siehe [Erneute Zustellversuche](concepts/delivery-retry.md).
 
 `output` und `max_output_messages` müssen Sie nicht schreiben. Lassen Sie sie
 weg, verwendet der Bot `auto` und `2`. Eine bereits funktionierende Datei
@@ -267,6 +271,7 @@ Schaltfläche, Exit-Code und Dauer). Siehe
 
 - [In der CLI ausführen](installation/download-and-run.md) — eine erste Konfiguration erstellen und ausführen
 - [Menü](concepts/menu.md) — der Menübaum im Detail
+- [Erneute Zustellversuche](concepts/delivery-retry.md) — automatische Wiederholung nach einem kurzen Netzwerkausfall
 - [Ausgabe steuern](output-control.md) — Nachrichten oder eine `.txt`-Datei, mit jeder Kombination aus Root und Button
 - [Funktionen](functions/index.md) — Bedeutung von `function`, `command`, `path` und `args`
 - [CLI](cli.md) — Ihre Konfiguration validieren und ausführen

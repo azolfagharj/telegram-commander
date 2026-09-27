@@ -140,6 +140,15 @@ by hand. Click any picture to see it full size.
 
     [:octicons-arrow-right-24: How much output you see](documentation/configuration.md#how-much-command-output-you-see)
 
+-   :material-refresh:{ .lg .middle } __Keeps trying__
+
+    ---
+
+    A short network drop retries the send automatically instead of losing
+    the result.
+
+    [:octicons-arrow-right-24: Delivery retries](documentation/concepts/delivery-retry.md)
+
 -   :material-shield-lock:{ .lg .middle } __Controlled and recorded__
 
     ---

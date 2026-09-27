@@ -471,3 +471,70 @@ menu:
 		require.Contains(t, err.Error(), "output")
 	})
 }
+
+func TestDeliveryRetryValidation(t *testing.T) {
+	base := `
+telegram:
+  bot_token: "token"
+  allowed_users: ["1"]
+menu:
+  - name: Echo
+    type: button
+    function: command
+    command: "echo hi"
+`
+	t.Run("defaults when omitted", func(t *testing.T) {
+		cfg, err := config.Parse([]byte(base))
+		require.NoError(t, err)
+		require.Equal(t, config.DefaultDeliveryRetryBackoff, cfg.DeliveryRetryBackoff.Duration)
+		require.Equal(t, config.DefaultDeliveryRetryBackoffMax, cfg.DeliveryRetryBackoffMax.Duration)
+		require.Equal(t, config.DefaultDeliveryRetryTTL, cfg.DeliveryRetryTTL.Duration)
+		require.NoError(t, cfg.Validate().Err())
+	})
+	t.Run("valid custom values", func(t *testing.T) {
+		yaml := "delivery_retry_backoff: \"2s\"\ndelivery_retry_backoff_max: \"10s\"\ndelivery_retry_ttl: \"1m\"\n" + base
+		cfg, err := config.Parse([]byte(yaml))
+		require.NoError(t, err)
+		require.NoError(t, cfg.Validate().Err())
+	})
+	t.Run("negative backoff rejected", func(t *testing.T) {
+		yaml := "delivery_retry_backoff: \"-1s\"\n" + base
+		cfg, err := config.Parse([]byte(yaml))
+		require.NoError(t, err)
+		err = cfg.Validate().Err()
+		require.Error(t, err)
+		require.Contains(t, err.Error(), "delivery_retry_backoff")
+	})
+	t.Run("negative backoff_max rejected", func(t *testing.T) {
+		yaml := "delivery_retry_backoff_max: \"-1s\"\n" + base
+		cfg, err := config.Parse([]byte(yaml))
+		require.NoError(t, err)
+		err = cfg.Validate().Err()
+		require.Error(t, err)
+		require.Contains(t, err.Error(), "delivery_retry_backoff_max")
+	})
+	t.Run("negative ttl rejected", func(t *testing.T) {
+		yaml := "delivery_retry_ttl: \"-1s\"\n" + base
+		cfg, err := config.Parse([]byte(yaml))
+		require.NoError(t, err)
+		err = cfg.Validate().Err()
+		require.Error(t, err)
+		require.Contains(t, err.Error(), "delivery_retry_ttl")
+	})
+	t.Run("backoff_max less than backoff rejected", func(t *testing.T) {
+		yaml := "delivery_retry_backoff: \"10s\"\ndelivery_retry_backoff_max: \"5s\"\n" + base
+		cfg, err := config.Parse([]byte(yaml))
+		require.NoError(t, err)
+		err = cfg.Validate().Err()
+		require.Error(t, err)
+		require.Contains(t, err.Error(), "delivery_retry_backoff_max")
+	})
+	t.Run("ttl less than backoff rejected", func(t *testing.T) {
+		yaml := "delivery_retry_backoff: \"1m\"\ndelivery_retry_ttl: \"10s\"\n" + base
+		cfg, err := config.Parse([]byte(yaml))
+		require.NoError(t, err)
+		err = cfg.Validate().Err()
+		require.Error(t, err)
+		require.Contains(t, err.Error(), "delivery_retry_ttl")
+	})
+}

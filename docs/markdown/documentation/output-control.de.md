@@ -757,11 +757,12 @@ kurze Beschriftung.
     - Welches `max_output_messages` Sie auch schreiben: zehn Nachrichten
       bleiben die harte Obergrenze.
 
-!!! note "Scheitert der Upload, erhalten Sie das Ergebnis trotzdem"
+!!! note "Schlägt ein Sendevorgang fehl, versucht der Bot es zuerst erneut"
 
-    Kann die Datei nicht gesendet werden — kein Netz, Telegram lehnt sie ab —,
-    fällt der Bot auf Chatnachrichten zurück, damit das Ergebnis nicht
-    verloren geht.
+    Kann die Datei nicht gesendet werden — kein Netz, Telegram bittet um
+    Verlangsamung —, versucht der Bot es automatisch mit wachsender Wartezeit
+    erneut. Erst wenn er aufgibt, fällt er auf Chatnachrichten zurück, damit
+    ein kurzer Ausfall das Ergebnis nicht kostet. Siehe [Erneute Zustellversuche](concepts/delivery-retry.md).
 
 ## :material-console: Run Command nutzt die Root-Einstellung
 
@@ -805,5 +806,13 @@ deshalb kein eigenes `output`. Sie folgt immer `output` und
     Shell, Arbeitsverzeichnis und Zeitlimit, mit denen Ihre Befehle laufen.
 
     [:octicons-arrow-right-24: Shell](concepts/shell.md)
+
+-   :material-refresh:{ .middle } __Erneute Zustellversuche__
+
+    ---
+
+    Was passiert, wenn ein Sendevorgang an Telegram fehlschlägt.
+
+    [:octicons-arrow-right-24: Erneute Zustellversuche](concepts/delivery-retry.md)
 
 </div>

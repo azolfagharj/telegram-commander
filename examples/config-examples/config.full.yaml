@@ -22,6 +22,12 @@ menu_columns: 2
 page_size: 8
 confirm_ttl: "5m"
 
+# Retry settings for outbound Telegram sends: wait 1s, double up to 30s,
+# and give up (log only) after trying for 2m without success.
+delivery_retry_backoff: "1s"
+delivery_retry_backoff_max: "30s"
+delivery_retry_ttl: "2m"
+
 logging:
   logs:
     default:

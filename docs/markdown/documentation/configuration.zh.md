@@ -76,6 +76,9 @@ description: Telegram Commander 的全部设置及其类型、默认值和含义
 | `menu_columns` | 整数 | 否 | `2` | 消息框下方每行的项目按钮 |
 | `page_size` | 整数 | 否 | `8` | 分页前每页的项目数 |
 | `confirm_ttl` | 时长 | 否 | `5m` | [confirmation](concepts/confirmation.md) 提示保持有效的时间有多长 |
+| `delivery_retry_backoff` | 时长 | 否 | `1s` | 仅根级。发送失败后首次重试前的初始等待时间。参见[投递重试](concepts/delivery-retry.md) |
+| `delivery_retry_backoff_max` | 时长 | 否 | `30s` | 仅根级。重试之间的最长等待时间。参见[投递重试](concepts/delivery-retry.md) |
+| `delivery_retry_ttl` | 时长 | 否 | `2m` | 仅根级。机器人放弃前持续重试的总时长（仅记录在服务器日志中）。参见[投递重试](concepts/delivery-retry.md) |
 | `enable_run_command` | 布尔值 | 否 | `false` | 显示 **`$ >_ Run Command`** 按钮，将下一条消息作为 shell 命令运行。默认关闭。任何可使用机器人的人都能在主机上运行任意命令，因此只能在信任所有允许用户时启用。此键放在 `telegram` 下无效。 |
 | `logging` | 对象 | 否 | 内置默认记录器 | 命名记录器（见下文） |
 
@@ -109,7 +112,8 @@ Telegram 单条消息最多 4096 字节。机器人可以把长结果拆成多�
 | `file` | 始终发送一个带简短说明（按钮名、退出码、耗时）的 `.txt` 文件。 |
 
 在 `auto` 与 `file` 模式下，文件包含页眉以及 stdout 与 stderr，因此提高
-`max_output_bytes` 会真正送达更多输出。若发送文件失败，机器人会回退到文本消息路径。
+`max_output_bytes` 会真正送达更多输出。若发送文件失败，机器人会先自动重试，
+只有放弃后才会回退到文本消息路径。参见[投递重试](concepts/delivery-retry.md)。
 
 不必写 `output` 或 `max_output_messages`。省略时机器人使用 `auto` 和 `2`。已经能用的配置保持不变。`max_output_messages` 只存在于根级。按钮上省略 `output` 即使用根值；仅当该按钮应始终发文件或始终保持文本时再写。
 
@@ -244,6 +248,7 @@ Telegram 单条消息最多 4096 字节。机器人可以把长结果拆成多�
 
 - [在 CLI](installation/download-and-run.md) 中运行 — 构建并运行第一个配置
 - [菜单](concepts/menu.md) — 深入了解菜单树
+- [投递重试](concepts/delivery-retry.md) — 短暂网络中断后的自动重试
 - [控制输出](output-control.md) — 消息还是 `.txt` 文件，以及根级与按钮的每一种组合
 - [函数](functions/index.md) — `function`、`command`、`path` 和 `args` 的含义
 - [CLI](cli.md) — 验证并使用您的配置运行

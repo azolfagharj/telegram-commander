@@ -83,6 +83,9 @@ La carpeta `config-examples/` de la versión contiene un ejemplo mínimo y otro 
 | `menu_columns` | entero | no | `2` | Botones de elementos por fila bajo el cuadro de mensajes |
 | `page_size` | entero | no | `8` | Elementos por página antes de paginar |
 | `confirm_ttl` | duración | no | `5m` | Vigencia de una [confirmación](concepts/confirmation.md) |
+| `delivery_retry_backoff` | duración | no | `1s` | Solo raíz. Espera inicial antes del primer reintento tras un envío fallido. Vea [Reintentos de entrega](concepts/delivery-retry.md) |
+| `delivery_retry_backoff_max` | duración | no | `30s` | Solo raíz. Espera máxima entre reintentos. Vea [Reintentos de entrega](concepts/delivery-retry.md) |
+| `delivery_retry_ttl` | duración | no | `2m` | Solo raíz. Tiempo total que el bot sigue intentando antes de rendirse (solo se registra en el servidor). Vea [Reintentos de entrega](concepts/delivery-retry.md) |
 | `enable_run_command` | booleano | no | `false` | Muestra un botón **`$ >_ Run Command`** que ejecuta el siguiente mensaje como comando de shell. Está desactivado de forma predeterminada. Cualquier persona que pueda usar el bot podrá ejecutar cualquier comando en el host, así que actívelo solo si confía en todos los usuarios permitidos. Esta clave no es válida bajo `telegram`. |
 | `logging` | objeto | no | registrador integrado predeterminado | Registradores con nombre (consulte más abajo) |
 
@@ -120,7 +123,8 @@ botón concreto:
 
 En los modos `auto` y `file`, el archivo incluye el encabezado más stdout y
 stderr, así que subir `max_output_bytes` sí entrega más salida. Si falla el
-envío del archivo, el bot vuelve a la vía de mensajes de texto.
+envío del archivo, el bot reintenta automáticamente y solo vuelve a la vía de
+mensajes de texto después de rendirse. Vea [Reintentos de entrega](concepts/delivery-retry.md).
 
 No hace falta escribir `output` ni `max_output_messages`. Si los omite, el bot
 usa `auto` y `2`. Un archivo que ya funciona no cambia.
@@ -265,6 +269,7 @@ código de salida y la duración. Consulte
 
 - [Ejecutar en la CLI](installation/download-and-run.md) — cree y ejecute una primera configuración
 - [Menú](concepts/menu.md) — el árbol del menú en detalle
+- [Reintentos de entrega](concepts/delivery-retry.md) — reintento automático tras una breve caída de red
 - [Controlar la salida](output-control.md) — mensajes o un archivo `.txt`, con todas las combinaciones de raíz y botón
 - [Funciones](functions/index.md) — significado de `function`, `command`, `path` y `args`
 - [CLI](cli.md) — valide y ejecute su configuración

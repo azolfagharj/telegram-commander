@@ -79,6 +79,9 @@ Le dossier `config-examples/` de la version contient un exemple minimal et un co
 | `menu_columns` | entier | non | `2` | Boutons d’élément par ligne sous la zone de message |
 | `page_size` | entier | non | `8` | Éléments par page avant pagination |
 | `confirm_ttl` | durée | non | `5m` | Durée de validité d’une [confirmation](concepts/confirmation.md) |
+| `delivery_retry_backoff` | durée | non | `1s` | Racine uniquement. Attente initiale avant la première nouvelle tentative après un envoi en échec. Voir [Nouvelles tentatives d’envoi](concepts/delivery-retry.md) |
+| `delivery_retry_backoff_max` | durée | non | `30s` | Racine uniquement. Attente maximale entre les tentatives. Voir [Nouvelles tentatives d’envoi](concepts/delivery-retry.md) |
+| `delivery_retry_ttl` | durée | non | `2m` | Racine uniquement. Durée totale pendant laquelle le bot continue d’essayer avant d’abandonner (uniquement noté dans le journal serveur). Voir [Nouvelles tentatives d’envoi](concepts/delivery-retry.md) |
 | `enable_run_command` | booléen | non | `false` | Affiche **`$ >_ Run Command`** pour exécuter le message suivant comme commande shell. Cette option est désactivée par défaut. Toute personne autorisée peut alors exécuter n’importe quelle commande sur l’hôte : activez-la uniquement si vous faites confiance à tous les utilisateurs autorisés. Cette clé est invalide sous `telegram`. |
 | `logging` | objet | non | journal par défaut | Journaux nommés (voir ci-dessous) |
 
@@ -115,7 +118,8 @@ sur un bouton :
 
 En modes `auto` et `file`, le fichier contient l’en-tête plus stdout et
 stderr : augmenter `max_output_bytes` livre vraiment plus de sortie. Si l’envoi
-du fichier échoue, le bot repasse par les messages texte.
+du fichier échoue, le bot réessaie automatiquement et ne repasse par les
+messages texte qu’après avoir abandonné. Voir [Nouvelles tentatives d’envoi](concepts/delivery-retry.md).
 
 Vous n’avez pas à écrire `output` ni `max_output_messages`. Si vous les omettez,
 le bot utilise `auto` et `2`. Un fichier déjà valide reste inchangé.
@@ -257,6 +261,7 @@ de sortie et la durée. Consultez [Journal d’audit](concepts/audit-log.md).
 
 - [Exécuter dans la CLI](installation/download-and-run.md) — créer et lancer une première configuration
 - [Menu](concepts/menu.md) — l’arborescence en détail
+- [Nouvelles tentatives d’envoi](concepts/delivery-retry.md) — nouvel essai automatique après une courte coupure réseau
 - [Contrôler la sortie](output-control.md) — messages ou fichier `.txt`, avec chaque combinaison racine et bouton
 - [Fonctions](functions/index.md) — signification de `function`, `command`, `path` et `args`
 - [CLI](cli.md) — valider et exécuter la configuration

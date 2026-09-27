@@ -760,11 +760,13 @@ courte légende.
     - Quel que soit le `max_output_messages` écrit, dix messages restent le
       plafond absolu.
 
-!!! note "Si l’envoi échoue, vous recevez quand même le résultat"
+!!! note "Si un envoi échoue, le bot réessaie d’abord"
 
     Lorsque le fichier ne peut pas être envoyé, faute de réseau ou parce que
-    Telegram le refuse, le bot revient aux messages de conversation afin que le
-    résultat ne soit pas perdu.
+    Telegram demande de ralentir, le bot réessaie automatiquement avec une
+    attente croissante. Ce n’est qu’après avoir abandonné qu’il revient aux
+    messages de conversation, pour qu’une courte coupure ne coûte pas le
+    résultat. Voir [Nouvelles tentatives d’envoi](concepts/delivery-retry.md).
 
 ## :material-console: Exécuter une commande suit le réglage racine { #run-command-uses-the-root-setting }
 
@@ -808,5 +810,13 @@ pas de `output` propre. Il suit toujours les `output` et
     Le shell, le dossier de travail et le délai utilisés par vos commandes.
 
     [:octicons-arrow-right-24: Shell](concepts/shell.md)
+
+-   :material-refresh:{ .middle } __Nouvelles tentatives d’envoi__
+
+    ---
+
+    Ce qui se passe quand un envoi à Telegram échoue en cours de route.
+
+    [:octicons-arrow-right-24: Nouvelles tentatives d’envoi](concepts/delivery-retry.md)
 
 </div>

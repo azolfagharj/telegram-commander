@@ -25,5 +25,6 @@ icon: material/lan-disconnect
 ## مرتبط
 
 - [کاربران مجاز](allowed-users.md) — چه کسانی می‌توانند از ربات استفاده کنند
+- [تلاش مجدد برای ارسال](delivery-retry.md) — در قطعی این اتصال بر سر نتیجه چه می‌آید
 - [CLI ← run](../cli.md#run) — اجرای ربات در پیش‌زمینه
 - [اجرا به‌صورت سرویس](../installation/run-as-a-service.md) — روشن نگه داشتن ربات

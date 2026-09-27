@@ -736,10 +736,12 @@ caption.
     - Whatever `max_output_messages` you write, ten messages is still the hard
       ceiling.
 
-!!! note "If the upload fails, you still get the result"
+!!! note "If a send fails, the bot tries again first"
 
-    When the file cannot be sent — no network, Telegram refusing it — the bot
-    falls back to chat messages so the result is not lost.
+    When the file cannot be sent — no network, Telegram asking to slow down —
+    the bot retries automatically with a growing wait. Only once it gives up
+    does it fall back to chat messages, so a short drop does not cost you the
+    result. See [Delivery retries](concepts/delivery-retry.md).
 
 ## :material-console: Run Command uses the root setting
 
@@ -782,5 +784,13 @@ The **`$ >_ Run Command`** button is not part of your menu, so it has no
     The shell, working directory, and timeout your commands run with.
 
     [:octicons-arrow-right-24: Shell](concepts/shell.md)
+
+-   :material-refresh:{ .middle } __Delivery retries__
+
+    ---
+
+    What happens when a send to Telegram fails partway through.
+
+    [:octicons-arrow-right-24: Delivery retries](concepts/delivery-retry.md)
 
 </div>

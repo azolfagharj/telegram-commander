@@ -28,6 +28,15 @@ type apiServer struct {
 	documents  []map[string]any
 	deletes    int
 	deletedIDs []string
+
+	// Optional failure injection for delivery-retry tests.
+	// failSendN: first N sendMessage/sendDocument calls return an error.
+	// failSendCode: Telegram error_code (default 500). Use 403/400 for permanent.
+	// failRetryAfter: parameters.retry_after when failSendCode is 429.
+	failSendN      int
+	failSendCode   int
+	failRetryAfter int
+	sendAttempts   int
 }
 
 func (s *apiServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -42,6 +51,9 @@ func (s *apiServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			"id": 1, "is_bot": true, "first_name": "Test", "username": "testbot",
 		})
 	case strings.HasSuffix(path, "/sendMessage"):
+		if s.injectSendFailure(w) {
+			return
+		}
 		id := len(s.messages) + 1
 		m := map[string]any{
 			"chat_id":          r.FormValue("chat_id"),
@@ -80,6 +92,9 @@ func (s *apiServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		s.deletedIDs = append(s.deletedIDs, r.FormValue("message_id"))
 		writeOK(w, true)
 	case strings.HasSuffix(path, "/sendDocument"):
+		if s.injectSendFailure(w) {
+			return
+		}
 		id := len(s.messages) + len(s.documents) + 1
 		var filename string
 		var size int
@@ -119,8 +134,45 @@ func (s *apiServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// injectSendFailure returns true when the request was answered with an error.
+// Caller must hold s.mu.
+func (s *apiServer) injectSendFailure(w http.ResponseWriter) bool {
+	s.sendAttempts++
+	if s.failSendN <= 0 {
+		return false
+	}
+	s.failSendN--
+	code := s.failSendCode
+	if code == 0 {
+		code = 500
+	}
+	writeAPIError(w, code, s.failRetryAfter)
+	return true
+}
+
 func writeOK(w http.ResponseWriter, result any) {
 	_ = json.NewEncoder(w).Encode(map[string]any{"ok": true, "result": result})
+}
+
+// writeAPIError returns a Telegram-shaped error body. The go-telegram/bot
+// client keys off error_code in JSON, not the HTTP status.
+func writeAPIError(w http.ResponseWriter, code, retryAfter int) {
+	body := map[string]any{
+		"ok":          false,
+		"error_code":  code,
+		"description": "injected test failure",
+	}
+	if code == http.StatusTooManyRequests {
+		body["parameters"] = map[string]any{"retry_after": retryAfter}
+	}
+	_ = json.NewEncoder(w).Encode(body)
+}
+
+// tinyDeliveryRetry sets very short retry waits so integration tests stay fast.
+func tinyDeliveryRetry(cfg *config.Config) {
+	cfg.DeliveryRetryBackoff = config.Duration{Duration: time.Millisecond}
+	cfg.DeliveryRetryBackoffMax = config.Duration{Duration: 2 * time.Millisecond}
+	cfg.DeliveryRetryTTL = config.Duration{Duration: 500 * time.Millisecond}
 }
 
 func startCommandUpdate(userID int64, username, text string) *models.Update {
@@ -1056,4 +1108,110 @@ func TestButtonOutputTextKeepsChunkedMessages(t *testing.T) {
 		}
 	}
 	require.Greater(t, preMessages, 1)
+}
+
+func TestDeliveryRetryTransientThenSucceeds(t *testing.T) {
+	srv := &apiServer{failSendN: 2, failSendCode: 500}
+	ts := httptest.NewServer(srv)
+	defer ts.Close()
+
+	cfg := &config.Config{
+		Telegram: config.TelegramConfig{
+			API:          ts.URL,
+			BotToken:     "123:ABC",
+			AllowedUsers: []string{"42"},
+		},
+		Menu: []config.ButtonNode{
+			{Name: "Echo", Type: "button", Function: "command", Command: "echo hi"},
+		},
+	}
+	tinyDeliveryRetry(cfg)
+	cfg.ApplyDefaults()
+
+	app := bot.NewApp(cfg, function.NewRegistry(), &executor.FakeExecutor{}, nil)
+	b, err := app.NewBotWithOptions(
+		tgbot.WithHTTPClient(5*time.Second, ts.Client()),
+		tgbot.WithServerURL(ts.URL),
+		tgbot.WithSkipGetMe(),
+		tgbot.WithNotAsyncHandlers(),
+	)
+	require.NoError(t, err)
+
+	b.ProcessUpdate(context.Background(), startCommandUpdate(42, "admin", "/start"))
+
+	srv.mu.Lock()
+	defer srv.mu.Unlock()
+	require.Contains(t, visibleTexts(srv), "Menu")
+	require.GreaterOrEqual(t, srv.sendAttempts, 3, "expected retries before success")
+}
+
+func TestDeliveryRetryRateLimitThenSucceeds(t *testing.T) {
+	srv := &apiServer{failSendN: 1, failSendCode: 429, failRetryAfter: 0}
+	ts := httptest.NewServer(srv)
+	defer ts.Close()
+
+	cfg := &config.Config{
+		Telegram: config.TelegramConfig{
+			API:          ts.URL,
+			BotToken:     "123:ABC",
+			AllowedUsers: []string{"42"},
+		},
+		Menu: []config.ButtonNode{
+			{Name: "Echo", Type: "button", Function: "command", Command: "echo hi"},
+		},
+	}
+	tinyDeliveryRetry(cfg)
+	cfg.ApplyDefaults()
+
+	app := bot.NewApp(cfg, function.NewRegistry(), &executor.FakeExecutor{}, nil)
+	b, err := app.NewBotWithOptions(
+		tgbot.WithHTTPClient(5*time.Second, ts.Client()),
+		tgbot.WithServerURL(ts.URL),
+		tgbot.WithSkipGetMe(),
+		tgbot.WithNotAsyncHandlers(),
+	)
+	require.NoError(t, err)
+
+	b.ProcessUpdate(context.Background(), startCommandUpdate(42, "admin", "/start"))
+
+	srv.mu.Lock()
+	defer srv.mu.Unlock()
+	require.Contains(t, visibleTexts(srv), "Menu")
+	require.Equal(t, 2, srv.sendAttempts)
+}
+
+func TestDeliveryRetryPermanentErrorNoRetry(t *testing.T) {
+	srv := &apiServer{failSendN: 5, failSendCode: 403}
+	ts := httptest.NewServer(srv)
+	defer ts.Close()
+
+	cfg := &config.Config{
+		Telegram: config.TelegramConfig{
+			API:          ts.URL,
+			BotToken:     "123:ABC",
+			AllowedUsers: []string{"42"},
+		},
+		Menu: []config.ButtonNode{
+			{Name: "Echo", Type: "button", Function: "command", Command: "echo hi"},
+		},
+	}
+	tinyDeliveryRetry(cfg)
+	cfg.ApplyDefaults()
+
+	app := bot.NewApp(cfg, function.NewRegistry(), &executor.FakeExecutor{}, nil)
+	b, err := app.NewBotWithOptions(
+		tgbot.WithHTTPClient(5*time.Second, ts.Client()),
+		tgbot.WithServerURL(ts.URL),
+		tgbot.WithSkipGetMe(),
+		tgbot.WithNotAsyncHandlers(),
+	)
+	require.NoError(t, err)
+
+	b.ProcessUpdate(context.Background(), startCommandUpdate(42, "admin", "/start"))
+
+	srv.mu.Lock()
+	defer srv.mu.Unlock()
+	require.Empty(t, srv.messages)
+	require.Equal(t, 1, srv.sendAttempts, "permanent errors must not retry")
+	require.Equal(t, 4, srv.failSendN, "only one failure should have been consumed")
 }

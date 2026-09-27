@@ -25,5 +25,6 @@ icon: material/lan-disconnect
 ## 相关
 
 - [允许的用户](allowed-users.md) — 谁可以使用该机器人
+- [投递重试](delivery-retry.md) — 这条连接中断期间结果会发生什么
 - [CLI → run](../cli.md#run) — 在前台启动机器人
 - [作为服务运行](../installation/run-as-a-service.md) — 保持机器人运行

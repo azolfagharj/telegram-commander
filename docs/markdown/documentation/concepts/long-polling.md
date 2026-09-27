@@ -26,5 +26,6 @@ For `api`, `proxy`, and `insecure` under Telegram settings, see
 ## Related
 
 - [Allowed users](allowed-users.md) — who may use the bot
+- [Delivery retries](delivery-retry.md) — what happens to a result during a drop in this connection
 - [CLI → run](../cli.md#run) — start the bot in the foreground
 - [Run as a service](../installation/run-as-a-service.md) — keep the bot running

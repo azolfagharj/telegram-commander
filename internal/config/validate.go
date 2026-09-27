@@ -89,6 +89,7 @@ func (c *Config) Validate() ValidationErrors {
 			Message: "page_size must be >= 1",
 		})
 	}
+	errs = append(errs, c.validateDeliveryRetry()...)
 	if len(c.Menu) == 0 {
 		errs = append(errs, ValidationError{
 			Path:    "menu",
@@ -128,6 +129,45 @@ func (c *Config) validateFunctionDirectory() ValidationErrors {
 		errs = append(errs, ValidationError{
 			Path:    "function_directory",
 			Message: fmt.Sprintf("%q is not a directory", c.FunctionDirectory),
+		})
+	}
+	return errs
+}
+
+// validateDeliveryRetry checks the delivery-retry durations.
+// ApplyDefaults runs before Validate, so a value here is either the default
+// or something the user set; absence (still zero) never happens by the time
+// this runs, but negative or contradictory values are still rejected.
+func (c *Config) validateDeliveryRetry() ValidationErrors {
+	var errs ValidationErrors
+	if c.DeliveryRetryBackoff.Duration < 0 {
+		errs = append(errs, ValidationError{
+			Path:    "delivery_retry_backoff",
+			Message: "delivery_retry_backoff must not be negative",
+		})
+	}
+	if c.DeliveryRetryBackoffMax.Duration < 0 {
+		errs = append(errs, ValidationError{
+			Path:    "delivery_retry_backoff_max",
+			Message: "delivery_retry_backoff_max must not be negative",
+		})
+	}
+	if c.DeliveryRetryTTL.Duration < 0 {
+		errs = append(errs, ValidationError{
+			Path:    "delivery_retry_ttl",
+			Message: "delivery_retry_ttl must not be negative",
+		})
+	}
+	if c.DeliveryRetryBackoffMax.Duration < c.DeliveryRetryBackoff.Duration {
+		errs = append(errs, ValidationError{
+			Path:    "delivery_retry_backoff_max",
+			Message: "delivery_retry_backoff_max must not be less than delivery_retry_backoff",
+		})
+	}
+	if c.DeliveryRetryTTL.Duration < c.DeliveryRetryBackoff.Duration {
+		errs = append(errs, ValidationError{
+			Path:    "delivery_retry_ttl",
+			Message: "delivery_retry_ttl must not be less than delivery_retry_backoff",
 		})
 	}
 	return errs

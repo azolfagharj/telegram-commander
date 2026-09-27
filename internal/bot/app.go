@@ -34,6 +34,10 @@ type App struct {
 	nav       map[int64]userMenu
 	confirmMu sync.Mutex
 	confirms  map[int64]confirmWait
+
+	// Per-chat locks keep outbound sends ordered during retries.
+	sendMu    sync.Mutex
+	sendLocks map[int64]*sync.Mutex
 }
 
 type userMenu struct {
@@ -59,14 +63,48 @@ func NewApp(cfg *config.Config, reg *function.Registry, exec executor.Executor, 
 	idx := BuildIndex(cfg.Menu, cfg.MenuColumns, cfg.PageSize)
 	idx.EnableRunCommand = cfg.EnableRunCommand
 	return &App{
-		Cfg:      cfg,
-		Registry: reg,
-		Exec:     exec,
-		Index:    idx,
-		Log:      log,
-		nav:      make(map[int64]userMenu),
-		confirms: make(map[int64]confirmWait),
+		Cfg:       cfg,
+		Registry:  reg,
+		Exec:      exec,
+		Index:     idx,
+		Log:       log,
+		nav:       make(map[int64]userMenu),
+		confirms:  make(map[int64]confirmWait),
+		sendLocks: make(map[int64]*sync.Mutex),
 	}
+}
+
+// chatSendLock returns the mutex for chatID, creating it if needed.
+// chatID 0 means "no chat" (e.g. some callback answers); callers skip locking.
+func (a *App) chatSendLock(chatID int64) *sync.Mutex {
+	if chatID == 0 {
+		return nil
+	}
+	a.sendMu.Lock()
+	defer a.sendMu.Unlock()
+	m, ok := a.sendLocks[chatID]
+	if !ok {
+		m = &sync.Mutex{}
+		a.sendLocks[chatID] = m
+	}
+	return m
+}
+
+// telegramCall runs one outbound Telegram API call with per-chat locking and
+// delivery retries from config.
+func (a *App) telegramCall(ctx context.Context, chatID int64, op func() error) error {
+	if mu := a.chatSendLock(chatID); mu != nil {
+		mu.Lock()
+		defer mu.Unlock()
+	}
+	return sendWithRetry(
+		ctx,
+		op,
+		a.Cfg.DeliveryRetryBackoff.Duration,
+		a.Cfg.DeliveryRetryBackoffMax.Duration,
+		a.Cfg.DeliveryRetryTTL.Duration,
+		defaultRetryClock,
+	)
 }
 
 // HTTPClient builds an HTTP client with optional proxy and TLS skip-verify.
@@ -175,9 +213,13 @@ func (a *App) defaultHandler(ctx context.Context, b *bot.Bot, update *models.Upd
 		return
 	}
 	if !a.isAllowed(update.Message.From) {
-		_, _ = b.SendMessage(ctx, &bot.SendMessageParams{
-			ChatID: update.Message.Chat.ID,
-			Text:   a.denyMessage(update.Message.From),
+		chatID := update.Message.Chat.ID
+		_ = a.telegramCall(ctx, chatID, func() error {
+			_, err := b.SendMessage(ctx, &bot.SendMessageParams{
+				ChatID: chatID,
+				Text:   a.denyMessage(update.Message.From),
+			})
+			return err
 		})
 		return
 	}
@@ -189,9 +231,13 @@ func (a *App) handleStart(ctx context.Context, b *bot.Bot, update *models.Update
 		return
 	}
 	if !a.isAllowed(update.Message.From) {
-		_, _ = b.SendMessage(ctx, &bot.SendMessageParams{
-			ChatID: update.Message.Chat.ID,
-			Text:   a.denyMessage(update.Message.From),
+		chatID := update.Message.Chat.ID
+		_ = a.telegramCall(ctx, chatID, func() error {
+			_, err := b.SendMessage(ctx, &bot.SendMessageParams{
+				ChatID: chatID,
+				Text:   a.denyMessage(update.Message.From),
+			})
+			return err
 		})
 		return
 	}
@@ -205,9 +251,13 @@ func (a *App) handleHelp(ctx context.Context, b *bot.Bot, update *models.Update)
 		return
 	}
 	if !a.isAllowed(update.Message.From) {
-		_, _ = b.SendMessage(ctx, &bot.SendMessageParams{
-			ChatID: update.Message.Chat.ID,
-			Text:   a.denyMessage(update.Message.From),
+		chatID := update.Message.Chat.ID
+		_ = a.telegramCall(ctx, chatID, func() error {
+			_, err := b.SendMessage(ctx, &bot.SendMessageParams{
+				ChatID: chatID,
+				Text:   a.denyMessage(update.Message.From),
+			})
+			return err
 		})
 		return
 	}
@@ -215,9 +265,13 @@ func (a *App) handleHelp(ctx context.Context, b *bot.Bot, update *models.Update)
 	if a.Cfg.EnableRunCommand {
 		text += "\nTap Run Command to type a shell command."
 	}
-	_, _ = b.SendMessage(ctx, &bot.SendMessageParams{
-		ChatID: update.Message.Chat.ID,
-		Text:   text,
+	chatID := update.Message.Chat.ID
+	_ = a.telegramCall(ctx, chatID, func() error {
+		_, err := b.SendMessage(ctx, &bot.SendMessageParams{
+			ChatID: chatID,
+			Text:   text,
+		})
+		return err
 	})
 }
 
@@ -226,17 +280,20 @@ func (a *App) handleCallback(ctx context.Context, b *bot.Bot, update *models.Upd
 	if cq == nil {
 		return
 	}
-	_, _ = b.AnswerCallbackQuery(ctx, &bot.AnswerCallbackQueryParams{
-		CallbackQueryID: cq.ID,
-		ShowAlert:       false,
+	chatID := int64(0)
+	if cq.Message.Message != nil {
+		chatID = cq.Message.Message.Chat.ID
+	}
+	_ = a.telegramCall(ctx, chatID, func() error {
+		_, err := b.AnswerCallbackQuery(ctx, &bot.AnswerCallbackQueryParams{
+			CallbackQueryID: cq.ID,
+			ShowAlert:       false,
+		})
+		return err
 	})
 	user := cq.From
 	if !a.isAllowed(&user) {
 		return
-	}
-	chatID := int64(0)
-	if cq.Message.Message != nil {
-		chatID = cq.Message.Message.Chat.ID
 	}
 	if chatID == 0 {
 		return
@@ -421,7 +478,12 @@ func (a *App) sendKeep(ctx context.Context, b *bot.Bot, chatID int64, text strin
 	if reply != nil {
 		params.ReplyMarkup = reply
 	}
-	msg, err := b.SendMessage(ctx, params)
+	var msg *models.Message
+	err := a.telegramCall(ctx, chatID, func() error {
+		var sendErr error
+		msg, sendErr = b.SendMessage(ctx, params)
+		return sendErr
+	})
 	if err != nil || msg == nil {
 		a.Log.Error("send menu", "err", err)
 		return nil
@@ -433,9 +495,12 @@ func (a *App) deleteMessage(ctx context.Context, b *bot.Bot, chatID int64, messa
 	if messageID == 0 {
 		return
 	}
-	_, _ = b.DeleteMessage(ctx, &bot.DeleteMessageParams{
-		ChatID:    chatID,
-		MessageID: messageID,
+	_ = a.telegramCall(ctx, chatID, func() error {
+		_, err := b.DeleteMessage(ctx, &bot.DeleteMessageParams{
+			ChatID:    chatID,
+			MessageID: messageID,
+		})
+		return err
 	})
 }
 
@@ -629,7 +694,12 @@ func (a *App) deliverResult(ctx context.Context, b *bot.Bot, chatID, userID int6
 		if i == len(chunks)-1 && view != nil {
 			params.ReplyMarkup = view.Reply
 		}
-		msg, sendErr := b.SendMessage(ctx, params)
+		var msg *models.Message
+		sendErr := a.telegramCall(ctx, chatID, func() error {
+			var err error
+			msg, err = b.SendMessage(ctx, params)
+			return err
+		})
 		if sendErr != nil || msg == nil {
 			a.Log.Error("send result", "err", sendErr)
 			break
@@ -641,17 +711,23 @@ func (a *App) deliverResult(ctx context.Context, b *bot.Bot, chatID, userID int6
 func (a *App) sendResultDocument(ctx context.Context, b *bot.Bot, chatID int64, node *Node, res executor.Result, err error, view *MenuBuild) bool {
 	name, body := buildResultFile(node, res, err)
 	params := &bot.SendDocumentParams{
-		ChatID: chatID,
-		Document: &models.InputFileUpload{
-			Filename: name,
-			Data:     bytes.NewReader(body),
-		},
+		ChatID:  chatID,
 		Caption: resultCaption(node, res, err),
 	}
 	if view != nil {
 		params.ReplyMarkup = view.Reply
 	}
-	msg, sendErr := b.SendDocument(ctx, params)
+	var msg *models.Message
+	// Rebuild the reader on every attempt; a failed upload may have consumed it.
+	sendErr := a.telegramCall(ctx, chatID, func() error {
+		params.Document = &models.InputFileUpload{
+			Filename: name,
+			Data:     bytes.NewReader(body),
+		}
+		var err error
+		msg, err = b.SendDocument(ctx, params)
+		return err
+	})
 	if sendErr != nil || msg == nil {
 		a.Log.Error("send result document", "err", sendErr)
 		return false

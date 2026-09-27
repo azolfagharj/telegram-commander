@@ -28,5 +28,6 @@ finden Sie unter [Konfiguration → telegram](../configuration.md#telegram).
 ## Verwandte Themen
 
 - [Zugelassene Benutzer](allowed-users.md) — wer den Bot verwenden darf
+- [Erneute Zustellversuche](delivery-retry.md) — was während eines Ausfalls dieser Verbindung mit einem Ergebnis passiert
 - [CLI → run](../cli.md#run) — den Bot im Vordergrund starten
 - [Als Dienst ausführen](../installation/run-as-a-service.md) — den Bot dauerhaft ausführen

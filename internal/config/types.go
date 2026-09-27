@@ -23,8 +23,16 @@ type Config struct {
 	EnableRunCommand  bool              `yaml:"enable_run_command"`
 	Output            string            `yaml:"output"` // auto | text | file
 	MaxOutputMessages int               `yaml:"max_output_messages"`
-	Logging           LoggingConfig     `yaml:"logging"`
-	Menu              []ButtonNode      `yaml:"menu"`
+
+	// DeliveryRetryBackoff is the initial wait before retrying a failed Telegram send.
+	DeliveryRetryBackoff Duration `yaml:"delivery_retry_backoff"`
+	// DeliveryRetryBackoffMax caps how long the retry wait can grow to.
+	DeliveryRetryBackoffMax Duration `yaml:"delivery_retry_backoff_max"`
+	// DeliveryRetryTTL is the total time to keep retrying before giving up.
+	DeliveryRetryTTL Duration `yaml:"delivery_retry_ttl"`
+
+	Logging LoggingConfig `yaml:"logging"`
+	Menu    []ButtonNode  `yaml:"menu"`
 
 	// functionDirectorySet is true when the key was present in YAML (even if empty).
 	functionDirectorySet bool
@@ -174,7 +182,10 @@ const (
 	DefaultOutput            = "auto"
 	DefaultMaxOutputMessages = 2
 	// MaxOutputMessagesCeiling is the hard cap on text result chunks.
-	MaxOutputMessagesCeiling = 10
+	MaxOutputMessagesCeiling       = 10
+	DefaultDeliveryRetryBackoff    = 1 * time.Second
+	DefaultDeliveryRetryBackoffMax = 30 * time.Second
+	DefaultDeliveryRetryTTL        = 2 * time.Minute
 )
 
 // ApplyDefaults fills zero-value fields with defaults.
@@ -205,6 +216,15 @@ func (c *Config) ApplyDefaults() {
 	}
 	if c.MaxOutputMessages == 0 {
 		c.MaxOutputMessages = DefaultMaxOutputMessages
+	}
+	if c.DeliveryRetryBackoff.Duration == 0 {
+		c.DeliveryRetryBackoff.Duration = DefaultDeliveryRetryBackoff
+	}
+	if c.DeliveryRetryBackoffMax.Duration == 0 {
+		c.DeliveryRetryBackoffMax.Duration = DefaultDeliveryRetryBackoffMax
+	}
+	if c.DeliveryRetryTTL.Duration == 0 {
+		c.DeliveryRetryTTL.Duration = DefaultDeliveryRetryTTL
 	}
 	if c.Logging.Logs == nil {
 		c.Logging.Logs = map[string]LoggerConfig{

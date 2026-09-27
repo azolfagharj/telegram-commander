@@ -711,10 +711,11 @@ Telegram 单条消息最多只接受 4096 字节，所以较长的结果要么�
       `(output too long; showing first N bytes)` 结束。
     - 无论您把 `max_output_messages` 写成多少，十条消息仍然是硬上限。
 
-!!! note "即使上传失败，您仍会拿到结果"
+!!! note "发送失败时，机器人会先重试"
 
-    当文件发不出去时 —— 没有网络，或者 Telegram 拒绝了它 —— 机器人会回退到
-    聊天消息，这样结果就不会丢失。
+    当文件发不出去时 —— 没有网络，或者 Telegram 要求放慢速度 —— 机器人会
+    自动重试，等待时间逐渐变长。只有放弃后才会回退到聊天消息，这样短暂中断
+    不会丢失结果。参见[投递重试](concepts/delivery-retry.md)。
 
 ## :material-console: 运行命令使用根级设置
 
@@ -757,5 +758,13 @@ Telegram 单条消息最多只接受 4096 字节，所以较长的结果要么�
     您的命令运行时使用的 shell、工作目录和超时。
 
     [:octicons-arrow-right-24: Shell](concepts/shell.md)
+
+-   :material-refresh:{ .middle } __投递重试__
+
+    ---
+
+    发送到 Telegram 中途失败时会发生什么。
+
+    [:octicons-arrow-right-24: 投递重试](concepts/delivery-retry.md)
 
 </div>

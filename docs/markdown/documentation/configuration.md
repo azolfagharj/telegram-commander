@@ -77,6 +77,9 @@ example.
 | `menu_columns` | int | no | `2` | Item buttons per row under the message box |
 | `page_size` | int | no | `8` | Items per page before pagination |
 | `confirm_ttl` | duration | no | `5m` | How long a [confirmation](concepts/confirmation.md) prompt stays valid |
+| `delivery_retry_backoff` | duration | no | `1s` | Root only. Initial wait before the first retry after a send to Telegram fails. See [Delivery retries](concepts/delivery-retry.md) |
+| `delivery_retry_backoff_max` | duration | no | `30s` | Root only. Longest wait between retries. See [Delivery retries](concepts/delivery-retry.md) |
+| `delivery_retry_ttl` | duration | no | `2m` | Root only. Total time the bot keeps retrying before it gives up (logged on the server only). See [Delivery retries](concepts/delivery-retry.md) |
 | `enable_run_command` | bool | no | `false` | Show a **`$ >_ Run Command`** button that runs the next message as a shell command. Off by default. Anyone who can use the bot can then run any command on the host, so only turn this on if you trust every allowed user. Putting this key under `telegram` is invalid. |
 | `logging` | object | no | built-in default logger | Named loggers (see below) |
 
@@ -114,7 +117,8 @@ single button:
 
 In `auto` and `file` modes, the file includes the header plus stdout and
 stderr, so raising `max_output_bytes` really does deliver more output to you.
-If sending the file fails, the bot falls back to the text-message path.
+If sending the file fails, the bot retries automatically and only falls back
+to the text-message path once it gives up. See [Delivery retries](concepts/delivery-retry.md).
 
 You do not need to write `output` or `max_output_messages`. If you omit them,
 the bot uses `auto` and `2`. A config that already works stays the same.
@@ -255,6 +259,7 @@ exit code, duration). See [Audit log](concepts/audit-log.md).
 
 - [Run in CLI](installation/download-and-run.md) — build and run a first config
 - [Menu](concepts/menu.md) — the menu tree in depth
+- [Delivery retries](concepts/delivery-retry.md) — automatic retry after a short network drop
 - [Control output](output-control.md) — messages versus a `.txt` file, with every root and button combination
 - [Functions](functions/index.md) — what `function`, `command`, `path`, and `args` mean
 - [CLI](cli.md) — validate and run with your config

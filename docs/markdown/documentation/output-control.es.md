@@ -749,11 +749,12 @@ Cuando un resultado se entrega como archivo, recibe un adjunto y un pie breve.
     - Escriba el `max_output_messages` que quiera: diez mensajes sigue siendo
       el techo absoluto.
 
-!!! note "Si falla el envío del archivo, seguirá recibiendo el resultado"
+!!! note "Si un envío falla, el bot reintenta primero"
 
     Cuando el archivo no se puede enviar, porque no hay red o porque Telegram
-    lo rechaza, el bot vuelve a los mensajes de chat para que el resultado no
-    se pierda.
+    pide esperar, el bot reintenta automáticamente con una espera creciente.
+    Solo tras rendirse vuelve a los mensajes de chat, para que una caída breve
+    no le cueste el resultado. Vea [Reintentos de entrega](concepts/delivery-retry.md).
 
 ## :material-console: Ejecutar comando usa el ajuste de la raíz { #run-command-uses-the-root-setting }
 
@@ -796,5 +797,13 @@ raíz. Consulte [Menú → Ejecutar comando](concepts/menu.md#run-command).
     El shell, el directorio de trabajo y el tiempo máximo de sus comandos.
 
     [:octicons-arrow-right-24: Shell](concepts/shell.md)
+
+-   :material-refresh:{ .middle } __Reintentos de entrega__
+
+    ---
+
+    Qué ocurre cuando un envío a Telegram falla a mitad de camino.
+
+    [:octicons-arrow-right-24: Reintentos de entrega](concepts/delivery-retry.md)
 
 </div>

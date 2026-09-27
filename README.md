@@ -92,6 +92,8 @@ Anything you can run in a shell. A few common examples:
   the internet.
 - **Output in the chat.** The result comes back as a message. You do not need
   an SSH session.
+- **Keeps trying.** A short network drop retries the send automatically
+  instead of losing the result.
 - **Controlled and recorded.** Choose who gets the menu, confirm risky actions,
   and record each run.
 - **Nested menus.** Group buttons into categories. Home stays at the top; Back
