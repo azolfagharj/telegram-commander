@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://telecommander.ir/sitemap.xml
